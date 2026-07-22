@@ -1,0 +1,119 @@
+<main class="grid min-h-dvh grid-cols-1 bg-[#071b0d] font-sans text-[#f4f8f4] md:grid-cols-[minmax(0,1.62fr)_minmax(380px,1fr)]">
+  <section
+    class="visual-panel relative hidden min-h-dvh overflow-hidden border-r border-[#48d370]/15 bg-[linear-gradient(180deg,#071d0d_0%,#061a0c_63%,#020c05_100%)] md:block"
+    aria-label="Department of Wildlife Conservation electric fence monitoring"
+  >
+    <div class="absolute top-7 left-7 z-10 grid gap-2 font-mono text-[7px] leading-tight tracking-[.06em] text-[#31c658]/55" aria-hidden="true">
+      <span>FENCE-MONITOR-SL v2.4.1</span>
+      <span>SECTOR: NATIONAL COVERAGE</span>
+    </div>
+
+    <div class="stars absolute inset-0 opacity-70" aria-hidden="true"></div>
+
+    <div class="fence-scene absolute inset-x-0 top-[47%] bottom-[17%]" aria-hidden="true">
+      <img
+        class="elephant-shadow absolute -bottom-[45%] left-1/2 h-[255%] w-[88%] -translate-x-1/2 object-contain"
+        src="images/elephant-silhouette.png"
+        alt=""
+      />
+
+      <div class="energy-line absolute top-[7%] right-[5%] left-[5%] h-px bg-[#26e868]"></div>
+      <div class="energy-line absolute top-[38%] right-[5%] left-[5%] h-px bg-[#26e868]"></div>
+      <div class="energy-line absolute top-[69%] right-[5%] left-[5%] h-px bg-[#26e868]"></div>
+
+      <span class="dark-post left-[27%] h-full"></span>
+      <span class="dark-post left-[84%] h-full"></span>
+    </div>
+
+    <div class="absolute inset-x-0 bottom-6 z-10 grid justify-items-center gap-2 text-center">
+      <h1 class="m-0 text-[19px] font-extrabold">DWC · SRI LANKA</h1>
+      <p class="m-0 text-[11px] text-[#89988c]">Wildlife Conservation</p>
+      <strong class="mt-1 text-xs text-[#c4cec5]">Remote Fence Voltage Monitoring System</strong>
+      <span class="text-[10px] text-[#35ce65]">National Remote Monitoring &amp; Alert Platform</span>
+    </div>
+  </section>
+
+  <section class="grid min-h-dvh place-items-center bg-[#122b18] px-5 py-8 sm:px-12 sm:py-10">
+    <div class="w-full max-w-[350px]">
+      <header class="mb-8 text-center sm:mb-10">
+        <div class="mx-auto mb-[17px] grid size-[50px] place-items-center rounded-[13px] bg-linear-to-br from-[#4de077] to-[#31b85c] text-[#062510] shadow-[0_0_24px_rgba(55,209,98,.27)]" aria-hidden="true">
+          <svg class="w-[27px] fill-current" viewBox="0 0 24 24" role="img">
+            <path d="M13.2 2 5 13h6l-.9 9L19 10h-6.3l.5-8Z" />
+          </svg>
+        </div>
+        <h2 class="mb-[7px] text-[15px] font-extrabold">Secure System Access</h2>
+        <p class="text-[10px] text-[#88a18d]">Remote Fence Voltage Monitoring System</p>
+      </header>
+
+      <form class="grid gap-[17px]" aria-label="Secure system login">
+        <div class="grid gap-2">
+          <label class="text-[9px] font-semibold tracking-[.12em] text-[#86ad8f] uppercase" for="username">Username or email</label>
+          <input
+            class="h-[35px] w-full rounded-[9px] border border-[#3d5742] bg-[#203725] px-3 text-[11px] text-[#e4ebe5] outline-none transition placeholder:text-[#8ba08f] focus:border-[#43d36c] focus:shadow-[0_0_0_3px_rgba(67,211,108,.12)]"
+            id="username"
+            name="username"
+            type="text"
+            placeholder="user@dwc.gov.lk"
+            autocomplete="username"
+          />
+        </div>
+
+        <div class="grid gap-2">
+          <label class="text-[9px] font-semibold tracking-[.12em] text-[#86ad8f] uppercase" for="password">Password</label>
+          <div class="relative">
+            <input
+              class="h-[35px] w-full rounded-[9px] border border-[#3d5742] bg-[#203725] pr-10 pl-3 text-[11px] text-[#e4ebe5] outline-none transition placeholder:text-[#8ba08f] focus:border-[#43d36c] focus:shadow-[0_0_0_3px_rgba(67,211,108,.12)]"
+              id="password"
+              name="password"
+              [type]="passwordVisible ? 'text' : 'password'"
+              placeholder="Enter your password"
+              autocomplete="current-password"
+            />
+            <button
+              class="absolute top-0 right-0 grid h-[35px] w-10 cursor-pointer place-items-center border-0 bg-transparent p-0 text-[#829387] hover:text-[#b8c7bc] focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-[#43d36c]"
+              type="button"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="passwordVisible ? 'Hide password' : 'Show password'"
+            >
+              <svg class="w-4 fill-none stroke-current stroke-[1.8]" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+                <circle cx="12" cy="12" r="2.7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-px flex items-center justify-between text-[10px]">
+          <label class="flex cursor-pointer items-center gap-2">
+            <input class="m-0 size-3 accent-[#43d36c]" type="checkbox" name="remember" />
+            <span>Remember me</span>
+          </label>
+          <a class="text-[#40db6d] no-underline hover:underline" href="#forgot-password">Forgot password?</a>
+        </div>
+
+        <button class="flex h-[41px] w-full cursor-pointer items-center justify-center gap-2 rounded-[9px] border-0 bg-[#43d36c] text-xs font-bold text-[#05200c] transition hover:bg-[#55e17b] active:translate-y-px" type="button">
+          <svg class="w-3.5 fill-none stroke-current stroke-[1.8]" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3 5.5 5.8v5.5c0 4.2 2.7 8.1 6.5 9.7 3.8-1.6 6.5-5.5 6.5-9.7V5.8L12 3Z" />
+          </svg>
+          <span>Secure Login</span>
+        </button>
+      </form>
+
+      <aside class="mt-[22px] flex min-h-[66px] items-start gap-2 rounded-lg border border-[#cfa800]/45 bg-[#5f5004]/30 px-[13px] py-3 text-[8px] leading-[1.55] text-[#91a094]">
+        <svg class="w-[13px] shrink-0 fill-none stroke-[#edc600] stroke-[1.8]" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 7v6m0 3h.01" />
+        </svg>
+        <p class="m-0"><strong class="text-[#f0cc19]">Authorized personnel only.</strong> Unauthorized access is prohibited and subject to prosecution under Sri Lanka computer crime regulations.</p>
+      </aside>
+
+      <footer class="mt-[19px] flex items-center justify-center gap-1.5 whitespace-nowrap text-[6px] text-[#7f9484] min-[390px]:gap-[11px] min-[390px]:text-[7px]">
+        <span class="flex items-center gap-1">
+          <svg class="w-[11px] fill-none stroke-[#40bd63] stroke-[1.8]" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9a12 12 0 0 1 16 0M7 12a8 8 0 0 1 10 0m-7 3a4 4 0 0 1 4 0m-2 3h.01" /></svg>
+          TLS 1.3 Encrypted
+        </span>
+        <i class="size-[3px] rounded-full bg-[#45614b]"></i><span>v2.4.1-stable</span><i class="size-[3px] rounded-full bg-[#45614b]"></i><span>DWC-SL © 2026</span>
+      </footer>
+    </div>
+  </section>
+</main>

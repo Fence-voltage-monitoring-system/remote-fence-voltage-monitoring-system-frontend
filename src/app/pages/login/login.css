@@ -1,0 +1,42 @@
+/* The login page layout and controls use Tailwind utilities. These rules only
+   draw the decorative fence scene and its ambient effects. */
+
+.visual-panel::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 26%;
+  content: '';
+  background: linear-gradient(180deg, transparent, rgb(0 0 0 / 48%));
+  pointer-events: none;
+}
+
+.stars {
+  background-image:
+    radial-gradient(circle at 6% 22%, #57b86d 0 1px, transparent 1px),
+    radial-gradient(circle at 29% 8%, #82cd90 0 1px, transparent 1px),
+    radial-gradient(circle at 53% 24%, #52a864 0 1px, transparent 1px),
+    radial-gradient(circle at 79% 17%, #58aa69 0 1px, transparent 1px),
+    radial-gradient(circle at 93% 30%, #62b676 0 1px, transparent 1px);
+  background-size: 211px 173px, 263px 219px, 181px 251px, 307px 197px, 239px 283px;
+}
+
+.energy-line {
+  box-shadow: 0 0 5px #21d55d, 0 0 13px rgb(33 213 93 / 55%);
+}
+
+.elephant-shadow {
+  color: #000;
+  filter: drop-shadow(0 0 32px rgb(0 0 0 / 88%));
+  opacity: 0.92;
+}
+
+.dark-post {
+  position: absolute;
+  bottom: 0;
+  display: block;
+}
+
+.dark-post {
+  width: 6px;
+  background: #020904;
+}
