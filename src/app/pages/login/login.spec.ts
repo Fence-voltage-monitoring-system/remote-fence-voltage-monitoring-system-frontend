@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { of } from "rxjs";
 
+import { AuthService } from "../../core/services/auth.service";
 import { Login } from "./login";
 
 describe("Login", () => {
@@ -9,6 +11,21 @@ describe("Login", () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [Login],
+      providers: [
+        {
+          provide: AuthService,
+          useValue: {
+            login: vi.fn().mockReturnValue(of({
+              user: {
+                id: "1",
+                name: "Test User",
+                email: "test@dwc.gov.lk",
+                role: "operator",
+              },
+            })),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(Login);
@@ -26,5 +43,21 @@ describe("Login", () => {
     expect(compiled.querySelector("h2")?.textContent).toContain(
       "Secure System Access",
     );
+  });
+
+  it("should reject an empty form", () => {
+    component.submitLogin();
+
+    expect(component.loginForm.invalid).toBe(true);
+    expect(component.usernameControl.touched).toBe(true);
+    expect(component.passwordControl.touched).toBe(true);
+  });
+
+  it("should toggle password visibility", () => {
+    component.togglePasswordVisibility();
+    expect(component.passwordVisible).toBe(true);
+
+    component.togglePasswordVisibility();
+    expect(component.passwordVisible).toBe(false);
   });
 });

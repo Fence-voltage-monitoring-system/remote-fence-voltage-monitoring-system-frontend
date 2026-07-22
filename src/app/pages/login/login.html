@@ -45,17 +45,24 @@
         <p class="text-[10px] text-[#88a18d]">Remote Fence Voltage Monitoring System</p>
       </header>
 
-      <form class="grid gap-[17px]" aria-label="Secure system login">
+      <form class="grid gap-[17px]" [formGroup]="loginForm" (ngSubmit)="submitLogin()" aria-label="Secure system login" novalidate>
         <div class="grid gap-2">
           <label class="text-[9px] font-semibold tracking-[.12em] text-[#86ad8f] uppercase" for="username">Username or email</label>
           <input
             class="h-[35px] w-full rounded-[9px] border border-[#3d5742] bg-[#203725] px-3 text-[11px] text-[#e4ebe5] outline-none transition placeholder:text-[#8ba08f] focus:border-[#43d36c] focus:shadow-[0_0_0_3px_rgba(67,211,108,.12)]"
             id="username"
-            name="username"
-            type="text"
+            formControlName="username"
+            type="email"
             placeholder="user@dwc.gov.lk"
             autocomplete="username"
+            [attr.aria-invalid]="usernameControl.invalid && usernameControl.touched"
+            aria-describedby="username-error"
           />
+          @if (usernameControl.touched && usernameControl.hasError('required')) {
+            <p id="username-error" class="m-0 text-[9px] text-[#ff9a91]" role="alert">Username or email is required.</p>
+          } @else if (usernameControl.touched && usernameControl.hasError('email')) {
+            <p id="username-error" class="m-0 text-[9px] text-[#ff9a91]" role="alert">Enter a valid email address.</p>
+          }
         </div>
 
         <div class="grid gap-2">
@@ -64,10 +71,12 @@
             <input
               class="h-[35px] w-full rounded-[9px] border border-[#3d5742] bg-[#203725] pr-10 pl-3 text-[11px] text-[#e4ebe5] outline-none transition placeholder:text-[#8ba08f] focus:border-[#43d36c] focus:shadow-[0_0_0_3px_rgba(67,211,108,.12)]"
               id="password"
-              name="password"
+              formControlName="password"
               [type]="passwordVisible ? 'text' : 'password'"
               placeholder="Enter your password"
               autocomplete="current-password"
+              [attr.aria-invalid]="passwordControl.invalid && passwordControl.touched"
+              aria-describedby="password-error"
             />
             <button
               class="absolute top-0 right-0 grid h-[35px] w-10 cursor-pointer place-items-center border-0 bg-transparent p-0 text-[#829387] hover:text-[#b8c7bc] focus-visible:rounded-md focus-visible:outline-2 focus-visible:outline-[#43d36c]"
@@ -81,21 +90,38 @@
               </svg>
             </button>
           </div>
+          @if (passwordControl.touched && passwordControl.hasError('required')) {
+            <p id="password-error" class="m-0 text-[9px] text-[#ff9a91]" role="alert">Password is required.</p>
+          } @else if (passwordControl.touched && passwordControl.hasError('minlength')) {
+            <p id="password-error" class="m-0 text-[9px] text-[#ff9a91]" role="alert">Password must contain at least 8 characters.</p>
+          }
         </div>
 
         <div class="mt-px flex items-center justify-between text-[10px]">
           <label class="flex cursor-pointer items-center gap-2">
-            <input class="m-0 size-3 accent-[#43d36c]" type="checkbox" name="remember" />
+            <input class="m-0 size-3 accent-[#43d36c]" type="checkbox" formControlName="rememberMe" />
             <span>Remember me</span>
           </label>
           <a class="text-[#40db6d] no-underline hover:underline" href="#forgot-password">Forgot password?</a>
         </div>
 
-        <button class="flex h-[41px] w-full cursor-pointer items-center justify-center gap-2 rounded-[9px] border-0 bg-[#43d36c] text-xs font-bold text-[#05200c] transition hover:bg-[#55e17b] active:translate-y-px" type="button">
+        @if (errorMessage) {
+          <p class="m-0 rounded-md border border-[#ef6a60]/40 bg-[#6e211c]/35 px-3 py-2 text-[9px] text-[#ffaaa3]" role="alert">{{ errorMessage }}</p>
+        }
+
+        @if (successMessage) {
+          <p class="m-0 rounded-md border border-[#43d36c]/40 bg-[#174c28]/40 px-3 py-2 text-[9px] text-[#7ce59a]" role="status">{{ successMessage }}</p>
+        }
+
+        <button
+          class="flex h-[41px] w-full cursor-pointer items-center justify-center gap-2 rounded-[9px] border-0 bg-[#43d36c] text-xs font-bold text-[#05200c] transition hover:bg-[#55e17b] active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60"
+          type="submit"
+          [disabled]="isSubmitting"
+        >
           <svg class="w-3.5 fill-none stroke-current stroke-[1.8]" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 3 5.5 5.8v5.5c0 4.2 2.7 8.1 6.5 9.7 3.8-1.6 6.5-5.5 6.5-9.7V5.8L12 3Z" />
           </svg>
-          <span>Secure Login</span>
+          <span>{{ isSubmitting ? 'Authenticating…' : 'Secure Login' }}</span>
         </button>
       </form>
 
