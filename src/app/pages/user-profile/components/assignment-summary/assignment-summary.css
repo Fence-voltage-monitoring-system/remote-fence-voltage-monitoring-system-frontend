@@ -1,0 +1,3 @@
+:host { display: block; height: 100%; }
+.assignment-label { margin: 0 0 .5rem; color: #839386; font-size: 9px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+.assignment-chip { border: 1px solid #3d704b; border-radius: .45rem; padding: .4rem .65rem; color: #72df8e; background: rgb(31 78 44 / 55%); font-size: 10px; }

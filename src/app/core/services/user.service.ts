@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CreateUserOptions, CreateUserRequest, FenceOption, LocationOption, SystemUser, UserFilters, UserStatus } from '../../pages/user-management/user-management.models';
+import { CurrentUserProfile, UpdateCurrentUserProfileRequest } from '../../pages/user-profile/user-profile.models';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -36,5 +37,13 @@ export class UserService {
 
   resetPassword(userId: number): Observable<{ message: string }> {
     return this.http.post<{ message: string }>(`${this.endpoint}/${userId}/reset-password`, {}, { withCredentials: true });
+  }
+
+  getCurrentProfile(): Observable<CurrentUserProfile> {
+    return this.http.get<CurrentUserProfile>(`${this.endpoint}/me`, { withCredentials: true });
+  }
+
+  updateCurrentProfile(request: UpdateCurrentUserProfileRequest): Observable<CurrentUserProfile> {
+    return this.http.patch<CurrentUserProfile>(`${this.endpoint}/me`, request, { withCredentials: true });
   }
 }
