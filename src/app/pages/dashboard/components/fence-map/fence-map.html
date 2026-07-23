@@ -1,0 +1,31 @@
+<section class="map-panel">
+  <header>
+    <div><h2>Fence Location Overview</h2><p>Protected fence network across Sri Lanka</p></div>
+    <div class="legend"><span class="healthy">Healthy</span><span class="warning">Warning</span><span class="critical">Critical</span></div>
+  </header>
+
+  <div class="map-content">
+    <div class="map-stage" aria-label="Interactive map of monitored fence locations in Sri Lanka">
+      <div class="map-canvas" #map></div>
+    </div>
+
+    <aside>
+      <div class="summary">
+        <div><strong>17</strong><span>Total fences</span></div>
+        <div><strong class="green">2</strong><span>Healthy areas</span></div>
+        <div><strong class="yellow">2</strong><span>Warnings</span></div>
+        <div><strong class="red">1</strong><span>Critical</span></div>
+      </div>
+
+      <div class="location-list">
+        @for (location of locations; track location.name) {
+          <button (click)="selectLocation(location)" [class.active]="selected === location">
+            <i [class]="location.status"></i>
+            <span><strong>{{ location.name }}</strong><small>{{ location.district }} &middot; {{ location.fences }} fences</small></span>
+            <b>{{ location.voltage }}</b>
+          </button>
+        }
+      </div>
+    </aside>
+  </div>
+</section>

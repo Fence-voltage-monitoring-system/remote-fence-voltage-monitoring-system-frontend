@@ -1,0 +1,22 @@
+<aside>
+  <div class="logo" aria-label="Remote fence monitoring">
+    <i data-lucide="zap"></i>
+  </div>
+
+  <nav aria-label="Main navigation">
+    @for (item of items; track item.label) {
+      <button
+        type="button"
+        [routerLink]="item.route ?? null"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+        [attr.aria-label]="item.label"
+        [attr.title]="item.label"
+        (click)="activeItem = item.label"
+      >
+        <i [attr.data-lucide]="item.icon"></i>
+        <span class="tooltip" role="tooltip">{{ item.label }}</span>
+      </button>
+    }
+  </nav>
+</aside>

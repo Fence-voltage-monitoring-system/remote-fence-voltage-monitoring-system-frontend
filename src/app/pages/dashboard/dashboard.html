@@ -1,0 +1,29 @@
+<div class="app-shell">
+  <app-sidebar />
+  <div class="page">
+    <app-header />
+    <main>
+      <section class="stats-grid" aria-label="System overview">
+        @for (stat of stats; track stat.label) {
+          <app-voltage-card [data]="stat" />
+        }
+        <article class="update-card">
+          <span>Next fence update</span>
+          <strong>{{updateSchedule.nextUpdateLabel}}</strong>
+          <time>{{updateSchedule.fenceName}} · last {{updateSchedule.lastUpdatedLabel}}</time>
+          <small><i></i> Auto-refresh active</small>
+        </article>
+      </section>
+
+      <app-fence-monitor (deviceChange)="updateAnalytics($event)" (scheduleChange)="updateFenceSchedule($event)" />
+
+      <section class="analytics-grid" aria-label="Monitoring analytics">
+        <app-alert-list [device]="selectedDevice" />
+        <app-voltage-chart [device]="selectedDevice" />
+        <app-alert-summary [device]="selectedDevice" />
+      </section>
+
+      <app-fence-map />
+    </main>
+  </div>
+</div>

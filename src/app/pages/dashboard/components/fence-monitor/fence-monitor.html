@@ -1,0 +1,21 @@
+<section class="panel">
+  <header><div class="fence-title"><h2>Electric Fence Monitor</h2><p>{{selectedFence.district}} &middot; {{selectedFence.zone}}</p></div><div class="timing"><span>Last update <b>{{lastUpdatedLabel}}</b></span><span>Next in <strong>{{nextUpdateLabel}}</strong></span><small>Every {{selectedFence.updateIntervalMinutes}} min</small></div>@if (showFenceSelector) {<label class="fence-select"><span>Viewing fence</span><select #fencePicker [value]="selectedFence.id" (change)="selectFence(fencePicker.value)">@for (fence of fences; track fence.id) {<option [value]="fence.id">{{fence.name}}</option>}</select></label>}<div class="legend"><span class="healthy">Healthy</span><span class="warning">Warning</span><span class="critical">Critical</span><span class="offline">Offline</span><button>&#8635; Refresh</button></div></header>
+
+  <div class="workspace">
+    <div class="fence-wrap"><button class="arrow left" (click)="scroll(-460)" aria-label="Scroll fence left">&lsaquo;</button><div class="scroller" #scroller><div class="fence-track">
+      @for (section of sections; track section.id) {<button class="fence-section" [class]="section.state" (click)="selectSection(section)"><span class="wire wire-1"></span><span class="wire wire-2"></span><span class="wire wire-3"></span><span class="wire wire-4"></span><i class="post"></i>@if (section.state === 'critical') {<b class="fault"></b>}<div class="reading"><small>{{section.id}}</small><strong>{{section.voltage}}</strong><em>kV</em><span>&bull; {{section.state}}</span></div></button>}
+    </div></div><button class="arrow right" (click)="scroll(460)" aria-label="Scroll fence right">&rsaquo;</button><div class="scroll-hint">&larr; scroll to inspect all {{sections.length}} registered sections &rarr;</div></div>
+    <aside class="detail"><h3>Section detail</h3><div class="section-heading"><b>{{selected.id}}</b><span [class]="selected.state">&bull; {{selected.state}}</span></div><dl><div><dt>Voltage</dt><dd class="voltage">{{selected.voltage}} kV</dd></div><div><dt>Battery</dt><dd>{{selected.battery}}%</dd></div><div><dt>Voltage drop</dt><dd>{{selected.voltageDrop}} kV</dd></div><div><dt>Solar charging</dt><dd>{{selected.solarCharging}}%</dd></div><div><dt>Signal strength</dt><dd>{{selected.signalStrength}} dBm</dd></div><div><dt>Gateway</dt><dd>{{selected.gateway}}</dd></div><div class="gps"><dt>GPS</dt><dd>{{selected.latitude}}<br>{{selected.longitude}}</dd></div><div><dt>Last updated</dt><dd>{{selected.updated}}</dd></div></dl><div class="battery-level"><div><span>Battery level</span><b>{{selected.battery}}%</b></div><i><em [style.width.%]="selected.battery"></em></i></div></aside>
+  </div>
+
+  @if (showSectionTable) {
+    <section class="section-table-wrap">
+      <div class="table-heading"><div><span>Registered section devices</span><h3>{{statusFilter === 'all' ? 'All sections' : statusFilter + ' sections'}}</h3></div><b>{{filteredSections.length}} of {{sections.length}}</b></div>
+      <div class="table-scroll"><table><thead><tr><th>Device ID</th><th>Serial No.</th><th>Fence</th><th>Section</th><th>Voltage</th><th>Battery</th><th>Solar</th><th>Status</th><th>Last Comm.</th></tr></thead><tbody>
+        @for (section of filteredSections; track section.id) {
+          <tr (click)="selectSection(section)" [class.selected-row]="selected.id === section.id"><td class="device">{{deviceId(section)}}</td><td>SN-{{deviceId(section).slice(-7)}}</td><td>{{selectedFence.gateway}}-{{selectedFence.zone}}</td><td>{{section.id}}</td><td class="reading-value" [class]="section.state">{{section.voltage}} kV</td><td><div class="mini-battery"><i><em [style.width.%]="section.battery"></em></i><span>{{section.battery}}%</span></div></td><td>{{section.solarCharging ? section.solarCharging + '%' : '—'}}</td><td><span class="status-pill" [class]="section.state">&bull; {{section.state}}</span></td><td>{{section.updated}}</td></tr>
+        } @empty {<tr><td colspan="9" class="empty-row">No {{statusFilter}} sections are registered under this fence.</td></tr>}
+      </tbody></table></div>
+    </section>
+  }
+</section>

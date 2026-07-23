@@ -1,0 +1,11 @@
+@reference "../../../styles.css";
+
+:host { @apply block min-h-screen; }
+.app-shell { @apply flex min-h-screen bg-[#152718] text-[#edf4e9]; }
+.page { @apply min-w-0 flex-1; }
+main { @apply mx-auto max-w-[1800px] p-5 max-[720px]:p-3; }
+.page-heading { @apply mb-4 flex items-end justify-between max-[620px]:items-start; }.page-heading>div>span { @apply text-[8px] uppercase tracking-[.14em] text-[#4ee672]; }.page-heading h1 { @apply my-1 text-xl font-semibold; }.page-heading p { @apply m-0 text-[10px] text-[#8e9d8b]; }.page-heading>small { @apply font-mono text-[8px] text-[#7f8e7c] max-[620px]:hidden; }
+.filter-bar { @apply mb-4 flex flex-wrap items-end gap-3 rounded-xl border border-[#40543e] bg-[#2e422e] p-3; }
+.filter-bar label { @apply flex min-w-[145px] flex-col gap-1; }.filter-bar label span { @apply text-[7px] uppercase tracking-[.1em] text-[#899786]; }.filter-bar select { @apply h-9 cursor-pointer rounded-lg border border-[#52664f] bg-[#263a27] px-3 text-[9px] text-[#e4ede1] outline-none hover:border-[#58a967] focus:border-[#4ee672]; }.filter-bar option { @apply bg-[#203422]; }
+.actions { @apply ml-auto flex gap-2 max-[850px]:ml-0; }.actions button { @apply h-9 cursor-pointer rounded-lg border border-[#52664f] bg-[#344a34] px-3 text-[9px] text-[#bec9bb] transition-colors hover:border-[#4c9a5d] hover:text-[#4ee672]; }
+@media(max-width:620px) { .filter-bar label { @apply min-w-[calc(50%_-_6px)] flex-1; }.actions { @apply w-full; }.actions button { @apply flex-1 px-2; } }

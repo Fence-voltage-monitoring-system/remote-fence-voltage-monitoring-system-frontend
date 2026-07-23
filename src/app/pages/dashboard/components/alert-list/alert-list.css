@@ -1,0 +1,14 @@
+@reference "../../../../../styles.css";
+section { @apply h-[285px] rounded-[14px] border border-[#4a5d45] bg-[#354831] p-[18px]; }
+header { @apply flex items-center justify-between; }
+h2 { @apply m-0 text-[11px]; }
+header div>small { @apply mt-1 block font-mono text-[8px] text-[#82907f]; }
+header span { @apply rounded-[5px] border border-[#8b342c] bg-[#543027] px-[9px] py-[5px] text-[8px] text-[#ff4c42]; }
+.list { @apply mt-3.5 grid gap-[7px]; }
+article { @apply flex min-h-12 items-start justify-between rounded-[7px] border-l-2 border-[#ff4339] bg-[#3d5139] px-2.5 py-[9px]; }
+article.warning { @apply border-[#ffc000]; }
+article.offline { @apply border-[#788378]; }
+article.healthy { @apply border-[#48df70]; }
+article strong, article small { @apply block text-[9px]; }
+article small, time { @apply mt-1 font-mono text-[8px] text-[#879484]; }
+time { @apply whitespace-nowrap; }

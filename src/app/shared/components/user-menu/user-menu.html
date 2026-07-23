@@ -1,0 +1,35 @@
+<button
+  class="trigger"
+  type="button"
+  aria-haspopup="menu"
+  [attr.aria-expanded]="open"
+  (click)="toggle()"
+>
+  <span class="avatar">SA</span>
+  <span class="identity"><strong>Suresh Ambegoda</strong><small>Super Administrator</small></span>
+  <i data-menu-icon="ChevronDown" class="chevron"></i>
+</button>
+
+<div class="dropdown" [class.open]="open" role="menu" aria-label="User account">
+  <div class="account">
+    <span class="avatar large">SA</span>
+    <div><strong>Suresh Ambegoda</strong><span>suresh.ambegoda&#64;dwc.gov.lk</span><small>Super Administrator</small></div>
+  </div>
+
+  <div class="menu-section">
+    <button type="button" role="menuitem" (click)="choose()"><i data-menu-icon="UserRound"></i><span><strong>My profile</strong><small>Personal details and contact info</small></span></button>
+    <button type="button" role="menuitem" (click)="choose()"><i data-menu-icon="Settings"></i><span><strong>Account settings</strong><small>Preferences and account options</small></span></button>
+    <button type="button" role="menuitem" (click)="choose()"><i data-menu-icon="BellRing"></i><span><strong>Notifications</strong><small>Alert and email preferences</small></span><em>2</em></button>
+  </div>
+
+  <div class="menu-section">
+    <button type="button" role="menuitem" (click)="choose()"><i data-menu-icon="ShieldCheck"></i><span><strong>Security</strong><small>Sessions and access activity</small></span></button>
+    <button type="button" role="menuitem" (click)="choose()"><i data-menu-icon="KeyRound"></i><span><strong>Change password</strong><small>Update your sign-in password</small></span></button>
+    <button type="button" role="menuitem" (click)="choose()"><i data-menu-icon="Palette"></i><span><strong>Appearance</strong><small>Theme and display options</small></span></button>
+    <button type="button" role="menuitem" (click)="choose()"><i data-menu-icon="CircleHelp"></i><span><strong>Help &amp; support</strong><small>Documentation and assistance</small></span></button>
+  </div>
+
+  <div class="menu-section sign-out">
+    <button type="button" role="menuitem" (click)="requestSignOut()"><i data-menu-icon="LogOut"></i><span><strong>Sign out</strong><small>End the current session</small></span></button>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+@reference "../../../../../styles.css";
+
+.map-panel { @apply mt-[18px] overflow-hidden rounded-[14px] border border-[#475b42] bg-[#102015]; }
+.map-panel > header { @apply flex items-center justify-between border-b border-[#475b42] bg-[#354831] px-5 py-4; }
+h2 { @apply m-0 text-[13px]; }
+header p { @apply mt-1 mb-0 text-[9px] text-[#98a395]; }
+.legend { @apply flex gap-5 text-[9px] text-[#aab5a6]; }
+.legend span:before { content: ''; @apply mr-1.5 inline-block size-2 rounded-full bg-[#47e271] shadow-[0_0_7px_#47e271]; }
+.legend .warning:before { @apply bg-[#ffc01c] shadow-[0_0_7px_#ffc01c]; }
+.legend .critical:before { @apply bg-[#ff4941] shadow-[0_0_7px_#ff4941]; }
+.map-content { @apply grid grid-cols-[minmax(400px,1.35fr)_minmax(320px,.65fr)] max-[850px]:grid-cols-1; }
+.map-stage { @apply relative min-h-[520px] overflow-hidden border-r border-[#2b412f] bg-[#0b1b10] max-[850px]:border-r-0 max-[620px]:min-h-[430px]; }
+.map-canvas { @apply absolute inset-0 z-0 min-h-[520px] w-full max-[620px]:min-h-[430px]; }
+aside { @apply bg-[#17291b] p-[18px]; }
+.summary { @apply grid grid-cols-2 gap-2; }
+.summary div { @apply rounded-lg border border-[#3c513a] bg-[#263a27] p-3; }
+.summary strong, .summary span { @apply block; }
+.summary strong { @apply font-mono text-lg text-white; }
+.summary span { @apply mt-1 text-[8px] uppercase tracking-wide text-[#899786]; }
+.summary .green { @apply text-[#48e174]; }.summary .yellow { @apply text-[#ffc01c]; }.summary .red { @apply text-[#ff4941]; }
+.location-list { @apply mt-4 grid gap-2; }
+.location-list button { @apply grid cursor-pointer grid-cols-[10px_1fr_auto] items-center gap-2.5 rounded-lg border border-transparent bg-[#213523] px-3 py-2.5 text-left text-[#dce7d9] transition-colors hover:border-[#496047] hover:bg-[#293f2b]; }
+.location-list button.active { @apply border-[#48a55c] bg-[#2b442e]; }
+.location-list i { @apply size-2 rounded-full bg-[#48e174] shadow-[0_0_6px_#48e174]; }
+.location-list i.warning { @apply bg-[#ffc01c] shadow-[0_0_6px_#ffc01c]; }.location-list i.critical { @apply bg-[#ff4941] shadow-[0_0_6px_#ff4941]; }
+.location-list span strong, .location-list span small { @apply block; }.location-list span strong { @apply text-[9px]; }.location-list span small { @apply mt-1 text-[8px] text-[#849181]; }
+.location-list b { @apply font-mono text-[9px] font-normal text-[#aab7a7]; }
+@media(max-width:620px) { .map-panel>header { @apply items-start; }.legend { @apply flex-col gap-1; } aside { @apply p-3; } }

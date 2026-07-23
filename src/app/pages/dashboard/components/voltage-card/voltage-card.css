@@ -1,0 +1,12 @@
+@reference "../../../../../styles.css";
+article { @apply flex min-h-28 flex-col rounded-[14px] border border-[#465b42] border-t-[#47d968] bg-[#354831] px-5 py-[18px]; }
+article.danger { @apply border-t-[#ef4a3e]; }
+article.warning { @apply border-t-[#ffc01c]; }
+.top { @apply flex justify-between text-[10px] uppercase tracking-[.06em] text-[#aab4a5]; }
+.top b { @apply text-[19px] text-[#43e16b]; }
+.danger .top b, .danger p { @apply text-[#ff4a3e]; }
+.warning .top b, .warning p { @apply text-[#ffc01c]; }
+.metric { @apply mt-2.5 flex items-baseline gap-[7px]; }
+.metric strong { @apply font-mono text-3xl font-bold text-white; }
+.metric small { @apply text-[10px] text-[#929e8f]; }
+p { @apply mt-auto mb-0 text-[9px] font-bold text-[#4add6b]; }

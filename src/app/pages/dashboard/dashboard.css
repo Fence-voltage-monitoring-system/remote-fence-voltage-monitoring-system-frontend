@@ -1,0 +1,16 @@
+@reference "../../../styles.css";
+
+:host { @apply block min-h-screen; }
+.app-shell { @apply flex min-h-screen bg-[#152718] text-[#edf4e9]; }
+.page { @apply min-w-0 flex-1; }
+main { @apply mx-auto max-w-[1600px] px-5 pt-[18px] pb-7 max-[720px]:p-3; }
+.stats-grid { @apply mb-5 grid grid-cols-6 gap-3.5 max-[1100px]:grid-cols-3 max-[720px]:grid-cols-2 max-[720px]:gap-[9px] max-[430px]:grid-cols-1; }
+.update-card { @apply flex min-h-28 flex-col rounded-[14px] border border-[#465b42] bg-[#354831] p-[18px]; }
+.update-card > span { @apply text-[10px] uppercase tracking-[.08em] text-[#aab6a5]; }
+.update-card strong { @apply mt-3 font-mono text-[13px] font-bold text-[#43e46e]; }
+.update-card time { @apply mt-2 font-mono text-[10px] text-[#84927f]; }
+.update-card small { @apply mt-auto whitespace-nowrap text-[9px] text-[#51e275]; }
+.update-card i { @apply inline-block size-1.5 rounded-full bg-[#42e56e] shadow-[0_0_8px_#42e56e]; }
+.analytics-grid { @apply mt-[18px] grid grid-cols-[280px_minmax(0,1fr)_160px] gap-3.5 max-[1100px]:grid-cols-[1fr_1.7fr] max-[720px]:grid-cols-1; }
+@media (max-width: 1100px) { app-alert-summary { @apply col-span-full; } }
+@media (max-width: 720px) { app-alert-summary { @apply col-auto; } }
