@@ -38,7 +38,7 @@ export class SidebarComponent implements AfterViewInit {
   readonly items: NavigationItem[] = [
     { label: 'Dashboard', icon: 'layout-dashboard', route: '/' },
     { label: 'Virtual Fence', icon: 'fence', route: '/virtual-fence' },
-    { label: 'Map', icon: 'map' },
+    { label: 'Map', icon: 'map', route: '/map' },
     { label: 'Historical Analysis', icon: 'chart-no-axes-combined' },
     { label: 'Alerts', icon: 'triangle-alert' },
     { label: 'Notifications', icon: 'bell' },

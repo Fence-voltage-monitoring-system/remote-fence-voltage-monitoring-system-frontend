@@ -1,0 +1,40 @@
+<div class="app-shell">
+  <app-sidebar />
+  <div class="page">
+    <app-header />
+    <main>
+      <section class="page-heading">
+        <div><span>Network Overview</span><h1>Fence Map</h1><p>Explore registered electric fences and their current operating status across Sri Lanka.</p></div>
+        <div class="live-state"><i></i><span>Live locations</span><b>{{fences.length}} fences</b></div>
+      </section>
+
+      <section class="filter-panel" aria-label="Map filters">
+        <label><span>Province</span><select #province [value]="selectedProvince" (change)="selectProvince(province.value)"><option value="all">All Provinces</option>@for (item of provinces; track item) {<option [value]="item">{{item}}</option>}</select></label>
+        <label><span>District</span><select #district [value]="selectedDistrict" (change)="selectDistrict(district.value)"><option value="all">All Districts</option>@for (item of districts; track item) {<option [value]="item">{{item}}</option>}</select></label>
+        <label><span>Status</span><select #status [value]="selectedStatus" (change)="selectStatus(status.value)"><option value="all">All Statuses</option><option value="healthy">Healthy</option><option value="warning">Warning</option><option value="critical">Critical</option></select></label>
+        <button type="button" (click)="resetFilters()">Reset filters</button>
+        <div class="result-count"><b>{{visibleFences.length}}</b><span>locations shown</span></div>
+      </section>
+
+      <section class="map-workspace">
+        <div class="map-stage"><div class="map-canvas" #mapCanvas aria-label="Interactive Sri Lanka fence location map"></div><div class="map-legend"><span class="healthy">Healthy</span><span class="warning">Warning</span><span class="critical">Critical</span></div></div>
+        <aside>
+          <div class="summary">
+            <div><span>Total</span><b>{{fences.length}}</b></div><div class="healthy"><span>Healthy</span><b>{{count('healthy')}}</b></div><div class="warning"><span>Warning</span><b>{{count('warning')}}</b></div><div class="critical"><span>Critical</span><b>{{count('critical')}}</b></div>
+          </div>
+          <div class="list-heading"><div><span>Registered fences</span><h2>Visible locations</h2></div><b>{{visibleFences.length}}</b></div>
+          <div class="fence-list">
+            @for (fence of visibleFences; track fence.id) {
+              <button type="button" (click)="selectFence(fence)" [class.active]="selectedFence?.id === fence.id">
+                <i [class]="fence.status"></i><span><strong>{{fence.name}}</strong><small>{{fence.province}} &middot; {{fence.district}}</small></span><em>{{fence.voltage.toFixed(1)}} kV</em>
+              </button>
+            } @empty {<div class="empty-state"><b>No fences found</b><span>Change or reset the selected filters.</span></div>}
+          </div>
+          @if (selectedFence; as fence) {
+            <section class="selection-detail"><header><div><span>Selected fence</span><h3>{{fence.name}}</h3></div><b [class]="fence.status">{{fence.status}}</b></header><dl><div><dt>Fence ID</dt><dd>{{fence.id}}</dd></div><div><dt>Voltage</dt><dd>{{fence.voltage.toFixed(1)}} kV</dd></div><div><dt>Sections</dt><dd>{{fence.activeSections}} / {{fence.sections}} active</dd></div><div><dt>Last communication</dt><dd>{{fence.lastCommunication}}</dd></div></dl></section>
+          }
+        </aside>
+      </section>
+    </main>
+  </div>
+</div>
