@@ -1,9 +1,14 @@
 <main class="scrollbar-hidden min-h-dvh bg-[#21341f] px-4 py-6 font-sans text-[#eef3ec] sm:px-6"><div class="mx-auto max-w-[1300px]">
   <header class="mb-5"><p class="mb-1 text-[9px] font-bold tracking-[.14em] text-[#43d36c] uppercase">My Account</p><h1 class="m-0 text-xl font-extrabold">User Profile</h1><p class="mt-1 text-[10px] text-[#89998b]">Manage your information, assignments and account security</p></header>
-  @if (notice) { <div class="mb-4 rounded-lg border border-[#61704f] bg-[#3f4826]/55 px-4 py-2 text-[10px] text-[#d6d48b]" role="status">{{ notice }}</div> }
-  <div class="grid gap-4"><app-profile-summary [profile]="profile" /><div class="grid items-stretch gap-4 lg:grid-cols-[1.4fr_.8fr]"><app-personal-information [profile]="profile" (editRequested)="isEditProfileOpen = true" /><app-assignment-summary [profile]="profile" /></div><div class="grid items-start gap-4 lg:grid-cols-2"><app-security-settings [profile]="profile" (changePassword)="showNotice('Opening the change-password flow.')" (signOutOthers)="showNotice('Other sessions will be signed out through the session API.')" /><app-activity-list [activities]="profile.recentActivity" /></div></div>
+  @if (isLoadingProfile) { <div class="mb-4 h-1 overflow-hidden rounded-full bg-[#304733]"><div class="h-full w-1/3 animate-pulse rounded-full bg-[#43d36c]"></div></div> }
+  @if (notice) { <div class="mb-4 flex items-center justify-between gap-3 rounded-lg border border-[#61704f] bg-[#3f4826]/55 px-4 py-2 text-[10px] text-[#d6d48b]" role="status"><span>{{ notice }}</span>@if (profileLoadFailed) { <button class="rounded-md border border-[#6d744c] px-3 py-1 text-[9px] hover:bg-[#555b30]" type="button" (click)="loadProfile()">Retry</button> }</div> }
+  <div class="grid gap-4"><app-profile-summary [profile]="profile" /><div class="grid items-stretch gap-4 lg:grid-cols-[1.4fr_.8fr]"><app-personal-information [profile]="profile" (editRequested)="isEditProfileOpen = true" /><app-assignment-summary [profile]="profile" /></div><div class="grid items-start gap-4 lg:grid-cols-2"><app-security-settings [profile]="profile" [isSigningOut]="isSigningOutOtherSessions" (changePassword)="isChangePasswordOpen = true" (signOutOthers)="signOutOtherSessions()" /><app-activity-list [activities]="profile.recentActivity" /></div></div>
 </div></main>
 
 @if (isEditProfileOpen) {
   <app-profile-edit-drawer [profile]="profile" (closed)="isEditProfileOpen = false" (profileUpdated)="applyProfileUpdate($event)" />
+}
+
+@if (isChangePasswordOpen) {
+  <app-change-password-drawer (closed)="isChangePasswordOpen = false" (passwordChanged)="completePasswordChange($event)" />
 }

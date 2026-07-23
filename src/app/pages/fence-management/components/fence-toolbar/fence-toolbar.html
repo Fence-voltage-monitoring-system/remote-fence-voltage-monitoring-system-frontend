@@ -1,0 +1,25 @@
+<div class="flex flex-col gap-3 border-b border-[#50604c] px-5 py-4 md:flex-row md:items-center">
+  <label class="relative min-w-0 md:w-56 lg:w-64">
+    <span class="sr-only">Search fences</span>
+    <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#91a08d]">⌕</span>
+    <input class="control w-full pl-9" type="search" placeholder="Search fences..." [ngModel]="filters.search" (ngModelChange)="update('search', $event)" />
+  </label>
+  <div class="grid flex-1 grid-cols-2 gap-3 md:grid-cols-4">
+    <select class="control" aria-label="Province" [ngModel]="filters.province" (ngModelChange)="update('province', $event)">
+      <option value="">All Provinces</option>
+      @for (province of provinces; track province) { <option [value]="province">{{ province }}</option> }
+    </select>
+    <select class="control" aria-label="District" [ngModel]="filters.district" (ngModelChange)="update('district', $event)">
+      <option value="">All Districts</option>
+      @for (district of districts; track district) { <option [value]="district">{{ district }}</option> }
+    </select>
+    <select class="control" aria-label="Gateway" [ngModel]="filters.gateway" (ngModelChange)="update('gateway', $event)">
+      <option value="">All Gateways</option>
+      @for (gateway of gateways; track gateway) { <option [value]="gateway">{{ gateway }}</option> }
+    </select>
+    <select class="control" aria-label="Status" [ngModel]="filters.health" (ngModelChange)="update('health', $event)">
+      <option value="">All Status</option><option value="HEALTHY">Healthy</option><option value="WARNING">Warning</option><option value="CRITICAL">Critical</option><option value="OFFLINE">Offline</option>
+    </select>
+  </div>
+  <button type="button" class="h-11 shrink-0 rounded-xl bg-[#43d36c] px-5 font-semibold text-[#071c0d] transition hover:bg-[#57e17b]" (click)="registerFence.emit()">＋ Register Fence</button>
+</div>

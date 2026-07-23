@@ -1,0 +1,10 @@
+:host { position: fixed; inset: 0; z-index: 60; display: block; }
+.backdrop { animation: fade-in .2s ease-out; }.drawer { animation: slide-in .28s cubic-bezier(.2,.8,.2,1); }
+.backdrop.is-closing { animation: fade-out .28s ease-in forwards; pointer-events:none; }.drawer.is-closing { animation: slide-out .28s cubic-bezier(.4,0,1,1) forwards; pointer-events:none; }
+.field { display:grid; gap:.45rem; }.field label { color:#96b29b; font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; }
+.control { width:100%; height:39px; box-sizing:border-box; border:1px solid #415642; border-radius:9px; padding:0 12px; color:#eef3ed; background:#253a29; font:inherit; font-size:12px; outline:none; }.control:focus { border-color:#43d36c; box-shadow:0 0 0 3px rgb(67 211 108 / 10%); }.control::placeholder { color:#8fa392; }.field small { color:#ff8e84; font-size:9px; }
+.map-preview { min-height:115px; display:grid; place-items:center; align-content:center; gap:2px; border:1px solid #29442d; border-radius:9px; background:#061c0b; color:#6bb77c; font-size:9px; }.map-preview svg { height:78px; }.map-preview path { fill:#0f4925; stroke:#2a7040; stroke-width:2; }.map-preview .route { fill:none; stroke:#43d36c; stroke-width:2; }.map-preview circle { fill:#ffc400; }
+.secondary,.primary { height:40px; border-radius:9px; font-size:11px; font-weight:700; }.secondary { border:1px solid #415642; background:#253a29; color:#d6ddd4; }.primary { border:0; background:#43d36c; color:#071c0d; }.secondary:hover { background:#304633; }.primary:hover { background:#5be181; }
+.scrollbar-hidden { scrollbar-width:none; }.scrollbar-hidden::-webkit-scrollbar { display:none; }
+@keyframes slide-in { from { transform:translateX(100%); } to { transform:translateX(0); } } @keyframes slide-out { from { transform:translateX(0); } to { transform:translateX(100%); } } @keyframes fade-in { from { opacity:0; } to { opacity:1; } } @keyframes fade-out { from { opacity:1; } to { opacity:0; } }
+@media (prefers-reduced-motion: reduce) { .backdrop,.drawer { animation:none; } }

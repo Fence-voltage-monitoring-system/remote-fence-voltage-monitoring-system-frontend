@@ -1,0 +1,5 @@
+<section class="flex flex-col gap-5 rounded-2xl border border-[#50604c] bg-[#354a31] px-6 py-5 xl:flex-row xl:items-center">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center"><span class="text-xs font-bold uppercase tracking-[.1em] text-[#9ba897]">Selected Fence</span><select class="h-11 min-w-80 rounded-xl border border-[#586a54] bg-[#3b5037] px-4 font-semibold text-white outline-none focus:border-[#43d36c]" [ngModel]="selected.code" (ngModelChange)="fenceChanged.emit($event)">@for (fence of fences; track fence.code) { <option [value]="fence.code">{{ fence.code }} · {{ fence.name }}</option> }</select></div>
+  <div class="hidden h-10 w-px bg-[#566650] xl:block"></div>
+  <dl class="grid flex-1 grid-cols-2 gap-5 sm:grid-cols-4"><div><dt>Total Sections</dt><dd>{{ selected.totalSections }}</dd></div><div><dt>Total Length</dt><dd>{{ selected.totalLengthKm.toFixed(1) }} km</dd></div><div><dt>Operational</dt><dd>{{ selected.operational }} / {{ selected.totalSections }}</dd></div><div><dt>Average Voltage</dt><dd>{{ selected.averageVoltageKv.toFixed(1) }} kV</dd></div></dl>
+</section>

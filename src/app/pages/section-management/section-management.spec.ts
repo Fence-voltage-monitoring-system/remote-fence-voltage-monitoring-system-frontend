@@ -1,0 +1,2 @@
+import { TestBed } from '@angular/core/testing';import { SectionManagement } from './section-management';
+describe('SectionManagement',()=>{it('creates with six demo sections',async()=>{await TestBed.configureTestingModule({imports:[SectionManagement]}).compileComponents();const fixture=TestBed.createComponent(SectionManagement);fixture.detectChanges();expect(fixture.componentInstance.filteredSections.length).toBe(6);});});

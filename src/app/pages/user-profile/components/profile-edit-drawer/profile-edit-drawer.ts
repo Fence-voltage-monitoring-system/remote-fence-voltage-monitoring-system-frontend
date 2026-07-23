@@ -13,6 +13,7 @@ export class ProfileEditDrawer implements OnChanges {
   @Output() profileUpdated = new EventEmitter<CurrentUserProfile>();
 
   isSubmitting = false;
+  isClosing = false;
   errorMessage = '';
   readonly form = new FormGroup({
     fullName: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.minLength(3), Validators.maxLength(100)] }),
@@ -24,7 +25,13 @@ export class ProfileEditDrawer implements OnChanges {
   }
 
   @HostListener('document:keydown.escape')
-  closeOnEscape(): void { if (!this.isSubmitting) this.closed.emit(); }
+  closeOnEscape(): void { if (!this.isSubmitting) this.requestClose(); }
+
+  requestClose(): void {
+    if (this.isClosing) return;
+    this.isClosing = true;
+    setTimeout(() => this.closed.emit(), 220);
+  }
 
   submit(): void {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
@@ -32,7 +39,10 @@ export class ProfileEditDrawer implements OnChanges {
     this.isSubmitting = true;
     this.errorMessage = '';
     this.userService.updateCurrentProfile(request).pipe(finalize(() => { this.isSubmitting = false; })).subscribe({
-      next: (profile) => this.profileUpdated.emit(profile),
+      next: (profile) => {
+        this.isClosing = true;
+        setTimeout(() => this.profileUpdated.emit(profile), 220);
+      },
       error: (error: HttpErrorResponse) => { this.errorMessage = error.error?.message ?? 'Unable to update your profile. Please try again.'; },
     });
   }
