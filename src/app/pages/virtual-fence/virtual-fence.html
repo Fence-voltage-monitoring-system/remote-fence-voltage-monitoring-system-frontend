@@ -3,18 +3,20 @@
   <div class="page">
     <app-header />
     <main>
-      <div class="page-heading">
-        <div><span>Fence Operations</span><h1>Virtual Fence</h1><p>Inspect registered fence sections and live device telemetry.</p></div>
-        <small>Last refreshed {{lastRefresh.toLocaleTimeString()}}</small>
-      </div>
-
-      <section class="filter-bar" aria-label="Fence filters">
-        <label><span>Select Fence</span><select #fence (change)="selectedFenceId=fence.value">@for (item of fences; track item[0]) { <option [value]="item[0]">{{item[1]}}</option> }</select></label>
-        <label><span>Status</span><select #status (change)="selectedStatus=status.value"><option value="all">All Statuses</option><option value="healthy">Healthy</option><option value="warning">Warning</option><option value="critical">Critical</option><option value="offline">Offline</option></select></label>
-        <div class="actions"><button type="button" (click)="toggleFullscreen()">⛶ Fullscreen</button><button type="button" (click)="refresh()">↻ Refresh</button></div>
+      <section class="page-intro">
+        <div class="page-heading">
+          <span>Fence Operations</span>
+          <h1>Virtual Fence</h1>
+          <p>Monitor every registered section and inspect live device telemetry in one place.</p>
+        </div>
+        <div class="page-tools">
+          <button type="button" (click)="toggleFullscreen()" aria-label="Open fullscreen"><span aria-hidden="true">&#x26F6;</span> Fullscreen</button>
+        </div>
       </section>
 
-      <app-fence-monitor [fenceId]="selectedFenceId" [statusFilter]="$any(selectedStatus)" [showFenceSelector]="false" [showSectionTable]="true" />
+      <section class="monitor-card" aria-label="Virtual fence monitoring workspace">
+        <app-fence-monitor [showSectionTable]="true" />
+      </section>
     </main>
   </div>
 </div>

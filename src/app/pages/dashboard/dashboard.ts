@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DeviceMonitoringContext, FenceUpdateSchedule } from '../../core/models/device-monitoring';
+import { DeviceMonitoringContext } from '../../core/models/device-monitoring';
 import { HeaderComponent } from '../../shared/components/header/header';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 import { AlertSummaryComponent } from './components/alert-summary/alert-summary';
@@ -25,10 +25,6 @@ import { VoltageChartComponent } from './components/voltage-chart/voltage-chart'
   styleUrl: './dashboard.css',
 })
 export class Dashboard {
-  updateSchedule: FenceUpdateSchedule = {
-    fenceId: 'monaragala', fenceName: 'Monaragala Elephant Protection Fence',
-    lastUpdatedLabel: 'just now', nextUpdateLabel: '15:00', intervalMinutes: 15,
-  };
 
   selectedDevice: DeviceMonitoringContext = {
     fenceId: 'monaragala', fenceName: 'Monaragala Elephant Protection Fence',
@@ -37,10 +33,6 @@ export class Dashboard {
 
   updateAnalytics(device: DeviceMonitoringContext): void {
     this.selectedDevice = device;
-  }
-
-  updateFenceSchedule(schedule: FenceUpdateSchedule): void {
-    this.updateSchedule = schedule;
   }
 
   readonly stats: VoltageCard[] = [

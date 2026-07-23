@@ -10,21 +10,6 @@ import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
   styleUrl: './virtual-fence.css',
 })
 export class VirtualFencePage {
-  readonly fences = [
-    ['monaragala', 'Monaragala Elephant Protection Fence'],
-    ['wilpattu', 'Wilpattu North Buffer Fence'],
-    ['mihintale', 'Mihintale Wildlife Buffer Fence'],
-    ['gal-oya', 'Gal Oya East Protection Fence'],
-    ['lunugamvehera', 'Lunugamvehera Park Fence'],
-  ];
-  selectedFenceId = 'monaragala';
-  selectedStatus = 'all';
-  lastRefresh = new Date();
-
-  refresh(): void {
-    this.lastRefresh = new Date();
-  }
-
   toggleFullscreen(): void {
     if (!document.fullscreenElement) document.documentElement.requestFullscreen();
     else document.exitFullscreen();

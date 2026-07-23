@@ -1,8 +1,8 @@
 import { Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
-import { DeviceMonitoringContext, FenceUpdateSchedule } from '../../../../core/models/device-monitoring';
+import { DeviceMonitoringContext } from '../../../../core/models/device-monitoring';
 
 type FenceState = 'healthy' | 'warning' | 'critical' | 'offline';
-interface Fence { id: string; name: string; district: string; zone: string; gateway: string; latitude: number; longitude: number; sectionCount: number; updateIntervalMinutes: number; }
+interface Fence { id: string; name: string; province: string; district: string; zone: string; gateway: string; latitude: number; longitude: number; sectionCount: number; updateIntervalMinutes: number; }
 interface ScheduleState { lastUpdatedAt: number; nextUpdateAt: number; cycle: number; }
 interface Section {
   id: string; voltage: string; state: FenceState; battery: number; voltageDrop: string;
@@ -14,7 +14,6 @@ interface Section {
 export class FenceMonitorComponent implements OnDestroy {
   @ViewChild('scroller') scroller!: ElementRef<HTMLElement>;
   @Output() readonly deviceChange = new EventEmitter<DeviceMonitoringContext>();
-  @Output() readonly scheduleChange = new EventEmitter<FenceUpdateSchedule>();
   @Input() showFenceSelector = true;
   @Input() showSectionTable = false;
   @Input() statusFilter: FenceState | 'all' = 'all';
@@ -22,29 +21,73 @@ export class FenceMonitorComponent implements OnDestroy {
     if (value && value !== this.selectedFence.id) this.selectFence(value);
   }
 
+  readonly provinceDistricts: Readonly<Record<string, readonly string[]>> = {
+    Western: ['Colombo', 'Gampaha', 'Kalutara'],
+    Central: ['Kandy', 'Matale', 'Nuwara Eliya'],
+    Southern: ['Galle', 'Matara', 'Hambantota'],
+    Northern: ['Jaffna', 'Kilinochchi', 'Mannar', 'Vavuniya', 'Mullaitivu'],
+    Eastern: ['Batticaloa', 'Ampara', 'Trincomalee'],
+    'North Western': ['Kurunegala', 'Puttalam'],
+    'North Central': ['Anuradhapura', 'Polonnaruwa'],
+    Uva: ['Badulla', 'Monaragala'],
+    Sabaragamuwa: ['Ratnapura', 'Kegalle'],
+  };
+  readonly provinces = Object.keys(this.provinceDistricts);
+
   readonly fences: Fence[] = [
-    { id: 'monaragala', name: 'Monaragala Elephant Protection Fence', district: 'Monaragala', zone: 'Zone A', gateway: 'MNR', latitude: 6.8681, longitude: 81.3342, sectionCount: 24, updateIntervalMinutes: 15 },
-    { id: 'wilpattu', name: 'Wilpattu North Buffer Fence', district: 'Puttalam', zone: 'Zone B', gateway: 'WLP', latitude: 8.4580, longitude: 80.0280, sectionCount: 18, updateIntervalMinutes: 10 },
-    { id: 'mihintale', name: 'Mihintale Wildlife Buffer Fence', district: 'Anuradhapura', zone: 'Zone C', gateway: 'MHT', latitude: 8.3500, longitude: 80.5050, sectionCount: 12, updateIntervalMinutes: 30 },
-    { id: 'gal-oya', name: 'Gal Oya East Protection Fence', district: 'Ampara', zone: 'Zone D', gateway: 'GOY', latitude: 7.2920, longitude: 81.6250, sectionCount: 20, updateIntervalMinutes: 5 },
-    { id: 'lunugamvehera', name: 'Lunugamvehera Park Fence', district: 'Hambantota', zone: 'Zone E', gateway: 'LNV', latitude: 6.3410, longitude: 81.1510, sectionCount: 16, updateIntervalMinutes: 20 },
+    { id: 'monaragala', name: 'Monaragala Elephant Protection Fence', province: 'Uva', district: 'Monaragala', zone: 'Zone A', gateway: 'MNR', latitude: 6.8681, longitude: 81.3342, sectionCount: 24, updateIntervalMinutes: 15 },
+    { id: 'wilpattu', name: 'Wilpattu North Buffer Fence', province: 'North Western', district: 'Puttalam', zone: 'Zone B', gateway: 'WLP', latitude: 8.4580, longitude: 80.0280, sectionCount: 18, updateIntervalMinutes: 15 },
+    { id: 'mihintale', name: 'Mihintale Wildlife Buffer Fence', province: 'North Central', district: 'Anuradhapura', zone: 'Zone C', gateway: 'MHT', latitude: 8.3500, longitude: 80.5050, sectionCount: 12, updateIntervalMinutes: 15 },
+    { id: 'gal-oya', name: 'Gal Oya East Protection Fence', province: 'Eastern', district: 'Ampara', zone: 'Zone D', gateway: 'GOY', latitude: 7.2920, longitude: 81.6250, sectionCount: 20, updateIntervalMinutes: 15 },
+    { id: 'lunugamvehera', name: 'Lunugamvehera Park Fence', province: 'Southern', district: 'Hambantota', zone: 'Zone E', gateway: 'LNV', latitude: 6.3410, longitude: 81.1510, sectionCount: 16, updateIntervalMinutes: 15 },
   ];
 
-  private readonly schedules = new Map(this.fences.map((fence, index) => {
-    const now = Date.now();
-    const lastUpdatedAt = now - (index + 1) * 45_000;
-    return [fence.id, { lastUpdatedAt, nextUpdateAt: lastUpdatedAt + fence.updateIntervalMinutes * 60_000, cycle: 0 } satisfies ScheduleState];
-  }));
+  private readonly schedules = new Map<string, ScheduleState>(this.fences.flatMap((fence, fenceIndex) =>
+    Array.from({ length: fence.sectionCount }, (_, sectionIndex) => {
+      const sectionId = `SEC-${String(sectionIndex + 1).padStart(3, '0')}`;
+      const elapsedSeconds = (fenceIndex * 137 + sectionIndex * 47) % (15 * 60);
+      const lastUpdatedAt = Date.now() - elapsedSeconds * 1000;
+      return [`${fence.id}:${sectionId}`, {
+        lastUpdatedAt,
+        nextUpdateAt: lastUpdatedAt + 15 * 60_000,
+        cycle: 0,
+      }] as [string, ScheduleState];
+    })));
   private readonly scheduleTimer = setInterval(() => this.updateSchedule(), 1000);
   lastUpdatedLabel = 'just now';
   nextUpdateLabel = '15:00';
 
   selectedFence = this.fences[0];
+  selectedProvince = 'all';
+  selectedDistrict = 'all';
   sections = this.buildSections(this.selectedFence);
   selected: Section = this.sections[4];
 
+  get availableDistricts(): readonly string[] {
+    return this.selectedProvince === 'all'
+      ? Object.values(this.provinceDistricts).flat()
+      : this.provinceDistricts[this.selectedProvince] ?? [];
+  }
+
+  get availableFences(): Fence[] {
+    return this.fences.filter((fence) =>
+      (this.selectedProvince === 'all' || fence.province === this.selectedProvince) &&
+      (this.selectedDistrict === 'all' || fence.district === this.selectedDistrict));
+  }
+
   get filteredSections(): Section[] {
     return this.statusFilter === 'all' ? this.sections : this.sections.filter((section) => section.state === this.statusFilter);
+  }
+
+  selectProvince(province: string): void {
+    this.selectedProvince = province;
+    this.selectedDistrict = 'all';
+    this.selectFirstAvailableFence();
+  }
+
+  selectDistrict(district: string): void {
+    this.selectedDistrict = district;
+    this.selectFirstAvailableFence();
   }
 
   selectFence(fenceId: string): void {
@@ -53,12 +96,18 @@ export class FenceMonitorComponent implements OnDestroy {
     this.selected = this.sections[0];
     this.scroller?.nativeElement.scrollTo({ left: 0, behavior: 'smooth' });
     this.emitDevice();
+    this.updateSchedule();
   }
 
   selectSection(section: Section): void {
     this.selected = section;
     this.emitDevice();
     this.updateSchedule();
+  }
+
+  private selectFirstAvailableFence(): void {
+    const firstFence = this.availableFences[0];
+    if (firstFence) this.selectFence(firstFence.id);
   }
 
   deviceId(section: Section): string {
@@ -113,24 +162,17 @@ export class FenceMonitorComponent implements OnDestroy {
   }
 
   private updateSchedule(): void {
-    const schedule = this.schedules.get(this.selectedFence.id);
+    const schedule = this.schedules.get(`${this.selectedFence.id}:${this.selected.id}`);
     if (!schedule) return;
     const now = Date.now();
     if (now >= schedule.nextUpdateAt) {
       schedule.lastUpdatedAt = now;
-      schedule.nextUpdateAt = now + this.selectedFence.updateIntervalMinutes * 60_000;
+      schedule.nextUpdateAt = now + 15 * 60_000;
       schedule.cycle++;
       this.refreshTelemetry(schedule.cycle);
     }
     this.lastUpdatedLabel = this.relativeTime(now - schedule.lastUpdatedAt);
     this.nextUpdateLabel = this.countdown(schedule.nextUpdateAt - now);
-    this.scheduleChange.emit({
-      fenceId: this.selectedFence.id,
-      fenceName: this.selectedFence.name,
-      lastUpdatedLabel: this.lastUpdatedLabel,
-      nextUpdateLabel: this.nextUpdateLabel,
-      intervalMinutes: this.selectedFence.updateIntervalMinutes,
-    });
   }
 
   private relativeTime(elapsedMs: number): string {

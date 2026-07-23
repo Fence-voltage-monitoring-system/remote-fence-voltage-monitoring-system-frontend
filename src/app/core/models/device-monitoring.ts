@@ -9,11 +9,3 @@ export interface DeviceMonitoringContext {
   battery: number;
   status: DeviceStatus;
 }
-
-export interface FenceUpdateSchedule {
-  fenceId: string;
-  fenceName: string;
-  lastUpdatedLabel: string;
-  nextUpdateLabel: string;
-  intervalMinutes: number;
-}
