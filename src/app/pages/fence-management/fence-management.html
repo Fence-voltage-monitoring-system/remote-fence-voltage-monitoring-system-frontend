@@ -1,12 +1,13 @@
-<main class="min-h-screen bg-[#263923] px-4 py-5 text-[#d9e2d6] sm:px-7">
+<main class="min-h-screen bg-[#263923] px-4 py-4 text-[#d9e2d6] sm:px-6">
   <div class="mx-auto max-w-[1800px]">
-    <header class="mb-6 flex flex-wrap items-end justify-between gap-4"><div><p class="mb-1 text-xs font-bold uppercase tracking-[.18em] text-[#43d36c]">Management</p><h1 class="text-2xl font-bold text-white">Fence Management</h1><p class="mt-1 text-sm text-[#9daa99]">Register, monitor and manage electric fence infrastructure</p></div><div class="rounded-lg border border-[#356b42] bg-[#173d25] px-4 py-2 text-xs font-bold tracking-wider text-[#43d36c]">● SYSTEM ONLINE</div></header>
+    <header class="mb-4 flex flex-wrap items-end justify-between gap-3"><div><p class="mb-1 text-[10px] font-bold uppercase tracking-[.18em] text-[#43d36c]">Management</p><h1 class="text-xl font-bold text-white">Fence Management</h1><p class="mt-1 text-xs text-[#9daa99]">Register, monitor and manage electric fence infrastructure</p></div><div class="rounded-lg border border-[#356b42] bg-[#173d25] px-3 py-1.5 text-[10px] font-bold tracking-wider text-[#43d36c]">● SYSTEM ONLINE</div></header>
     <app-fence-summary [summary]="summary" />
-    @if (notice) { <div class="mt-4 rounded-lg border border-[#3c7448] bg-[#1d4328] px-4 py-3 text-sm text-[#74df90]">{{ notice }} <button class="float-right" aria-label="Dismiss message" (click)="notice=''">×</button></div> }
-    <section class="mt-6 overflow-hidden rounded-2xl border border-[#50604c] bg-[#354a31] shadow-xl shadow-black/10">
-      <app-fence-toolbar [filters]="filters" [provinces]="provinces" [districts]="districts" [gateways]="gateways" (filtersChange)="filters=$event" (registerFence)="openRegistration()" />
+    @if (notice) { <div class="mt-3 rounded-lg border border-[#3c7448] bg-[#1d4328] px-3 py-2 text-xs text-[#74df90]">{{ notice }} <button class="float-right" aria-label="Dismiss message" (click)="notice=''">×</button></div> }
+    <section class="mt-4 overflow-hidden rounded-xl border border-[#50604c] bg-[#354a31] shadow-xl shadow-black/10">
+      <app-fence-toolbar [filters]="filters" [provinces]="provinces" [districts]="districts" [gateways]="gateways" [provinceLocked]="access.scope().role !== 'SUPER_ADMIN'" [districtLocked]="access.scope().role === 'FIELD_ADMIN'" (filtersChange)="filters=$event" (registerFence)="openRegistration()" />
       <app-fence-table [fences]="filteredFences" (fenceSelected)="selectFence($event)" />
     </section>
   </div>
 </main>
 @if (isRegistrationOpen) { <app-fence-registration-drawer (closed)="closeRegistration()" (draftSaved)="saveDraft($event)" (registered)="registerFence($event)" /> }
+@if (selectedFence) { <app-fence-edit-drawer [fence]="selectedFence" (closed)="closeEdit()" (saved)="saveFence($event)" (deleted)="deleteFence($event)" /> }

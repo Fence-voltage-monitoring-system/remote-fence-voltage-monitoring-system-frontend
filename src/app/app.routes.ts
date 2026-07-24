@@ -4,6 +4,8 @@ import { UserManagement } from './pages/user-management/user-management';
 import { UserProfilePage } from './pages/user-profile/user-profile';
 import { FenceManagement } from './pages/fence-management/fence-management';
 import { SectionManagement } from './pages/section-management/section-management';
+import { managementGuard } from './core/guards/management.guard';
+import { HistoricalAnalysis } from './pages/historical-analysis/historical-analysis';
 
 export const routes: Routes = [
   {
@@ -20,10 +22,16 @@ export const routes: Routes = [
   },
   {
     path: 'fences',
-    component: FenceManagement
+    component: FenceManagement,
+    canActivate: [managementGuard]
   },
   {
     path: 'sections',
-    component: SectionManagement
+    component: SectionManagement,
+    canActivate: [managementGuard]
+  },
+  {
+    path: 'historical-analysis',
+    component: HistoricalAnalysis
   }
 ];

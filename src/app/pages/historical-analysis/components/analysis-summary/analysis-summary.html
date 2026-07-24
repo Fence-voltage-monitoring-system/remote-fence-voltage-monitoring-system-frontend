@@ -1,0 +1,1 @@
+<section class="metrics">@for(metric of metrics;track metric.label){<article><span>{{metric.label}}</span><div><strong [class]="metric.tone">{{metric.value}}</strong>@if(metric.unit){<small>{{metric.unit}}</small>}</div></article>}</section>

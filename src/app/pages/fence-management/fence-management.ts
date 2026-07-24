@@ -1,12 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { ManagementAccessService } from '../../core/services/management-access.service';
 import { FenceSummary } from './components/fence-summary/fence-summary';
 import { FenceTable } from './components/fence-table/fence-table';
 import { FenceToolbar } from './components/fence-toolbar/fence-toolbar';
 import { FenceRegistrationDrawer, FenceRegistrationValue } from './components/fence-registration-drawer/fence-registration-drawer';
 import { FenceFilters, FenceRecord, FenceSummaryData } from './fence-management.models';
+import { FenceEditDrawer, FenceEditValue } from './components/fence-edit-drawer/fence-edit-drawer';
 
-@Component({ selector: 'app-fence-management', standalone: true, imports: [FenceSummary, FenceToolbar, FenceTable, FenceRegistrationDrawer], templateUrl: './fence-management.html', styleUrl: './fence-management.css' })
+@Component({ selector: 'app-fence-management', standalone: true, imports: [FenceSummary, FenceToolbar, FenceTable, FenceRegistrationDrawer, FenceEditDrawer], templateUrl: './fence-management.html', styleUrl: './fence-management.css' })
 export class FenceManagement {
+  readonly access = inject(ManagementAccessService);
   readonly fences: FenceRecord[] = [
     { id:1, code:'EPF-MNR-A', name:'Monaragala Zone A', province:'Uva', district:'Monaragala', lengthKm:48.6, sections:12, gateway:'GTW-MNR-01', averageVoltageKv:5.4, health:'WARNING', lastUpdated:'12s ago' },
     { id:2, code:'EPF-ANR-B', name:'Anuradhapura Zone B', province:'North Central', district:'Anuradhapura', lengthKm:62.4, sections:16, gateway:'GTW-ANR-02', averageVoltageKv:5.9, health:'HEALTHY', lastUpdated:'8s ago' },
@@ -14,17 +17,22 @@ export class FenceManagement {
     { id:4, code:'EPF-AMP-D', name:'Ampara Zone D', province:'Eastern', district:'Ampara', lengthKm:54.8, sections:14, gateway:'GTW-AMP-04', averageVoltageKv:null, health:'OFFLINE', lastUpdated:'1h ago' },
     { id:5, code:'EPF-HMB-E', name:'Hambantota Southern E', province:'Southern', district:'Hambantota', lengthKm:71.3, sections:18, gateway:'GTW-HMB-05', averageVoltageKv:5.8, health:'HEALTHY', lastUpdated:'15s ago' }
   ];
-  filters: FenceFilters = { search:'', province:'', district:'', gateway:'', health:'' };
+  filters: FenceFilters = { search:'', province:this.access.lockedProvince, district:this.access.lockedDistrict, gateway:'', health:'' };
   notice = '';
   isRegistrationOpen = false;
-  get provinces(): string[] { return [...new Set(this.fences.map(f => f.province))]; }
-  get districts(): string[] { return [...new Set(this.fences.filter(f => !this.filters.province || f.province === this.filters.province).map(f => f.district))]; }
-  get gateways(): string[] { return [...new Set(this.fences.map(f => f.gateway))]; }
-  get summary(): FenceSummaryData { return { total:this.fences.length, operational:this.fences.filter(f => f.health === 'HEALTHY').length, warning:this.fences.filter(f => f.health === 'WARNING').length, critical:this.fences.filter(f => f.health === 'CRITICAL').length, monitoredLengthKm:this.fences.reduce((sum, f) => sum + f.lengthKm, 0) }; }
-  get filteredFences(): FenceRecord[] { const q=this.filters.search.trim().toLowerCase(); return this.fences.filter(f => (!q || `${f.code} ${f.name} ${f.province} ${f.district} ${f.gateway}`.toLowerCase().includes(q)) && (!this.filters.province || f.province===this.filters.province) && (!this.filters.district || f.district===this.filters.district) && (!this.filters.gateway || f.gateway===this.filters.gateway) && (!this.filters.health || f.health===this.filters.health)); }
+  selectedFence: FenceRecord | null = null;
+  get accessibleFences():FenceRecord[]{return this.fences.filter(f=>this.access.canView(f.province,f.district));}
+  get provinces(): string[] { return this.access.provinces([...new Set(this.fences.map(f => f.province))]); }
+  get districts(): string[] { const all=[...new Set(this.accessibleFences.filter(f => !this.filters.province || f.province === this.filters.province).map(f => f.district))];return this.access.districts(this.filters.province,all); }
+  get gateways(): string[] { return [...new Set(this.accessibleFences.map(f => f.gateway))]; }
+  get summary(): FenceSummaryData { const fences=this.accessibleFences;return { total:fences.length, operational:fences.filter(f => f.health === 'HEALTHY').length, warning:fences.filter(f => f.health === 'WARNING').length, critical:fences.filter(f => f.health === 'CRITICAL').length, monitoredLengthKm:fences.reduce((sum, f) => sum + f.lengthKm, 0) }; }
+  get filteredFences(): FenceRecord[] { const q=this.filters.search.trim().toLowerCase(); return this.accessibleFences.filter(f => (!q || `${f.code} ${f.name} ${f.province} ${f.district} ${f.gateway}`.toLowerCase().includes(q)) && (!this.filters.province || f.province===this.filters.province) && (!this.filters.district || f.district===this.filters.district) && (!this.filters.gateway || f.gateway===this.filters.gateway) && (!this.filters.health || f.health===this.filters.health)); }
   openRegistration(): void { this.isRegistrationOpen = true; }
   closeRegistration(): void { this.isRegistrationOpen = false; }
   saveDraft(fence: FenceRegistrationValue): void { this.notice = `Draft saved for ${fence.name}.`; this.closeRegistration(); }
   registerFence(fence: FenceRegistrationValue): void { this.notice = `${fence.name} was submitted for registration.`; this.closeRegistration(); }
-  selectFence(fence: FenceRecord): void { this.notice = `${fence.name} selected.`; }
+  selectFence(fence: FenceRecord): void { this.selectedFence = fence; }
+  closeEdit(): void { this.selectedFence = null; }
+  saveFence(fence: FenceEditValue): void { this.notice = `${fence.name} changes were saved.`; this.closeEdit(); }
+  deleteFence(fence: FenceRecord): void { const index = this.fences.findIndex((item) => item.id === fence.id); if (index >= 0) this.fences.splice(index, 1); this.notice = `${fence.name} was deleted.`; this.closeEdit(); }
 }

@@ -1,0 +1,1 @@
+import{Component,Input}from'@angular/core';import{AnalysisMetric}from'../../historical-analysis.models';@Component({selector:'app-analysis-summary',standalone:true,templateUrl:'./analysis-summary.html',styleUrl:'./analysis-summary.css'})export class AnalysisSummary{@Input()metrics:AnalysisMetric[]=[];}

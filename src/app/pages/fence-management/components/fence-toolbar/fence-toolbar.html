@@ -1,15 +1,15 @@
-<div class="flex flex-col gap-3 border-b border-[#50604c] px-5 py-4 md:flex-row md:items-center">
-  <label class="relative min-w-0 md:w-56 lg:w-64">
+<div class="flex flex-col gap-2.5 border-b border-[#50604c] px-4 py-3 md:flex-row md:items-center">
+  <label class="relative min-w-0 md:w-52 lg:w-60">
     <span class="sr-only">Search fences</span>
-    <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#91a08d]">⌕</span>
+    <svg class="pointer-events-none absolute left-3 top-1/2 size-3.5 -translate-y-1/2 text-[#91a08d]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg>
     <input class="control w-full pl-9" type="search" placeholder="Search fences..." [ngModel]="filters.search" (ngModelChange)="update('search', $event)" />
   </label>
   <div class="grid flex-1 grid-cols-2 gap-3 md:grid-cols-4">
-    <select class="control" aria-label="Province" [ngModel]="filters.province" (ngModelChange)="update('province', $event)">
+    <select class="control" aria-label="Province" [disabled]="provinceLocked" [ngModel]="filters.province" (ngModelChange)="update('province', $event)">
       <option value="">All Provinces</option>
       @for (province of provinces; track province) { <option [value]="province">{{ province }}</option> }
     </select>
-    <select class="control" aria-label="District" [ngModel]="filters.district" (ngModelChange)="update('district', $event)">
+    <select class="control" aria-label="District" [disabled]="districtLocked" [ngModel]="filters.district" (ngModelChange)="update('district', $event)">
       <option value="">All Districts</option>
       @for (district of districts; track district) { <option [value]="district">{{ district }}</option> }
     </select>

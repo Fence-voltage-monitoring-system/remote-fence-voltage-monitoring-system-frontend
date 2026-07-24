@@ -1,0 +1,1 @@
+import{Component}from'@angular/core';@Component({selector:'app-mini-analysis-charts',standalone:true,templateUrl:'./mini-analysis-charts.html',styleUrl:'./mini-analysis-charts.css'})export class MiniAnalysisCharts{}

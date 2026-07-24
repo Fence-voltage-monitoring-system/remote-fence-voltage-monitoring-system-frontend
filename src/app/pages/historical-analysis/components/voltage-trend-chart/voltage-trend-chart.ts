@@ -1,0 +1,1 @@
+import{Component,Input}from'@angular/core';@Component({selector:'app-voltage-trend-chart',standalone:true,templateUrl:'./voltage-trend-chart.html',styleUrl:'./voltage-trend-chart.css'})export class VoltageTrendChart{@Input()subtitle='24-hour voltage readings · All active sections';}

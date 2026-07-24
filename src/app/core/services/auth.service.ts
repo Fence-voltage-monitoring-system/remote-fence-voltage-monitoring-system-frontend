@@ -1,18 +1,20 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 import { ChangePasswordRequest, LoginRequest, LoginResponse } from '../models/auth.models';
+import { ManagementAccessService, ManagementRole } from './management-access.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
+  private readonly managementAccess = inject(ManagementAccessService);
   private readonly loginEndpoint = '/api/auth/login';
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(this.loginEndpoint, credentials, {
       withCredentials: true,
-    });
+    }).pipe(tap(({user})=>this.managementAccess.setScope({role:user.role as ManagementRole,provinces:user.provinces??[],districts:user.districts??[]})));
   }
 
   changePassword(request: ChangePasswordRequest): Observable<{ message: string }> {

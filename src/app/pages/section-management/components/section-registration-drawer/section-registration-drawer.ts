@@ -3,7 +3,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { FenceOption } from '../../section-management.models';
 
 export interface SectionRegistrationValue { fenceCode:string; sectionCode:string; startLatitude:number; startLongitude:number; endLatitude:number; endLongitude:number; lengthKm:number; installationDate:string; maintenanceNotes:string; }
-@Component({selector:'app-section-registration-drawer',standalone:true,imports:[ReactiveFormsModule],templateUrl:'./section-registration-drawer.html',styleUrl:'./section-registration-drawer.css'})
+@Component({selector:'app-section-registration-drawer',standalone:true,imports:[ReactiveFormsModule],templateUrl:'./section-registration-drawer.html',styleUrls:['./section-registration-drawer.css','./section-registration-modal.css']})
 export class SectionRegistrationDrawer {
  @Input() fences:FenceOption[]=[]; @Input() selectedFenceCode=''; @Output() closed=new EventEmitter<void>(); @Output() registered=new EventEmitter<SectionRegistrationValue>();
  isClosing=false;
