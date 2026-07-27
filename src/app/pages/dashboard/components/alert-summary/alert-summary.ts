@@ -1,16 +1,17 @@
 import { Component, Input } from '@angular/core';
+import { AlertCounts } from '../../../../core/models/dashboard-api';
 import { DeviceMonitoringContext } from '../../../../core/models/device-monitoring';
 
 @Component({ selector: 'app-alert-summary', standalone: true, templateUrl: './alert-summary.html', styleUrl: './alert-summary.css' })
 export class AlertSummaryComponent {
   @Input({ required: true }) device!: DeviceMonitoringContext;
-
+  @Input() counts: AlertCounts = { critical: 0, warning: 0, offline: 0, resolved: 0 };
   get rows(): string[][] {
     return [
-      ['Critical', this.device.status === 'critical' ? '3' : '0', 'red'],
-      ['Warning', this.device.status === 'warning' || this.device.battery < 50 ? '2' : '0', 'amber'],
-      ['Offline', this.device.status === 'offline' ? '1' : '0', 'gray'],
-      ['Resolved', this.device.status === 'healthy' ? '18' : '12', 'green'],
+      ['Critical', String(this.counts.critical), 'red'],
+      ['Warning', String(this.counts.warning), 'amber'],
+      ['Offline', String(this.counts.offline), 'gray'],
+      ['Resolved', String(this.counts.resolved), 'green'],
     ];
   }
 }

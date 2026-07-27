@@ -1,5 +1,5 @@
 @reference "../../../../styles.css";
-aside { @apply sticky top-0 z-2 h-screen w-14 flex-none border-r border-[#213925] bg-[#102317] max-[720px]:w-11; }
+aside { @apply sticky top-0 z-[500] h-screen w-14 flex-none border-r border-[#213925] bg-[#102317] max-[720px]:w-11; }
 .logo { @apply mx-auto mt-[7px] mb-3 grid size-[38px] place-items-center rounded-[10px] bg-linear-to-br from-[#44d96a] to-[#249544] text-[#06200c] shadow-[0_5px_18px_#06140a] max-[720px]:size-8; }
 nav { @apply flex flex-col items-center gap-px; }
 button { @apply relative grid h-[38px] w-full cursor-pointer place-items-center border-0 border-l-2 border-transparent bg-transparent text-[#799076] hover:border-l-[#47e26c] hover:bg-[#16351e] hover:text-[#4ee672] focus-visible:outline-2 focus-visible:outline-[#4ee672] focus-visible:outline-offset-[-3px] max-[720px]:h-9; }

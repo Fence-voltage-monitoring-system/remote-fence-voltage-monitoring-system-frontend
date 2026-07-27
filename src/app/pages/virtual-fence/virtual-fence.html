@@ -6,16 +6,15 @@
       <section class="page-intro">
         <div class="page-heading">
           <span>Fence Operations</span>
-          <h1>Virtual Fence</h1>
-          <p>Monitor every registered section and inspect live device telemetry in one place.</p>
-        </div>
-        <div class="page-tools">
-          <button type="button" (click)="toggleFullscreen()" aria-label="Open fullscreen"><span aria-hidden="true">&#x26F6;</span> Fullscreen</button>
+          <h1>Live Fence Monitoring</h1>
+          <p>@if (selectedFenceRoute; as fence) { Monitoring {{ fence.name }} in {{ fence.district }}. } @else { Monitor every registered section and inspect live device telemetry in one place. }</p>
         </div>
       </section>
 
-      <section class="monitor-card" aria-label="Virtual fence monitoring workspace">
-        <app-fence-monitor [showSectionTable]="true" />
+      <section #routeMapSection class="route-map-section" aria-label="Selected fence route map"><app-fence-route-map [fence]="selectedFenceRoute" [selectedSectionId]="selectedSectionId()" /></section>
+
+      <section class="monitor-card" aria-label="Live fence monitoring workspace">
+        <app-fence-monitor [showSectionTable]="true" [fenceId]="activeFenceId()" (fenceChange)="selectFence($event.id)" (fenceRouteChange)="selectedFenceRoute = $event" (sectionMapRequest)="showSectionOnMap($event)" />
       </section>
     </main>
   </div>

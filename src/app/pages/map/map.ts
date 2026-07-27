@@ -1,12 +1,12 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import * as L from 'leaflet';
-import { HeaderComponent } from '../../shared/components/header/header';
-import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 
 type FenceStatus = 'healthy' | 'warning' | 'critical';
 
 interface MapFence {
   id: string;
+  monitoringFenceId: string;
   name: string;
   province: string;
   district: string;
@@ -19,21 +19,22 @@ interface MapFence {
 }
 
 @Component({
-  selector: 'app-map-page',
+  selector: 'app-fence-map-workspace',
   standalone: true,
-  imports: [HeaderComponent, SidebarComponent],
+  imports: [],
   templateUrl: './map.html',
   styleUrl: './map.css',
 })
-export class MapPage implements AfterViewInit, OnDestroy {
+export class FenceMapWorkspaceComponent implements AfterViewInit, OnDestroy {
+  private readonly router = inject(Router);
   @ViewChild('mapCanvas') mapElement!: ElementRef<HTMLDivElement>;
 
   readonly fences: MapFence[] = [
-    { id: 'MNR-A', name: 'Monaragala Elephant Protection Fence', province: 'Uva', district: 'Monaragala', status: 'healthy', voltage: 5.9, sections: 24, activeSections: 22, coordinates: [6.872, 81.350], lastCommunication: '8s ago' },
-    { id: 'WLP-N', name: 'Wilpattu North Buffer Fence', province: 'North Western', district: 'Puttalam', status: 'healthy', voltage: 6.1, sections: 18, activeSections: 18, coordinates: [8.458, 80.028], lastCommunication: '12s ago' },
-    { id: 'MHT-B', name: 'Mihintale Wildlife Buffer Fence', province: 'North Central', district: 'Anuradhapura', status: 'warning', voltage: 4.2, sections: 12, activeSections: 11, coordinates: [8.350, 80.505], lastCommunication: '34s ago' },
-    { id: 'GOY-E', name: 'Gal Oya East Protection Fence', province: 'Eastern', district: 'Ampara', status: 'critical', voltage: 0.8, sections: 20, activeSections: 16, coordinates: [7.292, 81.625], lastCommunication: '4m ago' },
-    { id: 'LNV-P', name: 'Lunugamvehera Park Fence', province: 'Southern', district: 'Hambantota', status: 'warning', voltage: 4.6, sections: 16, activeSections: 15, coordinates: [6.341, 81.151], lastCommunication: '51s ago' },
+    { id: 'MNR-A', monitoringFenceId: 'monaragala', name: 'Monaragala Elephant Protection Fence', province: 'Uva', district: 'Monaragala', status: 'healthy', voltage: 5.9, sections: 24, activeSections: 22, coordinates: [6.872, 81.350], lastCommunication: '8s ago' },
+    { id: 'WLP-N', monitoringFenceId: 'wilpattu', name: 'Wilpattu North Buffer Fence', province: 'North Western', district: 'Puttalam', status: 'healthy', voltage: 6.1, sections: 18, activeSections: 18, coordinates: [8.458, 80.028], lastCommunication: '12s ago' },
+    { id: 'MHT-B', monitoringFenceId: 'mihintale', name: 'Mihintale Wildlife Buffer Fence', province: 'North Central', district: 'Anuradhapura', status: 'warning', voltage: 4.2, sections: 12, activeSections: 11, coordinates: [8.350, 80.505], lastCommunication: '34s ago' },
+    { id: 'GOY-E', monitoringFenceId: 'gal-oya', name: 'Gal Oya East Protection Fence', province: 'Eastern', district: 'Ampara', status: 'critical', voltage: 0.8, sections: 20, activeSections: 16, coordinates: [7.292, 81.625], lastCommunication: '4m ago' },
+    { id: 'LNV-P', monitoringFenceId: 'lunugamvehera', name: 'Lunugamvehera Park Fence', province: 'Southern', district: 'Hambantota', status: 'warning', voltage: 4.6, sections: 16, activeSections: 15, coordinates: [6.341, 81.151], lastCommunication: '51s ago' },
   ];
 
   readonly provinces = [...new Set(this.fences.map((fence) => fence.province))].sort();
@@ -105,6 +106,14 @@ export class MapPage implements AfterViewInit, OnDestroy {
     marker.openPopup();
   }
 
+  openFenceDetails(fence: MapFence): void {
+    void this.router.navigate(['/virtual-fence'], {
+      queryParams: { fenceId: fence.monitoringFenceId },
+    }).then((navigated) => {
+      if (navigated) window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    });
+  }
+
   resetFilters(): void {
     this.selectedProvince = 'all';
     this.selectedDistrict = 'all';
@@ -133,7 +142,7 @@ export class MapPage implements AfterViewInit, OnDestroy {
         fillOpacity: 1, className: `fence-status-marker fence-status-marker--${fence.status}`,
       }).bindTooltip(fence.name, { permanent: true, direction: 'right', offset: [13, 0], className: `fence-location-label fence-location-label--${fence.status}` })
         .bindPopup(this.popup(fence), { offset: [0, -8] })
-        .on('click', () => this.selectedFence = fence)
+        .on('click', () => this.openFenceDetails(fence))
         .addTo(this.markerLayer);
       this.markers.set(fence.id, marker);
     }

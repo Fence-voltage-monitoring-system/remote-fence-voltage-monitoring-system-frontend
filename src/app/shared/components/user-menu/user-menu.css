@@ -4,7 +4,6 @@
 .trigger { @apply flex cursor-pointer items-center gap-2 rounded-lg border border-transparent bg-transparent p-1 text-left text-[#eef4eb] transition-colors hover:border-[#315238] hover:bg-[#18321f] focus-visible:outline-2 focus-visible:outline-[#4ee672]; }
 .avatar { @apply grid size-7 flex-none place-items-center rounded-full border border-[#24713a] bg-[#164326] text-[10px] font-semibold text-[#50e974]; }
 .identity { @apply flex min-w-28 flex-col max-[980px]:hidden; }.identity strong { @apply text-[9px]; }.identity small { @apply mt-[3px] text-[8px] text-[#7e8c7a]; }
-.chevron { @apply text-[#7e8c7a] max-[980px]:hidden; }
 .dropdown { @apply invisible absolute top-[calc(100%+10px)] right-0 z-50 w-[310px] origin-top-right translate-y-[-6px] scale-[.98] overflow-hidden rounded-xl border border-[#40543f] bg-[#17291b] opacity-0 shadow-[0_20px_55px_rgba(0,0,0,.55)] transition-all duration-150; }
 .dropdown.open { @apply visible translate-y-0 scale-100 opacity-100; }
 .account { @apply flex gap-3 border-b border-[#354a37] bg-[#213723] p-4; }.account .large { @apply size-10 text-xs; }.account div { @apply min-w-0; }.account strong,.account span,.account small { @apply block; }.account strong { @apply truncate text-[11px]; }.account span { @apply mt-1 truncate text-[9px] text-[#a4b0a1]; }.account small { @apply mt-1.5 w-max rounded bg-[#183e22] px-2 py-1 text-[7px] uppercase tracking-wide text-[#4be572]; }

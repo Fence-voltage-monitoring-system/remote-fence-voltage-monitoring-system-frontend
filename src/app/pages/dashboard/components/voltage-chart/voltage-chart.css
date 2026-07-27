@@ -1,7 +1,8 @@
 @reference "../../../../../styles.css";
 section { @apply h-[285px] rounded-[14px] border border-[#4a5d45] bg-[#354831] p-[19px]; }
 h2 { @apply m-0 text-[11px]; } section>p { @apply mt-1 mb-0 font-mono text-[8px] text-[#82907f]; }
-.chart { @apply relative mt-2 h-[215px] pl-4; }
+.chart { @apply relative mt-2 h-[215px] pl-5; }
 canvas { @apply block h-[185px] w-full; }
-.y { @apply absolute top-[5px] left-0 font-mono text-[8px] leading-[35px] text-[#8a9786]; }
-.x { @apply absolute right-[5px] bottom-0 left-7 flex justify-between font-mono text-[8px] text-[#8a9786]; }
+.y { @apply absolute top-[6px] bottom-[49px] left-0 flex flex-col justify-between font-mono text-[8px] leading-none text-[#8a9786]; }
+.y span { @apply block; }
+.x { @apply absolute right-[5px] bottom-0 left-12 flex justify-between font-mono text-[8px] text-[#8a9786]; }

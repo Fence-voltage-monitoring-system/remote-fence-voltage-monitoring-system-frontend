@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { DashboardAlert } from '../../../../core/models/dashboard-api';
 import { DeviceMonitoringContext } from '../../../../core/models/device-monitoring';
 
 interface DeviceAlert { title: string; reference: string; time: string; tone: string; }
@@ -6,19 +7,16 @@ interface DeviceAlert { title: string; reference: string; time: string; tone: st
 @Component({ selector: 'app-alert-list', standalone: true, templateUrl: './alert-list.html', styleUrl: './alert-list.css' })
 export class AlertListComponent {
   @Input({ required: true }) device!: DeviceMonitoringContext;
+  @Input() data: DashboardAlert[] = [];
 
   get alerts(): DeviceAlert[] {
-    const reference = `${this.device.sectionId} · ${this.device.deviceId}`;
-    const primary = this.device.status === 'offline' ? 'Device Offline' : this.device.status === 'critical' ? 'Voltage Drop' : this.device.status === 'warning' ? 'Voltage Warning' : 'Reading Restored';
-    return [
-      { title: primary, reference, time: '4m ago', tone: this.device.status },
-      { title: this.device.battery < 50 ? 'Low Battery' : 'Battery Normal', reference, time: '22m ago', tone: this.device.battery < 50 ? 'warning' : 'healthy' },
-      { title: 'Signal Check', reference, time: '34m ago', tone: this.device.status === 'offline' ? 'offline' : 'healthy' },
-      { title: 'Telemetry Received', reference, time: '51m ago', tone: 'healthy' },
-    ];
+    return this.data.map(alert => ({ title: alert.title, reference: alert.reference, time: this.relativeTime(alert.occurredAt), tone: alert.status }));
   }
-
-  get criticalCount(): number {
-    return this.alerts.filter((alert) => alert.tone === 'critical').length;
+  get criticalCount(): number { return this.alerts.filter(alert => alert.tone === 'critical').length; }
+  private relativeTime(value: string): string {
+    const seconds = Math.max(0, Math.floor((Date.now() - new Date(value).getTime()) / 1000));
+    if (seconds < 60) return `${seconds}s ago`;
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+    return `${Math.floor(seconds / 3600)}h ago`;
   }
 }

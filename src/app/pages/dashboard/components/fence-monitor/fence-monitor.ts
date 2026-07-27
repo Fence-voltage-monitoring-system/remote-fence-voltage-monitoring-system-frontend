@@ -1,8 +1,12 @@
-import { Component, ElementRef, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { DeviceMonitoringContext } from '../../../../core/models/device-monitoring';
 
 type FenceState = 'healthy' | 'warning' | 'critical' | 'offline';
 interface Fence { id: string; name: string; province: string; district: string; zone: string; gateway: string; latitude: number; longitude: number; sectionCount: number; updateIntervalMinutes: number; }
+export interface FenceSelection { id: string; name: string; latitude: number; longitude: number; sectionCount: number; }
+export interface FenceRouteSection { id: string; status: FenceState; voltage: number; latitude: number; longitude: number; updated: string; }
+export interface FenceRouteData { id: string; name: string; district: string; zone: string; sections: FenceRouteSection[]; }
 interface ScheduleState { lastUpdatedAt: number; nextUpdateAt: number; cycle: number; }
 interface Section {
   id: string; voltage: string; state: FenceState; battery: number; voltageDrop: string;
@@ -10,10 +14,13 @@ interface Section {
   latitude: string; longitude: string; updated: string;
 }
 
-@Component({ selector: 'app-fence-monitor', standalone: true, templateUrl: './fence-monitor.html', styleUrl: './fence-monitor.css' })
-export class FenceMonitorComponent implements OnDestroy {
+@Component({ selector: 'app-fence-monitor', standalone: true, imports: [FormsModule], templateUrl: './fence-monitor.html', styleUrl: './fence-monitor.css' })
+export class FenceMonitorComponent implements OnInit, OnDestroy {
   @ViewChild('scroller') scroller!: ElementRef<HTMLElement>;
   @Output() readonly deviceChange = new EventEmitter<DeviceMonitoringContext>();
+  @Output() readonly fenceChange = new EventEmitter<FenceSelection>();
+  @Output() readonly fenceRouteChange = new EventEmitter<FenceRouteData>();
+  @Output() readonly sectionMapRequest = new EventEmitter<string>();
   @Input() showFenceSelector = true;
   @Input() showSectionTable = false;
   @Input() statusFilter: FenceState | 'all' = 'all';
@@ -62,6 +69,9 @@ export class FenceMonitorComponent implements OnDestroy {
   selectedDistrict = 'all';
   sections = this.buildSections(this.selectedFence);
   selected: Section = this.sections[4];
+  ngOnInit(): void { this.emitFenceRoute(); }
+  drawerOpen = false;
+  alertAcknowledged = false;
 
   get availableDistricts(): readonly string[] {
     return this.selectedProvince === 'all'
@@ -97,12 +107,39 @@ export class FenceMonitorComponent implements OnDestroy {
     this.scroller?.nativeElement.scrollTo({ left: 0, behavior: 'smooth' });
     this.emitDevice();
     this.updateSchedule();
+    this.fenceChange.emit({ id: this.selectedFence.id, name: this.selectedFence.name, latitude: this.selectedFence.latitude, longitude: this.selectedFence.longitude, sectionCount: this.selectedFence.sectionCount });
+    this.emitFenceRoute();
   }
 
   selectSection(section: Section): void {
     this.selected = section;
     this.emitDevice();
     this.updateSchedule();
+  }
+
+  openSectionDetails(section: Section): void {
+    this.selectSection(section);
+    this.alertAcknowledged = false;
+    this.drawerOpen = true;
+  }
+
+  closeSectionDetails(): void { this.drawerOpen = false; }
+
+  viewSelectedOnMap(): void {
+    const sectionId = this.selected.id;
+    this.closeSectionDetails();
+    this.sectionMapRequest.emit(sectionId);
+  }
+
+  @HostListener('document:keydown.escape')
+  closeDrawerOnEscape(): void { this.closeSectionDetails(); }
+
+  get trendPoints(): string {
+    const base = Number.parseFloat(this.selected.voltage) || 0;
+    return Array.from({ length: 16 }, (_, index) => {
+      const value = this.selected.state === 'offline' ? 0 : Math.max(0, Math.min(7, base + Math.sin(index * .8) * .42 + Math.cos(index * .35) * .2));
+      return `${index * 24},${82 - value * 10}`;
+    }).join(' ');
   }
 
   private selectFirstAvailableFence(): void {
@@ -159,6 +196,7 @@ export class FenceMonitorComponent implements OnDestroy {
     });
     this.selected = this.sections.find((section) => section.id === selectedId) ?? this.sections[0];
     this.emitDevice();
+    this.emitFenceRoute();
   }
 
   private updateSchedule(): void {
@@ -197,6 +235,13 @@ export class FenceMonitorComponent implements OnDestroy {
       voltage: Number.parseFloat(this.selected.voltage) || 0,
       battery: this.selected.battery,
       status: this.selected.state,
+    });
+  }
+
+  private emitFenceRoute(): void {
+    this.fenceRouteChange.emit({
+      id: this.selectedFence.id, name: this.selectedFence.name, district: this.selectedFence.district, zone: this.selectedFence.zone,
+      sections: this.sections.map(section => ({ id: section.id, status: section.state, voltage: Number.parseFloat(section.voltage) || 0, latitude: Number.parseFloat(section.latitude), longitude: Number.parseFloat(section.longitude), updated: section.updated })),
     });
   }
 }

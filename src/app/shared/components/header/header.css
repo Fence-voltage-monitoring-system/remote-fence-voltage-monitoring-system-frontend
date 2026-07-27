@@ -13,5 +13,7 @@ header { @apply sticky top-0 z-40 flex h-[60px] items-center gap-3 border-b bord
 @media(max-width:620px) { .status:after { content: 'ONLINE'; } }
 .clock { @apply flex flex-col text-right font-mono text-[9px] text-[#81907d] max-[620px]:hidden; }
 .clock strong { @apply text-[13px] text-white; }
+.view-action { @apply grid size-8 shrink-0 cursor-pointer place-items-center rounded-full border border-transparent bg-transparent text-[#a8b5a4] transition-colors hover:border-[#315238] hover:bg-[#18321f] hover:text-[#4ee672] focus-visible:outline-2 focus-visible:outline-[#4ee672]; }
+.view-action svg { @apply size-[17px] fill-none stroke-current stroke-2; stroke-linecap: round; stroke-linejoin: round; }
 .bell { @apply relative grid size-8 cursor-pointer place-items-center rounded-full border border-transparent bg-transparent text-[#a8b5a4] transition-colors hover:border-[#315238] hover:bg-[#18321f] hover:text-[#4ee672] focus-visible:outline-2 focus-visible:outline-[#4ee672]; }
 .bell em { @apply absolute -top-0.5 right-0 grid size-[15px] place-items-center rounded-full bg-[#ed3f35] text-[8px] font-bold not-italic; }

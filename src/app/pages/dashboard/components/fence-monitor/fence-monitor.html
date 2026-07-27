@@ -4,9 +4,9 @@
     <div class="timing"><span>Device updated <b>{{lastUpdatedLabel}}</b></span><span>Next in <strong>{{nextUpdateLabel}}</strong></span><small>Every 15 min</small></div>
     @if (showFenceSelector) {
       <div class="location-filters">
-        <label class="location-select"><span>Province</span><select #provincePicker [value]="selectedProvince" (change)="selectProvince(provincePicker.value)"><option value="all">All Provinces</option>@for (province of provinces; track province) {<option [value]="province">{{province}}</option>}</select></label>
-        <label class="location-select"><span>District</span><select #districtPicker [value]="selectedDistrict" (change)="selectDistrict(districtPicker.value)"><option value="all">All Districts</option>@for (district of availableDistricts; track district) {<option [value]="district">{{district}}</option>}</select></label>
-        <label class="fence-select"><span>Viewing fence</span><select #fencePicker [value]="selectedFence.id" [disabled]="availableFences.length === 0" (change)="selectFence(fencePicker.value)">@for (fence of availableFences; track fence.id) {<option [value]="fence.id">{{fence.name}}</option>} @empty {<option>No registered fences</option>}</select></label>
+        <label class="location-select"><span>Province</span><select [ngModel]="selectedProvince" (ngModelChange)="selectProvince($event)"><option value="all">All Provinces</option>@for (province of provinces; track province) {<option [value]="province">{{province}}</option>}</select></label>
+        <label class="location-select"><span>District</span><select [ngModel]="selectedDistrict" (ngModelChange)="selectDistrict($event)"><option value="all">All Districts</option>@for (district of availableDistricts; track district) {<option [value]="district">{{district}}</option>}</select></label>
+        <label class="fence-select"><span>Viewing fence</span><select [ngModel]="selectedFence.id" [disabled]="availableFences.length === 0" (ngModelChange)="selectFence($event)">@for (fence of availableFences; track fence.id) {<option [value]="fence.id">{{fence.name}}</option>} @empty {<option>No registered fences</option>}</select></label>
       </div>
     }
     <div class="legend"><span class="healthy">Healthy</span><span class="warning">Warning</span><span class="critical">Critical</span><span class="offline">Offline</span></div>
@@ -28,9 +28,27 @@
       <div class="table-heading"><div><span>Registered section devices</span><h3>{{statusFilter === 'all' ? 'All sections' : statusFilter + ' sections'}}</h3></div><b>{{filteredSections.length}} of {{sections.length}}</b></div>
       <div class="table-scroll"><table><thead><tr><th>Device ID</th><th>Serial No.</th><th>Fence</th><th>Section</th><th>Voltage</th><th>Battery</th><th>Solar</th><th>Status</th><th>Last Comm.</th></tr></thead><tbody>
         @for (section of filteredSections; track section.id) {
-          <tr (click)="selectSection(section)" [class.selected-row]="selected.id === section.id"><td class="device">{{deviceId(section)}}</td><td>SN-{{deviceId(section).slice(-7)}}</td><td>{{selectedFence.gateway}}-{{selectedFence.zone}}</td><td>{{section.id}}</td><td class="reading-value" [class]="section.state">{{section.voltage}} kV</td><td><div class="mini-battery"><i><em [style.width.%]="section.battery"></em></i><span>{{section.battery}}%</span></div></td><td>{{section.solarCharging ? section.solarCharging + '%' : '—'}}</td><td><span class="status-pill" [class]="section.state">&bull; {{section.state}}</span></td><td>{{section.updated}}</td></tr>
+          <tr (click)="openSectionDetails(section)" [class.selected-row]="drawerOpen && selected.id === section.id"><td class="device">{{deviceId(section)}}</td><td>SN-{{deviceId(section).slice(-7)}}</td><td>{{selectedFence.gateway}}-{{selectedFence.zone}}</td><td>{{section.id}}</td><td class="reading-value" [class]="section.state">{{section.voltage}} kV</td><td><div class="mini-battery"><i><em [style.width.%]="section.battery"></em></i><span>{{section.battery}}%</span></div></td><td>{{section.solarCharging ? section.solarCharging + '%' : '—'}}</td><td><span class="status-pill" [class]="section.state">&bull; {{section.state}}</span></td><td>{{section.updated}}</td></tr>
         } @empty {<tr><td colspan="9" class="empty-row">No {{statusFilter}} sections are registered under this fence.</td></tr>}
       </tbody></table></div>
     </section>
+  }
+
+  @if (showSectionTable && drawerOpen) {
+    <button class="drawer-backdrop" type="button" (click)="closeSectionDetails()" aria-label="Close section details"></button>
+    <aside class="section-drawer" role="dialog" aria-modal="true" [attr.aria-label]="selected.id + ' details'">
+      <header class="drawer-header"><div><span>Section details</span><h2>{{selected.id}}</h2><p>{{selectedFence.name}}</p></div><button type="button" (click)="closeSectionDetails()" aria-label="Close section details">&times;</button></header>
+      <div class="drawer-status"><span class="status-pill" [class]="selected.state">&bull; {{selected.state}}</span><small>Updated {{selected.updated}}</small></div>
+      <section class="telemetry-cards" aria-label="Current telemetry">
+        <article><span>Voltage</span><strong [class]="selected.state">{{selected.voltage}} <small>kV</small></strong><em>{{selected.voltageDrop}} kV drop</em></article>
+        <article><span>Battery</span><strong>{{selected.battery}}<small>%</small></strong><em>{{selected.battery > 30 ? 'Normal level' : 'Low level'}}</em></article>
+        <article><span>Solar</span><strong>{{selected.solarCharging}}<small>%</small></strong><em>Charging input</em></article>
+        <article><span>Signal</span><strong>{{selected.signalStrength}}<small>dBm</small></strong><em>{{selected.signalStrength > -80 ? 'Good connection' : 'Weak connection'}}</em></article>
+      </section>
+      <section class="drawer-trend"><div><span>Voltage trend</span><b>Last 24 hours</b></div><svg viewBox="0 0 360 90" preserveAspectRatio="none" role="img" aria-label="24-hour voltage trend"><path d="M0 72H360M0 42H360M0 12H360"/><polyline [attr.points]="trendPoints" [class]="selected.state"/></svg><footer><span>24h ago</span><span>12h ago</span><span>Now</span></footer></section>
+      <section class="drawer-meta"><h3>Device and location</h3><dl><div><dt>Device ID</dt><dd>{{deviceId(selected)}}</dd></div><div><dt>Serial number</dt><dd>SN-{{deviceId(selected).slice(-7)}}</dd></div><div><dt>Gateway</dt><dd>{{selected.gateway}}</dd></div><div><dt>Fence zone</dt><dd>{{selectedFence.zone}}</dd></div><div><dt>GPS location</dt><dd>{{selected.latitude}}, {{selected.longitude}}</dd></div><div><dt>Update interval</dt><dd>{{selectedFence.updateIntervalMinutes}} minutes</dd></div></dl></section>
+      <section class="drawer-events"><h3>Recent activity</h3><div><i [class]="selected.state"></i><span><b>{{selected.state === 'critical' ? 'Critical voltage detected' : selected.state === 'offline' ? 'Communication interrupted' : 'Telemetry reading received'}}</b><small>{{selected.updated}}</small></span></div><div><i class="healthy"></i><span><b>Scheduled device check completed</b><small>15m ago</small></span></div></section>
+      <footer class="drawer-actions">@if (selected.state === 'critical' || selected.state === 'warning') {<button type="button" class="acknowledge" (click)="alertAcknowledged = true" [disabled]="alertAcknowledged">{{alertAcknowledged ? 'Alert acknowledged' : 'Acknowledge alert'}}</button>}<button type="button" (click)="viewSelectedOnMap()">View on map</button><a class="primary" href="/devices">Open device</a></footer>
+    </aside>
   }
 </section>

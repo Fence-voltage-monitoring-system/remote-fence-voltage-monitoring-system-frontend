@@ -1,0 +1,72 @@
+<div class="app-shell" (click)="menuGateway = undefined">
+  <app-sidebar />
+  <div class="page">
+    <app-header />
+    <main>
+      <section class="page-heading">
+        <div><span>Network Infrastructure</span><h1>Gateway Management</h1><p>Register gateways, monitor connectivity, and manage fence network assignments.</p></div>
+        <div class="heading-actions"><button class="secondary" type="button"><i data-lucide="download"></i>Export</button><button class="primary" type="button" (click)="openAdd()"><i data-lucide="plus"></i>Register gateway</button></div>
+      </section>
+
+      <section class="stats" aria-label="Gateway statistics">
+        <article><div class="stat-icon"><i data-lucide="radio-tower"></i></div><div><span>Total gateways</span><b>{{gateways.length}}</b><small>Across {{fences.length}} fences</small></div></article>
+        <article class="online"><div class="stat-icon"><i data-lucide="wifi"></i></div><div><span>Online</span><b>{{count('online')}}</b><small>Reporting normally</small></div></article>
+        <article class="warning"><div class="stat-icon"><i data-lucide="signal"></i></div><div><span>Needs attention</span><b>{{count('warning')}}</b><small>Weak signal or power</small></div></article>
+        <article class="offline"><div class="stat-icon"><i data-lucide="radio-tower"></i></div><div><span>Offline</span><b>{{count('offline')}}</b><small>Communication lost</small></div></article>
+        <article class="unassigned"><div class="stat-icon"><i data-lucide="plus"></i></div><div><span>Unassigned</span><b>{{unassignedCount}}</b><small>Available inventory</small></div></article>
+      </section>
+
+      <section class="gateway-panel">
+        <div class="toolbar">
+          <div class="search"><i data-lucide="search"></i><input [(ngModel)]="search" placeholder="Search gateway, serial, IMEI or fence..." aria-label="Search gateways"></div>
+          <label><span>Status</span><select [(ngModel)]="statusFilter"><option value="all">All statuses</option><option value="online">Online</option><option value="warning">Needs attention</option><option value="offline">Offline</option></select><i data-lucide="chevron-down"></i></label>
+          <label><span>Assignment</span><select [(ngModel)]="assignmentFilter"><option value="all">All assignments</option><option value="assigned">Assigned</option><option value="unassigned">Unassigned</option></select><i data-lucide="chevron-down"></i></label>
+          @if (search || statusFilter !== 'all' || assignmentFilter !== 'all') {<button class="clear" type="button" (click)="clearFilters()">Clear</button>}
+          <span class="results"><b>{{filteredGateways.length}}</b> of {{gateways.length}} gateways</span>
+        </div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>Gateway</th><th>Assignment</th><th>Status</th><th>Connectivity</th><th>Connected devices</th><th>Last communication</th><th>Active</th><th></th></tr></thead>
+          <tbody>@for (gateway of filteredGateways; track gateway.id) {
+            <tr (click)="selectGateway(gateway)">
+              <td><div class="gateway-cell"><span class="gateway-icon"><i data-lucide="radio-tower"></i></span><div><strong>{{gateway.name}}</strong><small>{{gateway.id}} &middot; {{gateway.serial}}</small><em>IMEI {{gateway.imei}}</em></div></div></td>
+              <td>@if (gateway.fences.length) {<strong class="fence-name">{{gateway.fences[0]}}</strong><small class="assignment-state">{{gateway.fences.length === 1 ? '1 assigned fence' : '+' + (gateway.fences.length - 1) + ' more fences'}}</small>} @else {<span class="unassigned-pill">Unassigned</span><small class="assignment-state">Ready for installation</small>}</td>
+              <td><span [class]="'status-pill ' + gateway.status"><i></i>{{gateway.status === 'warning' ? 'Attention' : gateway.status}}</span></td>
+              <td><div class="connectivity"><span><i data-lucide="signal"></i><b>{{gateway.signal}}%</b></span><span>Power {{gateway.power}}%</span></div></td>
+              <td><span class="device-count"><b>{{gateway.devices}}</b> monitors</span></td>
+              <td><span class="last-seen">{{gateway.lastSeen}}</span></td>
+              <td><button type="button" class="toggle" [class.on]="gateway.enabled" (click)="toggleEnabled(gateway, $event)" [attr.aria-label]="gateway.enabled ? 'Disable gateway' : 'Enable gateway'"><i></i></button></td>
+              <td class="action-cell"><button class="more" type="button" (click)="toggleMenu(gateway, $event)"><i data-lucide="more-horizontal"></i></button>@if (menuGateway === gateway) {<div class="row-menu" (click)="$event.stopPropagation()"><button type="button" (click)="openEdit(gateway)"><i data-lucide="pencil"></i>Edit gateway</button><button class="danger" type="button" (click)="remove(gateway)"><i data-lucide="trash-2"></i>Remove</button></div>}</td>
+            </tr>
+          } @empty {<tr><td colspan="8"><div class="empty"><b>No matching gateways</b><span>Try changing or clearing the filters.</span><button type="button" (click)="clearFilters()">Clear filters</button></div></td></tr>}</tbody>
+        </table></div>
+        <footer><span>Showing {{filteredGateways.length}} gateways</span><span>Page 1 of 1</span></footer>
+      </section>
+    </main>
+  </div>
+
+  @if (selected && !drawerOpen) {
+    <button class="backdrop" type="button" (click)="selected = undefined" aria-label="Close gateway details"></button>
+    <aside class="details-drawer" (click)="$event.stopPropagation()">
+      <header><div><span>Gateway record</span><h2>{{selected.name}}</h2><p>{{selected.id}} &middot; {{selected.serial}}</p></div><button class="close" type="button" (click)="selected = undefined" aria-label="Close gateway details">&times;</button></header>
+      <div class="detail-status"><span [class]="'status-pill ' + selected.status"><i></i>{{selected.status}}</span><span [class.unassigned]="!selected.fences.length">{{selected.fences.length ? 'Assigned to ' + selected.fences.length : 'Unassigned'}}</span></div>
+      <section><h3>Fence assignments</h3>@if (selected.fences.length) {<div class="assigned-fences">@for (fence of selected.fences; track fence) {<span>{{fence}}</span>}</div>} @else {<p class="no-assignment">Not assigned to a fence</p>}<dl><div><dt>Connected monitors</dt><dd>{{selected.devices}}</dd></div></dl></section>
+      <section><h3>Gateway identity</h3><dl><div><dt>IMEI</dt><dd>{{selected.imei}}</dd></div><div><dt>Firmware</dt><dd>{{selected.firmware}}</dd></div></dl></section>
+      <section><h3>Current health</h3><div class="metrics"><article><span>Signal</span><b>{{selected.signal}}%</b></article><article><span>Power</span><b>{{selected.power}}%</b></article><article><span>Last communication</span><b>{{selected.lastSeen}}</b></article><article><span>State</span><b>{{selected.enabled ? 'Active' : 'Disabled'}}</b></article></div></section>
+      <footer><button class="primary" type="button" (click)="openEdit(selected)">Edit gateway</button></footer>
+    </aside>
+  }
+
+  @if (drawerOpen) {
+    <button class="backdrop" type="button" (click)="drawerOpen = false" aria-label="Close gateway form"></button>
+    <form class="form-drawer" (submit)="$event.preventDefault(); save()" (click)="$event.stopPropagation()">
+      <header><div><span>{{editing ? 'Update gateway' : 'New network gateway'}}</span><h2>{{editing ? 'Edit gateway' : 'Register gateway'}}</h2><p>{{editing ? 'Update the gateway identity and network information.' : 'Add gateway hardware to the monitoring network.'}}</p></div><button class="close" type="button" (click)="drawerOpen = false" aria-label="Close gateway form">&times;</button></header>
+      <div class="form-body"><div class="form-grid">
+        <label><span>Gateway name</span><input name="name" [(ngModel)]="form.name" placeholder="e.g. Monaragala Main Gateway" [class.invalid]="submitted && !form.name.trim()"><small>Use a clear location-based name.</small></label>
+        <label><span>Serial number</span><input name="serial" [(ngModel)]="form.serial" placeholder="e.g. GW-2026-1005" [class.invalid]="submitted && !form.serial.trim()"></label>
+        <label><span>IMEI number</span><input name="imei" [(ngModel)]="form.imei" placeholder="15-digit cellular IMEI" [class.invalid]="submitted && !form.imei.trim()"></label>
+        <div class="note"><i data-lucide="check"></i><span><strong>Fence relationships are managed separately</strong><small>Assign fences to this gateway from Fence Management. Sections inherit the gateway through their parent fence.</small></span></div>
+      </div>@if (submitted && (!form.name.trim() || !form.serial.trim() || !form.imei.trim())) {<p class="form-error">Enter the gateway name, serial number, and IMEI.</p>}</div>
+      <footer><button type="button" (click)="drawerOpen = false">Cancel</button><button class="primary" type="submit"><i data-lucide="check"></i>{{editing ? 'Save changes' : 'Register gateway'}}</button></footer>
+    </form>
+  }
+</div>

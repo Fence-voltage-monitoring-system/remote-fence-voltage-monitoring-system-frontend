@@ -3,6 +3,13 @@
   <div class="page">
     <app-header />
     <main>
+      @if (error) {
+        <section class="api-error" role="alert"><span>{{ error }}</span><button type="button" (click)="loadDashboard()">Retry</button></section>
+      }
+      @if (usingMockData()) {
+        <section class="mock-data-notice" role="status"><strong>Demo mode</strong><span>The backend is unavailable, so temporary sample data is being shown.</span></section>
+      }
+      @if (loading) { <section class="api-loading" aria-live="polite">Loading live dashboard data…</section> }
       <section class="stats-grid" aria-label="System overview">
         @for (stat of stats; track stat.label) {
           <app-voltage-card [data]="stat" />
@@ -12,12 +19,14 @@
       <app-fence-monitor (deviceChange)="updateAnalytics($event)" />
 
       <section class="analytics-grid" aria-label="Monitoring analytics">
-        <app-alert-list [device]="selectedDevice" />
-        <app-voltage-chart [device]="selectedDevice" />
-        <app-alert-summary [device]="selectedDevice" />
+        <app-alert-list [device]="selectedDevice" [data]="alerts" />
+        <app-voltage-chart [device]="selectedDevice" [readings]="voltageHistory" />
+        <app-alert-summary [device]="selectedDevice" [counts]="alertCounts" />
       </section>
 
-      <app-fence-map />
+      <section class="dashboard-map" aria-label="Fence map overview">
+        <app-fence-map-workspace />
+      </section>
     </main>
   </div>
 </div>
