@@ -33,5 +33,8 @@ export const routes: Routes = [
     title: 'Gateway Management | Remote Fence Monitoring',
   },
   { path: 'gateway-management', redirectTo: 'gateways', pathMatch: 'full' },
+  { path: 'audit-logs', loadComponent: () => import('./pages/audit-logs/audit-logs').then(page => page.AuditLogsPage), title: 'Audit Logs | Remote Fence Monitoring' },
+  { path: 'profile', loadComponent: () => import('./pages/profile/profile').then(page => page.ProfilePage), title: 'My Profile | Remote Fence Monitoring' },
+  { path: 'security', loadComponent: () => import('./pages/security/security').then(page => page.SecurityPage), title: 'Security Settings | Remote Fence Monitoring' },
   { path: '**', redirectTo: '' },
 ];

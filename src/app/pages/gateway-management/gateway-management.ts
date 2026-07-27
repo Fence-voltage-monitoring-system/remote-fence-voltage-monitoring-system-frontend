@@ -1,6 +1,6 @@
 import { AfterViewChecked, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Check, ChevronDown, createIcons, Download, MoreHorizontal, Pencil, Plus, RadioTower, Search, Signal, Trash2, Wifi, X } from 'lucide';
+import { Check, ChevronDown, createIcons, MoreHorizontal, Pencil, Plus, RadioTower, Search, Signal, Trash2, Wifi, X } from 'lucide';
 import { HeaderComponent } from '../../shared/components/header/header';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 
@@ -52,7 +52,7 @@ export class GatewayManagementPage implements AfterViewChecked {
 
   ngAfterViewChecked(): void {
     if (!this.iconsReady) {
-      createIcons({ icons: { Check, ChevronDown, Download, MoreHorizontal, Pencil, Plus, RadioTower, Search, Signal, Trash2, Wifi, X }, attrs: { 'stroke-width': 1.8, width: 16, height: 16 } });
+      createIcons({ icons: { Check, ChevronDown, MoreHorizontal, Pencil, Plus, RadioTower, Search, Signal, Trash2, Wifi, X }, attrs: { 'stroke-width': 1.8, width: 16, height: 16 } });
       this.iconsReady = true;
     }
   }

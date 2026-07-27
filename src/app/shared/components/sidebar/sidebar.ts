@@ -48,7 +48,7 @@ export class SidebarComponent implements AfterViewInit {
     { label: 'Gateway Management', icon: 'radio-tower', route: '/gateways' },
     { label: 'User Management', icon: 'users' },
     { label: 'Reports', icon: 'file-chart-column' },
-    { label: 'Audit Logs', icon: 'scroll-text' },
+    { label: 'Audit Logs', icon: 'scroll-text', route: '/audit-logs' },
     { label: 'System Configuration', icon: 'settings' },
   ];
 

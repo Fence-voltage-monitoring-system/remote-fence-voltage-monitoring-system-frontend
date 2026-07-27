@@ -33,6 +33,6 @@ export class HeaderComponent implements OnDestroy {
   private updateClock(): void { const now = new Date(); this.currentTime.set(this.timeFormatter.format(now)); this.currentDate.set(this.dateFormatter.format(now)); }
   private updatePageName(url: string): void {
     const path = url.split('?')[0].split('#')[0];
-    this.pageName.set(path.startsWith('/virtual-fence') ? 'Live View' : path.startsWith('/map') ? 'Fence Map' : path.startsWith('/devices') || path.startsWith('/device-management') ? 'Device Management' : path.startsWith('/gateways') || path.startsWith('/gateway-management') ? 'Gateway Management' : 'Live Dashboard');
+    this.pageName.set(path.startsWith('/virtual-fence') ? 'Live View' : path.startsWith('/map') ? 'Fence Map' : path.startsWith('/devices') || path.startsWith('/device-management') ? 'Device Management' : path.startsWith('/gateways') || path.startsWith('/gateway-management') ? 'Gateway Management' : path.startsWith('/fences') ? 'Fence Management' : path.startsWith('/sections') ? 'Section Management' : path.startsWith('/audit-logs') ? 'Audit Logs' : path.startsWith('/profile') ? 'My Profile' : path.startsWith('/security') ? 'Security Settings' : 'Live Dashboard');
   }
 }

@@ -1,7 +1,7 @@
 import { AfterViewChecked, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Activity, BatteryCharging, Check, ChevronDown, CirclePlus, Cpu, createIcons, Download, MoreHorizontal, Pencil, Plus, Radio, Search, Signal, SlidersHorizontal, Trash2, Wifi, X } from 'lucide';
+import { Activity, BatteryCharging, Check, ChevronDown, CirclePlus, Cpu, createIcons, MoreHorizontal, Pencil, Plus, Radio, Search, Signal, SlidersHorizontal, Trash2, Wifi, X } from 'lucide';
 import { HeaderComponent } from '../../shared/components/header/header';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 
@@ -91,7 +91,7 @@ export class DeviceManagementPage implements AfterViewChecked {
 
   ngAfterViewChecked(): void {
     if (!this.iconsReady) {
-      createIcons({ icons: { Activity, BatteryCharging, Check, ChevronDown, CirclePlus, Cpu, Download, MoreHorizontal, Pencil, Plus, Radio, Search, Signal, SlidersHorizontal, Trash2, Wifi, X }, attrs: { 'stroke-width': 1.8, width: 16, height: 16 } });
+      createIcons({ icons: { Activity, BatteryCharging, Check, ChevronDown, CirclePlus, Cpu, MoreHorizontal, Pencil, Plus, Radio, Search, Signal, SlidersHorizontal, Trash2, Wifi, X }, attrs: { 'stroke-width': 1.8, width: 16, height: 16 } });
       this.iconsReady = true;
     }
   }

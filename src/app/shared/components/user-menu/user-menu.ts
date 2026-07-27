@@ -1,9 +1,11 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Output } from '@angular/core';
 import { BellRing, ChevronDown, CircleHelp, createElement, KeyRound, LogOut, Palette, Settings, ShieldCheck, UserRound } from 'lucide';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-user-menu',
   standalone: true,
+  imports: [RouterLink],
   templateUrl: './user-menu.html',
   styleUrl: './user-menu.css',
 })
