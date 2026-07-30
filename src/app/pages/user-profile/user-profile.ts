@@ -9,9 +9,10 @@ import { PersonalInformation } from './components/personal-information/personal-
 import { ProfileEditDrawer } from './components/profile-edit-drawer/profile-edit-drawer';
 import { ProfileSummary } from './components/profile-summary/profile-summary';
 import { SecuritySettings } from './components/security-settings/security-settings';
-import { CurrentUserProfile } from './user-profile.models';
+import { NotificationPreferences } from './components/notification-preferences/notification-preferences';
+import { CurrentUserProfile, UserNotificationPreferences } from './user-profile.models';
 
-@Component({ selector: 'app-current-user-profile', standalone: true, imports: [ProfileSummary, PersonalInformation, AssignmentSummary, SecuritySettings, ActivityList, ProfileEditDrawer, ChangePasswordDrawer], templateUrl: './user-profile.html' })
+@Component({ selector: 'app-current-user-profile', standalone: true, imports: [ProfileSummary, PersonalInformation, AssignmentSummary, SecuritySettings, NotificationPreferences, ActivityList, ProfileEditDrawer, ChangePasswordDrawer], templateUrl: './user-profile.html' })
 export class UserProfilePage implements OnInit {
   private readonly userService = inject(UserService);
   private readonly authService = inject(AuthService);
@@ -26,8 +27,22 @@ export class UserProfilePage implements OnInit {
   isLoadingProfile = false;
   profileLoadFailed = false;
   isSigningOutOtherSessions = false;
+  isSavingNotificationPreferences=false;
+  notificationPreferences:UserNotificationPreferences={soundEnabled:true,desktopNotificationsEnabled:false,markAsReadOnOpen:true,quietHoursEnabled:false,quietHoursStart:'22:00',quietHoursEnd:'06:00',groupSimilarNotifications:true,groupingWindowMinutes:30,digestEnabled:false,digestIntervalMinutes:60};
 
-  ngOnInit(): void { this.loadProfile(); }
+  ngOnInit(): void { this.loadProfile();this.loadNotificationPreferences(); }
+
+  loadNotificationPreferences():void{this.userService.getNotificationPreferences().subscribe({next:value=>this.notificationPreferences=value,error:()=>{}});}
+
+  async saveNotificationPreferences(value:UserNotificationPreferences):Promise<void>{
+    const next={...value};
+    if(next.desktopNotificationsEnabled&&typeof Notification!=='undefined'&&Notification.permission!=='granted'){
+      const permission=await Notification.requestPermission();
+      if(permission!=='granted'){next.desktopNotificationsEnabled=false;this.notice='Browser permission was not granted. Desktop notifications remain disabled.';}
+    }
+    this.isSavingNotificationPreferences=true;
+    this.userService.updateNotificationPreferences(next).pipe(finalize(()=>this.isSavingNotificationPreferences=false)).subscribe({next:saved=>{this.notificationPreferences=saved;this.notice='Notification preferences saved.';},error:()=>{this.notificationPreferences=next;this.notice='Profile API unavailable. Notification preferences are saved in local preview only.';}});
+  }
 
   loadProfile(): void {
     this.isLoadingProfile = true;

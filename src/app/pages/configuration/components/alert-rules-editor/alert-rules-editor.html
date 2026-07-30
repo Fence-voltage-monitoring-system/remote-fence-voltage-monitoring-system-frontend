@@ -57,7 +57,7 @@
         <label><input type="checkbox" [ngModel]="value.notifyFieldAdmins" (ngModelChange)="update('notifyFieldAdmins',$event)" /> Field administrators</label>
         <label><input type="checkbox" [ngModel]="value.notifyMaintenance" (ngModelChange)="update('notifyMaintenance',$event)" /> Maintenance staff</label>
       </div>
-      <div class="escalation"><label class="rule compact"><span><strong>Escalate unacknowledged alerts</strong><small>Notify the next responsible level when no action is taken</small></span><input type="checkbox" [ngModel]="value.escalationEnabled" (ngModelChange)="update('escalationEnabled',$event)" /></label>@if(value.escalationEnabled){<label>Escalation delay (minutes)<input type="number" min="1" [ngModel]="value.escalationDelayMinutes" (ngModelChange)="update('escalationDelayMinutes',+$event)" /></label>}</div>
+      <div class="escalation"><label class="rule compact"><span><strong>Escalation workflow</strong><small>Escalate when administrators or assigned maintenance staff do not respond</small></span><input type="checkbox" [ngModel]="value.escalationEnabled" (ngModelChange)="update('escalationEnabled',$event)" /></label>@if(value.escalationEnabled){<label>Administrator acknowledgement timeout (minutes)<input type="number" min="1" [ngModel]="value.acknowledgementTimeoutMinutes" (ngModelChange)="update('acknowledgementTimeoutMinutes',+$event)" /></label><label>Maintenance acceptance timeout (minutes)<input type="number" min="1" [ngModel]="value.maintenanceAcceptanceTimeoutMinutes" (ngModelChange)="update('maintenanceAcceptanceTimeoutMinutes',+$event)" /></label>}</div>
     </fieldset>
   </div>
 </section>

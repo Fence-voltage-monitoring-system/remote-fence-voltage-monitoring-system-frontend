@@ -9,5 +9,5 @@
     </section>
   </div>
 </main>
-@if (isRegistrationOpen) { <app-fence-registration-drawer (closed)="closeRegistration()" (draftSaved)="saveDraft($event)" (registered)="registerFence($event)" /> }
-@if (selectedFence) { <app-fence-edit-drawer [fence]="selectedFence" (closed)="closeEdit()" (saved)="saveFence($event)" (deleted)="deleteFence($event)" /> }
+@if (isRegistrationOpen) { <app-fence-registration-drawer [maintenanceUsers]="maintenanceUsers" (closed)="closeRegistration()" (draftSaved)="saveDraft($event)" (registered)="registerFence($event)" /> }
+@if (selectedFence) { <app-fence-edit-drawer [fence]="selectedFence" [maintenanceUsers]="maintenanceUsers" (closed)="closeEdit()" (saved)="saveFence($event)" (deleted)="deleteFence($event)" /> }

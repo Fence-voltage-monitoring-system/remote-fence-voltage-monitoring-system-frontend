@@ -1,0 +1,45 @@
+<section class="editor">
+  <header><h2>Session Management</h2><p>Control authenticated session lifetime, concurrent access, re-authentication and administrative revocation.</p></header>
+  <div class="notice"><span>🔐</span><p><strong>The backend is authoritative.</strong> Cookies, refresh tokens, expiry and revocation must be enforced server-side. The browser never stores passwords or token secrets.</p></div>
+
+  <div class="summary">
+    <article><span>Active sessions</span><strong>{{overview.totalActiveSessions}}</strong></article>
+    <article><span>Active users</span><strong>{{overview.activeUsers}}</strong></article>
+    <article><span>Administrator sessions</span><strong>{{overview.administratorSessions}}</strong></article>
+    <article><span>Expiring soon</span><strong class="warning">{{overview.expiringSoon}}</strong></article>
+    <article><span>Suspicious</span><strong class="danger">{{overview.suspiciousSessions}}</strong></article>
+  </div>
+
+  <div class="columns">
+    <fieldset><legend>Session Lifetime</legend><div class="fields">
+      <label>Maximum lifetime (hours)<input type="number" min="1" max="168" [ngModel]="value.maximumSessionHours" (ngModelChange)="update('maximumSessionHours',+$event)"/><small>Absolute limit even while the user remains active.</small></label>
+      <label>Idle timeout (minutes)<input type="number" min="5" [ngModel]="value.idleTimeoutMinutes" (ngModelChange)="update('idleTimeoutMinutes',+$event)"/><small>Sign out after no authenticated activity.</small></label>
+      <label>Remember-me lifetime (days)<input type="number" min="1" max="30" [ngModel]="value.rememberMeDays" (ngModelChange)="update('rememberMeDays',+$event)"/></label>
+      <label>Logout warning (minutes)<input type="number" min="1" [ngModel]="value.logoutWarningMinutes" (ngModelChange)="update('logoutWarningMinutes',+$event)"/><small>Must be shorter than the idle timeout.</small></label>
+    </div></fieldset>
+    <fieldset><legend>Concurrent Sessions</legend><div class="fields one">
+      <label>Maximum sessions per user<input type="number" min="1" max="10" [ngModel]="value.maximumConcurrentSessions" (ngModelChange)="update('maximumConcurrentSessions',+$event)"/></label>
+      <label>When the limit is reached<select [ngModel]="value.newLoginBehaviour" (ngModelChange)="update('newLoginBehaviour',$event)"><option value="REVOKE_OLDEST">Allow new login and revoke oldest</option><option value="REJECT_NEW">Reject the new login</option></select></label>
+    </div><div class="example">A user may keep {{value.maximumConcurrentSessions}} active session(s). {{value.newLoginBehaviour === 'REVOKE_OLDEST' ? 'The oldest session ends when the limit is exceeded.' : 'Additional login attempts are rejected.'}}</div></fieldset>
+  </div>
+
+  <fieldset><legend>Sensitive-action Re-authentication</legend><div class="toggles"><label class="toggle"><span><strong>Require recent authentication</strong><small>Ask for the password again before configuration, user-role, deletion, cleanup and sensitive export actions.</small></span><input type="checkbox" [ngModel]="value.requireReauthentication" (ngModelChange)="update('requireReauthentication',$event)"/></label>@if(value.requireReauthentication){<label class="number-toggle"><span>Re-authentication valid for</span><div><input type="number" min="1" max="30" [ngModel]="value.reauthenticationValidityMinutes" (ngModelChange)="update('reauthenticationValidityMinutes',+$event)"/><em>minutes</em></div></label>}</div></fieldset>
+
+  <fieldset><legend>Automatic Revocation</legend><div class="toggles five">
+    <label class="toggle"><span><strong>Password changed</strong><small>End other sessions after a user changes their password.</small></span><input type="checkbox" [ngModel]="value.revokeOnPasswordChange" (ngModelChange)="update('revokeOnPasswordChange',$event)"/></label>
+    <label class="toggle mandatory"><span><strong>Password reset</strong><small>Required: end every existing session after an administrator reset.</small></span><input type="checkbox" [ngModel]="value.revokeOnPasswordReset" (ngModelChange)="update('revokeOnPasswordReset',$event)"/></label>
+    <label class="toggle"><span><strong>Role or scope changed</strong><small>Require new authorization claims after assignments change.</small></span><input type="checkbox" [ngModel]="value.revokeOnRoleOrScopeChange" (ngModelChange)="update('revokeOnRoleOrScopeChange',$event)"/></label>
+    <label class="toggle mandatory"><span><strong>Account deactivated</strong><small>Required: immediately end all sessions for the account.</small></span><input type="checkbox" [ngModel]="value.revokeOnAccountDeactivation" (ngModelChange)="update('revokeOnAccountDeactivation',$event)"/></label>
+    <label class="toggle"><span><strong>Suspicious login detected</strong><small>End existing sessions when the security engine identifies a risky login.</small></span><input type="checkbox" [ngModel]="value.revokeOnSuspiciousLogin" (ngModelChange)="update('revokeOnSuspiciousLogin',$event)"/></label>
+  </div></fieldset>
+
+  <fieldset><legend>Active Sessions</legend>
+    @if(actionNotice){<div class="action-notice">{{actionNotice}}</div>}
+    <div class="table-wrap"><table><thead><tr><th>User</th><th>Device</th><th>IP / location</th><th>Last activity</th><th>Expires</th><th>Actions</th></tr></thead><tbody>
+      @for(session of overview.sessions;track session.id){<tr [class.suspicious]="session.suspicious"><td><strong>{{session.userName}}</strong><small>{{session.role}}</small></td><td>{{session.device}}<small>{{session.browser}} @if(session.current){· Current session}</small></td><td><code>{{session.ipAddress}}</code><small>{{session.approximateLocation}}</small></td><td>{{session.lastActivityAt | date:'dd MMM, HH:mm'}}</td><td>{{session.expiresAt | date:'dd MMM, HH:mm'}}</td><td><div class="actions"><button type="button" [disabled]="session.current||!!actionInProgress" (click)="requestRevoke('SESSION',session)">Revoke</button><button type="button" [disabled]="session.current||!!actionInProgress" (click)="requestRevoke('USER',session)">All user sessions</button></div></td></tr>}
+    </tbody></table></div>
+    @if(loadingSessions){<p class="loading">Loading active sessions…</p>}
+  </fieldset>
+
+  @if(pendingAction){<div class="confirmation" role="dialog" aria-modal="true"><div><h3>{{pendingAction.type === 'SESSION' ? 'Revoke session' : 'Revoke all user sessions'}}</h3><p>This immediately signs {{pendingAction.session.userName}} out. The action is recorded in the audit log.</p><label>Administrative reason<textarea [(ngModel)]="revocationReason" placeholder="Explain why access must be revoked"></textarea></label><footer><button type="button" (click)="cancelRevoke()">Cancel</button><button class="danger-button" type="button" [disabled]="!revocationReason.trim()||!!actionInProgress" (click)="confirmRevoke()">{{actionInProgress ? 'Revoking…' : 'Confirm revocation'}}</button></footer></div></div>}
+</section>

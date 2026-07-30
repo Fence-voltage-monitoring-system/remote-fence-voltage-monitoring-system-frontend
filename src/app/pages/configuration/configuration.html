@@ -11,11 +11,16 @@
       <app-notification-settings-editor [value]="notificationValue" (valueChange)="notificationValue=$event" />
     } @else if(active === 'retention') {
       <app-data-retention-editor [value]="retentionValue" (valueChange)="retentionValue=$event" (cleanupRequested)="requestManualCleanup()" />
+    } @else if(active === 'security') {
+      <app-security-policy-editor [value]="securityValue" (valueChange)="securityValue=$event" />
+    } @else if(active === 'sessions') {
+      <app-session-management-editor [value]="sessionValue" (valueChange)="sessionValue=$event" />
     } @else {
       <app-voltage-threshold-editor [value]="voltageValue" (valueChange)="voltageValue=$event" />
     }
   </section>
-  @if(!valid){<div class="validation">Please correct the highlighted configuration values before saving.</div>}
-  <footer><p>Last modified by <strong>Suresh Ambegoda</strong> on <code>{{lastModified}}</code></p><div><button (click)="reset()">↻ Reset to Default</button><button (click)="cancel()" [disabled]="!dirty">Cancel</button><button class="save" [disabled]="!dirty||!valid" (click)="showSave=true">▣ Save Configuration</button></div></footer>
+  @if(isLoading){<div class="notice" role="status">Loading saved configuration…</div>}
+  @if(!valid){<div class="validation" role="alert">@for(message of validationMessages; track message){<div>{{message}}</div>}</div>}
+  <footer><p>Last modified by <strong>{{lastModifiedBy}}</strong> on <code>{{lastModified}}</code></p><div><button (click)="reset()" [disabled]="isLoading||isSaving">↻ Reset to Default</button><button (click)="cancel()" [disabled]="!dirty||isSaving">Cancel</button><button class="save" [disabled]="!dirty||!valid||isLoading||isSaving" (click)="showSave=true">{{isSaving ? 'Saving…' : '▣ Save Configuration'}}</button></div></footer>
 </div></main>
 @if(showSave){<app-save-configuration-modal (closed)="showSave=false" (confirmed)="confirmSave($event)" />}

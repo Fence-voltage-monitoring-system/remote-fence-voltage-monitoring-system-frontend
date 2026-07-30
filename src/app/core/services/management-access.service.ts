@@ -14,6 +14,7 @@ export class ManagementAccessService {
 
   setScope(scope: ManagementScope): void { this.scope.set(scope); }
   get canManage(): boolean { return this.scope().role !== 'MAINTENANCE'; }
+  get canConfigureSystem(): boolean { return this.scope().role === 'SUPER_ADMIN'; }
   get lockedProvince(): string { return this.scope().role === 'SUPER_ADMIN' ? '' : this.scope().provinces[0] ?? ''; }
   get lockedDistrict(): string { return this.scope().role === 'FIELD_ADMIN' ? this.scope().districts[0] ?? '' : ''; }
   canView(province: string, district: string): boolean {

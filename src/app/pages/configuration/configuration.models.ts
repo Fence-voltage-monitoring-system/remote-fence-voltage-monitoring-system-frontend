@@ -43,7 +43,8 @@ export interface AlertRuleSettings {
   websocketEnabled: boolean;
   smsEnabled: boolean;
   escalationEnabled: boolean;
-  escalationDelayMinutes: number;
+  acknowledgementTimeoutMinutes: number;
+  maintenanceAcceptanceTimeoutMinutes: number;
   notifySuperAdmins: boolean;
   notifyRegionalAdmins: boolean;
   notifyFieldAdmins: boolean;
@@ -57,18 +58,6 @@ export interface NotificationSettings {
   warningAlertsEnabled: boolean;
   maintenanceUpdatesEnabled: boolean;
   systemUpdatesEnabled: boolean;
-  soundEnabled: boolean;
-  desktopNotificationsEnabled: boolean;
-  markAsReadOnOpen: boolean;
-  retentionDays: number;
-  quietHoursEnabled: boolean;
-  quietHoursStart: string;
-  quietHoursEnd: string;
-  allowCriticalDuringQuietHours: boolean;
-  digestEnabled: boolean;
-  digestIntervalMinutes: number;
-  groupSimilarNotifications: boolean;
-  groupingWindowMinutes: number;
 }
 export interface DataRetentionSettings {
   rawTelemetryDays: number;
@@ -83,5 +72,59 @@ export interface DataRetentionSettings {
   automaticCleanupEnabled: boolean;
   cleanupSchedule: 'DAILY' | 'WEEKLY' | 'MONTHLY';
   cleanupTime: string;
+}
+export interface SecurityPolicySettings {
+  minimumPasswordLength: number;
+  passwordHistoryCount: number;
+  temporaryPasswordExpiryHours: number;
+  forceChangeAfterReset: boolean;
+  failedLoginAttempts: number;
+  failedAttemptWindowMinutes: number;
+  accountLockMinutes: number;
+  requireMfaForSuperAdmins: boolean;
+  requireMfaForOtherAdmins: boolean;
+  inactiveAccountDays: number;
+  notifyOnAccountLockout: boolean;
+  notifyOnPasswordChange: boolean;
+  notifyOnNewDeviceLogin: boolean;
+  notifyOnScopeChange: boolean;
+}
+export interface SessionManagementSettings {
+  maximumSessionHours: number;
+  idleTimeoutMinutes: number;
+  rememberMeDays: number;
+  logoutWarningMinutes: number;
+  maximumConcurrentSessions: number;
+  newLoginBehaviour: 'REVOKE_OLDEST' | 'REJECT_NEW';
+  requireReauthentication: boolean;
+  reauthenticationValidityMinutes: number;
+  revokeOnPasswordChange: boolean;
+  revokeOnPasswordReset: boolean;
+  revokeOnRoleOrScopeChange: boolean;
+  revokeOnAccountDeactivation: boolean;
+  revokeOnSuspiciousLogin: boolean;
+}
+export interface ActiveSessionRecord {
+  id: string;
+  userId: number;
+  userName: string;
+  role: string;
+  device: string;
+  browser: string;
+  ipAddress: string;
+  approximateLocation: string;
+  signedInAt: string;
+  lastActivityAt: string;
+  expiresAt: string;
+  current: boolean;
+  suspicious: boolean;
+}
+export interface SessionOverview {
+  totalActiveSessions: number;
+  activeUsers: number;
+  administratorSessions: number;
+  expiringSoon: number;
+  suspiciousSessions: number;
+  sessions: ActiveSessionRecord[];
 }
 export type ConfigurationSection='general'|'voltage'|'alerts'|'notifications'|'retention'|'security'|'sessions'|'map'|'health';

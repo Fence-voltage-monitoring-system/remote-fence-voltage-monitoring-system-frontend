@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
 import { Configuration } from './configuration';
 
 describe('Configuration', () => {
   async function createComponent() {
-    await TestBed.configureTestingModule({ imports: [Configuration] }).compileComponents();
+    await TestBed.configureTestingModule({ imports: [Configuration], providers:[provideHttpClient()] }).compileComponents();
     return TestBed.createComponent(Configuration).componentInstance;
   }
 
@@ -45,4 +46,10 @@ describe('Configuration', () => {
     component.retentionValue = { ...component.retentionValue, hourlySummaryDays: 30 };
     expect(component.valid).toBe(false);
   });
+
+  it('validates security policy safety limits',async()=>{const component=await createComponent();component.active='security';expect(component.valid).toBe(true);component.securityValue={...component.securityValue,minimumPasswordLength:6};expect(component.valid).toBe(false);});
+
+  it('requires MFA for super administrators',async()=>{const component=await createComponent();component.active='security';component.securityValue={...component.securityValue,requireMfaForSuperAdmins:false};expect(component.valid).toBe(false);expect(component.validationMessages).toContain('MFA must remain enabled for super administrators.');});
+
+  it('validates mandatory session revocation rules',async()=>{const component=await createComponent();component.active='sessions';expect(component.valid).toBe(true);component.sessionValue={...component.sessionValue,revokeOnPasswordReset:false};expect(component.valid).toBe(false);});
 });

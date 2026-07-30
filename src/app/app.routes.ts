@@ -5,6 +5,7 @@ import { UserProfilePage } from './pages/user-profile/user-profile';
 import { FenceManagement } from './pages/fence-management/fence-management';
 import { SectionManagement } from './pages/section-management/section-management';
 import { managementGuard } from './core/guards/management.guard';
+import { superAdminGuard } from './core/guards/super-admin.guard';
 import { HistoricalAnalysis } from './pages/historical-analysis/historical-analysis';
 import { Notifications } from './pages/notifications/notifications';
 import { Alerts } from './pages/alerts/alerts';
@@ -48,6 +49,6 @@ export const routes: Routes = [
   {
     path: 'configuration',
     component: Configuration,
-    canActivate: [managementGuard]
+    canActivate: [superAdminGuard]
   }
 ];

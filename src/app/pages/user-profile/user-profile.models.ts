@@ -12,3 +12,15 @@ export interface UpdateCurrentUserProfileRequest {
   fullName: string;
   contactNumber: string;
 }
+export interface UserNotificationPreferences {
+  soundEnabled: boolean;
+  desktopNotificationsEnabled: boolean;
+  markAsReadOnOpen: boolean;
+  quietHoursEnabled: boolean;
+  quietHoursStart: string;
+  quietHoursEnd: string;
+  groupSimilarNotifications: boolean;
+  groupingWindowMinutes: number;
+  digestEnabled: boolean;
+  digestIntervalMinutes: number;
+}
