@@ -1,0 +1,36 @@
+<section class="editor">
+  <header><h2>Data Retention</h2><p>Control how long operational records remain available before archival and scheduled deletion.</p></header>
+
+  <div class="warning"><span>⚠</span><p><strong>Retention changes affect permanent records.</strong> Cleanup and deletion are performed by audited backend jobs. Confirm organizational requirements before reducing any period.</p></div>
+
+  <div class="summary">
+    <article><span>Database storage</span><strong>68.4 GB</strong><i><b style="width:68%"></b></i><small>68% of 100 GB allocated</small></article>
+    <article><span>Archive storage</span><strong>124.8 GB</strong><i><b style="width:42%"></b></i><small>42% of 300 GB allocated</small></article>
+    <article><span>Last cleanup</span><strong class="small-value">27 Jul 2026 · 02:00</strong><small>Completed · 2.3 GB removed</small></article>
+    <article><span>Next scheduled cleanup</span><strong class="small-value">29 Jul 2026 · {{value.cleanupTime}}</strong><small>{{value.automaticCleanupEnabled ? 'Scheduled' : 'Automatic cleanup disabled'}}</small></article>
+  </div>
+
+  <fieldset>
+    <legend>Retention Periods</legend>
+    <div class="policies">
+      <label><span><strong>Raw telemetry</strong><small>Individual voltage, battery and device readings</small></span><div><input type="number" min="1" [ngModel]="value.rawTelemetryDays" (ngModelChange)="update('rawTelemetryDays',+$event)" /><em>days</em></div></label>
+      <label><span><strong>Hourly summaries</strong><small>Aggregated hourly monitoring values</small></span><div><input type="number" min="1" [ngModel]="value.hourlySummaryDays" (ngModelChange)="update('hourlySummaryDays',+$event)" /><em>days</em></div></label>
+      <label><span><strong>Daily summaries</strong><small>Long-term daily historical aggregates</small></span><div><input type="number" min="1" [ngModel]="value.dailySummaryDays" (ngModelChange)="update('dailySummaryDays',+$event)" /><em>days</em></div></label>
+      <label><span><strong>Alerts and incidents</strong><small>Alert history, acknowledgement, comments and resolution</small></span><div><input type="number" min="1" [ngModel]="value.alertIncidentDays" (ngModelChange)="update('alertIncidentDays',+$event)" /><em>days</em></div></label>
+      <label><span><strong>User notifications</strong><small>Read and delivered notification records</small></span><div><input type="number" min="1" [ngModel]="value.notificationDays" (ngModelChange)="update('notificationDays',+$event)" /><em>days</em></div></label>
+      <label><span><strong>Audit logs</strong><small>Authentication, configuration and administrative operations</small></span><div><input type="number" min="1" [ngModel]="value.auditLogDays" (ngModelChange)="update('auditLogDays',+$event)" /><em>days</em></div></label>
+      <label><span><strong>System and communication logs</strong><small>Gateway connections, errors and delivery diagnostics</small></span><div><input type="number" min="1" [ngModel]="value.systemLogDays" (ngModelChange)="update('systemLogDays',+$event)" /><em>days</em></div></label>
+      <label><span><strong>Generated reports</strong><small>Scheduled and manually exported report files</small></span><div><input type="number" min="1" [ngModel]="value.generatedReportDays" (ngModelChange)="update('generatedReportDays',+$event)" /><em>days</em></div></label>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Archiving and Cleanup</legend>
+    <div class="controls">
+      <label class="switch"><span><strong>Archive before deletion</strong><small>Move eligible records to long-term archive storage before removing them from the operational database.</small></span><input type="checkbox" [ngModel]="value.archiveBeforeDeletion" (ngModelChange)="update('archiveBeforeDeletion',$event)" /></label>
+      <label class="switch"><span><strong>Automatic cleanup</strong><small>Run the backend retention job on the configured schedule.</small></span><input type="checkbox" [ngModel]="value.automaticCleanupEnabled" (ngModelChange)="update('automaticCleanupEnabled',$event)" /></label>
+    </div>
+    @if(value.automaticCleanupEnabled){<div class="schedule"><label>Cleanup frequency<select [ngModel]="value.cleanupSchedule" (ngModelChange)="update('cleanupSchedule',$event)"><option value="DAILY">Daily</option><option value="WEEKLY">Weekly</option><option value="MONTHLY">Monthly</option></select></label><label>Execution time<input type="time" [ngModel]="value.cleanupTime" (ngModelChange)="update('cleanupTime',$event)" /></label></div>}
+    <div class="manual"><div><strong>Manual retention cleanup</strong><p>Queue a backend job using the currently saved policy. A final confirmation and reason will be required by the API.</p></div><button type="button" (click)="cleanupRequested.emit()">Run Cleanup</button></div>
+  </fieldset>
+</section>

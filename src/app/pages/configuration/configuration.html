@@ -1,0 +1,21 @@
+<main><div class="page">
+  <header><div><p>Administration</p><h1>System Configuration</h1><span>Configure operational rules and system values</span></div><b>● SYSTEM ONLINE</b></header>
+  @if(notice){<div class="notice">{{notice}}<button (click)="notice=''">×</button></div>}
+  <section class="layout">
+    <app-configuration-menu [active]="active" (sectionChange)="selectSection($event)" />
+    @if(active === 'general') {
+      <app-general-configuration-editor [value]="generalValue" (valueChange)="generalValue=$event" />
+    } @else if(active === 'alerts') {
+      <app-alert-rules-editor [value]="alertValue" (valueChange)="alertValue=$event" />
+    } @else if(active === 'notifications') {
+      <app-notification-settings-editor [value]="notificationValue" (valueChange)="notificationValue=$event" />
+    } @else if(active === 'retention') {
+      <app-data-retention-editor [value]="retentionValue" (valueChange)="retentionValue=$event" (cleanupRequested)="requestManualCleanup()" />
+    } @else {
+      <app-voltage-threshold-editor [value]="voltageValue" (valueChange)="voltageValue=$event" />
+    }
+  </section>
+  @if(!valid){<div class="validation">Please correct the highlighted configuration values before saving.</div>}
+  <footer><p>Last modified by <strong>Suresh Ambegoda</strong> on <code>{{lastModified}}</code></p><div><button (click)="reset()">↻ Reset to Default</button><button (click)="cancel()" [disabled]="!dirty">Cancel</button><button class="save" [disabled]="!dirty||!valid" (click)="showSave=true">▣ Save Configuration</button></div></footer>
+</div></main>
+@if(showSave){<app-save-configuration-modal (closed)="showSave=false" (confirmed)="confirmSave($event)" />}

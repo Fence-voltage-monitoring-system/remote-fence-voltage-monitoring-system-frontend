@@ -1,0 +1,8 @@
+<section class="feed">
+  <header><nav>@for(tab of tabs;track tab.value){<button [class.active]="filter===tab.value" (click)="filterChange.emit(tab.value)">{{tab.label}}@if(tab.value==='UNREAD'){<b>{{unreadCount}}</b>}</button>}</nav><div><button (click)="markAllRead.emit()">✓ Mark All Read</button><button (click)="clearRead.emit()">× Clear Read</button></div></header>
+  <div class="items">
+    @for(item of displayNotifications;track item.id){
+      <button class="item" [class.unread]="!item.read" [class.selected]="selectedId===item.id" (click)="selected.emit(item)"><span class="dot"></span><i [class]="tone(item)">{{icon(item)}}</i><div class="body"><strong>{{item.title}}</strong><p>{{item.message}}</p><small><b>{{item.fence}}</b> · {{item.section}}</small></div><div class="meta"><time>{{item.time}}</time><span>@for(channel of item.channels;track channel){@if(channel==='SMS'){▯}@else if(channel==='WEBSOCKET'){⌁}@else{♧}}</span></div></button>
+    } @empty { <p class="empty">No notifications match this filter.</p> }
+  </div>
+</section>

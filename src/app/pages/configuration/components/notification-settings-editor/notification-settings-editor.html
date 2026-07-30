@@ -1,0 +1,56 @@
+<section class="editor">
+  <header><h2>Notification Settings</h2><p>Configure global delivery availability and how operational notifications are presented.</p></header>
+
+  <div class="notice"><span>ⓘ</span><p><strong>Recipient scope remains automatic.</strong> Notifications are delivered only to users responsible for the affected province, district, fence or section.</p></div>
+
+  <div class="groups">
+    <fieldset>
+      <legend>Delivery Channels</legend>
+      <div class="cards three">
+        <label class="card"><span class="icon">♧</span><span><strong>In-app notifications</strong><small>Store notifications in the notification centre</small></span><input type="checkbox" [ngModel]="value.inAppEnabled" (ngModelChange)="update('inAppEnabled',$event)" /></label>
+        <label class="card"><span class="icon">⌁</span><span><strong>WebSocket live delivery</strong><small>Push notifications to connected clients immediately</small></span><input type="checkbox" [ngModel]="value.websocketEnabled" (ngModelChange)="update('websocketEnabled',$event)" /></label>
+        <label class="card"><span class="icon">▯</span><span><strong>SMS delivery</strong><small>Allow rules to send messages through the SMS provider</small></span><input type="checkbox" [ngModel]="value.smsEnabled" (ngModelChange)="update('smsEnabled',$event)" /></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Notification Categories</legend>
+      <div class="cards four">
+        <label class="card critical"><span><strong>Critical alerts</strong><small>Wire breaks, critical voltage and offline incidents</small></span><input type="checkbox" [ngModel]="value.criticalAlertsEnabled" (ngModelChange)="update('criticalAlertsEnabled',$event)" /></label>
+        <label class="card warning"><span><strong>Warnings</strong><small>Low voltage, battery and early warning conditions</small></span><input type="checkbox" [ngModel]="value.warningAlertsEnabled" (ngModelChange)="update('warningAlertsEnabled',$event)" /></label>
+        <label class="card"><span><strong>Maintenance updates</strong><small>Assignments, comments and completion updates</small></span><input type="checkbox" [ngModel]="value.maintenanceUpdatesEnabled" (ngModelChange)="update('maintenanceUpdatesEnabled',$event)" /></label>
+        <label class="card"><span><strong>System updates</strong><small>Firmware, configuration and generated report events</small></span><input type="checkbox" [ngModel]="value.systemUpdatesEnabled" (ngModelChange)="update('systemUpdatesEnabled',$event)" /></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>In-app Behaviour</legend>
+      <div class="cards three">
+        <label class="card"><span><strong>Notification sound</strong><small>Play a sound for newly received live notifications</small></span><input type="checkbox" [ngModel]="value.soundEnabled" (ngModelChange)="update('soundEnabled',$event)" /></label>
+        <label class="card"><span><strong>Desktop notifications</strong><small>Use browser notifications when permission is granted</small></span><input type="checkbox" [ngModel]="value.desktopNotificationsEnabled" (ngModelChange)="update('desktopNotificationsEnabled',$event)" /></label>
+        <label class="card"><span><strong>Mark as read on open</strong><small>Mark a notification read when its details are viewed</small></span><input type="checkbox" [ngModel]="value.markAsReadOnOpen" (ngModelChange)="update('markAsReadOnOpen',$event)" /></label>
+      </div>
+      <div class="fields"><label>Notification retention (days)<input type="number" min="1" max="365" [ngModel]="value.retentionDays" (ngModelChange)="update('retentionDays',+$event)" /><small>How long read notifications remain available to users.</small></label></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Quiet Hours</legend>
+      <label class="feature"><span><strong>Enable quiet hours</strong><small>Suppress non-critical SMS, sound and desktop delivery during this period</small></span><input type="checkbox" [ngModel]="value.quietHoursEnabled" (ngModelChange)="update('quietHoursEnabled',$event)" /></label>
+      @if(value.quietHoursEnabled){
+        <div class="fields three-fields">
+          <label>Start time<input type="time" [ngModel]="value.quietHoursStart" (ngModelChange)="update('quietHoursStart',$event)" /></label>
+          <label>End time<input type="time" [ngModel]="value.quietHoursEnd" (ngModelChange)="update('quietHoursEnd',$event)" /></label>
+          <label class="feature compact"><span><strong>Always deliver critical</strong><small>Critical alerts bypass quiet hours</small></span><input type="checkbox" [ngModel]="value.allowCriticalDuringQuietHours" (ngModelChange)="update('allowCriticalDuringQuietHours',$event)" /></label>
+        </div>
+      }
+    </fieldset>
+
+    <fieldset>
+      <legend>Grouping and Digest</legend>
+      <div class="behaviour-grid">
+        <div><label class="feature"><span><strong>Group similar notifications</strong><small>Combine repeated events from the same fence, section and alert type</small></span><input type="checkbox" [ngModel]="value.groupSimilarNotifications" (ngModelChange)="update('groupSimilarNotifications',$event)" /></label>@if(value.groupSimilarNotifications){<label class="number-field">Grouping window (minutes)<input type="number" min="1" [ngModel]="value.groupingWindowMinutes" (ngModelChange)="update('groupingWindowMinutes',+$event)" /></label>}</div>
+        <div><label class="feature"><span><strong>Notification digest</strong><small>Batch non-critical notifications into a periodic summary</small></span><input type="checkbox" [ngModel]="value.digestEnabled" (ngModelChange)="update('digestEnabled',$event)" /></label>@if(value.digestEnabled){<label class="number-field">Digest interval (minutes)<input type="number" min="5" [ngModel]="value.digestIntervalMinutes" (ngModelChange)="update('digestIntervalMinutes',+$event)" /></label>}</div>
+      </div>
+    </fieldset>
+  </div>
+</section>

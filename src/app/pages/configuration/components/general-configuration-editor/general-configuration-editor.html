@@ -1,0 +1,54 @@
+<section class="editor">
+  <header>
+    <h2>General Configuration</h2>
+    <p>Manage system identity, regional preferences and default operational behaviour.</p>
+  </header>
+
+  <div class="settings-grid">
+    <fieldset>
+      <legend>System Identity</legend>
+      <div class="fields two-columns">
+        <label>System name<input [ngModel]="value.systemName" (ngModelChange)="update('systemName', $event)" /></label>
+        <label>Organization name<input [ngModel]="value.organizationName" (ngModelChange)="update('organizationName', $event)" /></label>
+        <label>System short code<input [ngModel]="value.systemCode" (ngModelChange)="update('systemCode', $event)" /></label>
+        <label>Support email<input type="email" [ngModel]="value.supportEmail" (ngModelChange)="update('supportEmail', $event)" /></label>
+        <label>Support contact number<input type="tel" [ngModel]="value.supportPhone" (ngModelChange)="update('supportPhone', $event)" /></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Regional Settings</legend>
+      <div class="fields three-columns">
+        <label>Time zone<select [ngModel]="value.timezone" (ngModelChange)="update('timezone', $event)"><option value="Asia/Colombo">Asia/Colombo (UTC+05:30)</option><option value="UTC">UTC</option></select></label>
+        <label>Date format<select [ngModel]="value.dateFormat" (ngModelChange)="update('dateFormat', $event)"><option value="YYYY-MM-DD">YYYY-MM-DD</option><option value="DD/MM/YYYY">DD/MM/YYYY</option><option value="MM/DD/YYYY">MM/DD/YYYY</option></select></label>
+        <label>Time format<select [ngModel]="value.timeFormat" (ngModelChange)="update('timeFormat', $event)"><option value="24_HOUR">24-hour</option><option value="12_HOUR">12-hour</option></select></label>
+        <label>Default language<select [ngModel]="value.language" (ngModelChange)="update('language', $event)"><option value="en">English</option><option value="si">Sinhala</option><option value="ta">Tamil</option></select></label>
+        <label>Voltage unit<select [ngModel]="value.voltageUnit" (ngModelChange)="update('voltageUnit', $event)"><option value="kV">Kilovolts (kV)</option><option value="V">Volts (V)</option></select></label>
+        <label>Distance unit<select [ngModel]="value.distanceUnit" (ngModelChange)="update('distanceUnit', $event)"><option value="km">Kilometres (km)</option><option value="m">Metres (m)</option></select></label>
+        <label>Coordinate format<select [ngModel]="value.coordinateFormat" (ngModelChange)="update('coordinateFormat', $event)"><option value="DECIMAL_DEGREES">Decimal degrees</option><option value="DMS">Degrees, minutes, seconds</option></select></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Gateway Update Expectations</legend>
+      <div class="fields three-columns">
+        <label>Expected reporting interval (minutes)<input type="number" min="1" [ngModel]="value.expectedReportingIntervalMinutes" (ngModelChange)="update('expectedReportingIntervalMinutes', +$event)" /><small>Must match the interval configured on the gateway.</small></label>
+        <label>Late-arrival grace period (minutes)<input type="number" min="0" [ngModel]="value.lateArrivalGraceMinutes" (ngModelChange)="update('lateArrivalGraceMinutes', +$event)" /><small>Wait after the expected time before showing Delayed.</small></label>
+        <label>Offline timeout after expected time (minutes)<input type="number" min="1" [ngModel]="value.offlineTimeoutMinutes" (ngModelChange)="update('offlineTimeoutMinutes', +$event)" /><small>Mark the gateway Offline after this additional period.</small></label>
+        <label>Stale-data threshold (minutes)<input type="number" min="0" [ngModel]="value.staleDataMinutes" (ngModelChange)="update('staleDataMinutes', +$event)" /><small>Indicates that the displayed reading is no longer current.</small></label>
+        <label>Default historical period<select [ngModel]="value.defaultHistoryPeriod" (ngModelChange)="update('defaultHistoryPeriod', $event)"><option value="1h">1 hour</option><option value="24h">24 hours</option><option value="7d">7 days</option><option value="30d">30 days</option></select></label>
+        <label>Default page size<select [ngModel]="value.pageSize" (ngModelChange)="update('pageSize', +$event)"><option [value]="10">10</option><option [value]="20">20</option><option [value]="50">50</option><option [value]="100">100</option></select></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>System Mode</legend>
+      <div class="switches">
+        <label><span><strong>Maintenance mode</strong><small>Display a maintenance notice and restrict normal operation.</small></span><input type="checkbox" [ngModel]="value.maintenanceMode" (ngModelChange)="update('maintenanceMode', $event)" /></label>
+        <label><span><strong>Allow login during maintenance</strong><small>Permit authorized users to access the system during maintenance.</small></span><input type="checkbox" [ngModel]="value.allowLoginDuringMaintenance" (ngModelChange)="update('allowLoginDuringMaintenance', $event)" /></label>
+        <label><span><strong>Read-only mode</strong><small>Allow viewing data while preventing configuration and management changes.</small></span><input type="checkbox" [ngModel]="value.readOnlyMode" (ngModelChange)="update('readOnlyMode', $event)" /></label>
+      </div>
+      <label class="message">Maintenance message<textarea rows="2" [ngModel]="value.maintenanceMessage" (ngModelChange)="update('maintenanceMessage', $event)"></textarea></label>
+    </fieldset>
+  </div>
+</section>
