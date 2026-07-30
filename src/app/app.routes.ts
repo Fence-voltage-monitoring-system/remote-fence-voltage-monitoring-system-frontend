@@ -36,5 +36,7 @@ export const routes: Routes = [
   { path: 'audit-logs', loadComponent: () => import('./pages/audit-logs/audit-logs').then(page => page.AuditLogsPage), title: 'Audit Logs | Remote Fence Monitoring' },
   { path: 'profile', loadComponent: () => import('./pages/profile/profile').then(page => page.ProfilePage), title: 'My Profile | Remote Fence Monitoring' },
   { path: 'security', loadComponent: () => import('./pages/security/security').then(page => page.SecurityPage), title: 'Security Settings | Remote Fence Monitoring' },
+  { path: 'appearance', loadComponent: () => import('./pages/appearance/appearance').then(page => page.AppearancePage), title: 'Theme & Appearance | Remote Fence Monitoring' },
+  { path: 'help-support', loadComponent: () => import('./pages/help-support/help-support').then(page => page.HelpSupportPage), title: 'Help & Support | Remote Fence Monitoring' },
   { path: '**', redirectTo: '' },
 ];

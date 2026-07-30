@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Output } from '@angular/core';
-import { BellRing, ChevronDown, CircleHelp, createElement, KeyRound, LogOut, Palette, Settings, ShieldCheck, UserRound } from 'lucide';
-import { RouterLink } from '@angular/router';
+import { BellRing, ChevronDown, CircleHelp, createElement, LogOut, Palette, ShieldCheck, UserRound } from 'lucide';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-user-menu',
@@ -13,9 +13,9 @@ export class UserMenuComponent implements AfterViewInit {
   @Output() readonly signOut = new EventEmitter<void>();
   open = false;
 
-  private readonly icons = { UserRound, Settings, BellRing, ShieldCheck, KeyRound, Palette, CircleHelp, LogOut, ChevronDown };
+  private readonly icons = { UserRound, BellRing, ShieldCheck, Palette, CircleHelp, LogOut, ChevronDown };
 
-  constructor(private readonly host: ElementRef<HTMLElement>) {}
+  constructor(private readonly host: ElementRef<HTMLElement>, private readonly router: Router) {}
 
   ngAfterViewInit(): void {
     this.host.nativeElement.querySelectorAll<HTMLElement>('[data-menu-icon]').forEach((placeholder) => {
@@ -31,6 +31,11 @@ export class UserMenuComponent implements AfterViewInit {
 
   choose(): void {
     this.open = false;
+  }
+
+  navigateTo(route: string): void {
+    this.open = false;
+    void this.router.navigateByUrl(route);
   }
 
   requestSignOut(): void {
