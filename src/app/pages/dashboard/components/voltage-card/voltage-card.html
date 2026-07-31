@@ -1,0 +1,5 @@
+<article [class.danger]="data.tone === 'red'" [class.warning]="data.tone === 'warning'">
+    <div class="top"><span>{{data.label}}</span><b>{{data.icon}}</b></div>
+    <div class="metric"><strong>{{data.value}}</strong><small>{{data.unit}}</small></div>
+    <p>{{data.foot}}</p>
+</article>

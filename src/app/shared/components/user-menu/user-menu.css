@@ -1,0 +1,36 @@
+@reference "../../../../styles.css";
+
+:host { @apply relative block; }
+.trigger { @apply flex cursor-pointer items-center gap-2 rounded-lg border border-transparent bg-transparent p-1 text-left text-[#eef4eb] transition-colors hover:border-[#315238] hover:bg-[#18321f] focus-visible:outline-2 focus-visible:outline-[#4ee672]; }
+.avatar { @apply grid size-7 flex-none place-items-center rounded-full border border-[#24713a] bg-[#164326] text-[10px] font-semibold text-[#50e974]; }
+.identity { @apply flex min-w-28 flex-col max-[980px]:hidden; }.identity strong { @apply text-[9px]; }.identity small { @apply mt-[3px] text-[8px] text-[#7e8c7a]; }
+.dropdown { @apply invisible absolute top-[calc(100%+10px)] right-0 z-[1100] w-[310px] origin-top-right translate-y-[-6px] scale-[.98] overflow-x-hidden overflow-y-auto rounded-xl border border-[#40543f] bg-[#17291b] opacity-0 shadow-[0_20px_55px_rgba(0,0,0,.55)] transition-[opacity,transform,visibility] duration-150; max-height:calc(100vh - 78px); overscroll-behavior:contain; scrollbar-gutter:stable; }
+.dropdown.open { @apply visible translate-y-0 scale-100 opacity-100; }
+.dropdown::-webkit-scrollbar { width: 5px; }
+.dropdown::-webkit-scrollbar-track { background: transparent; }
+.dropdown::-webkit-scrollbar-thumb { background: #49634d; border-radius: 99px; }
+.account { @apply flex gap-3 border-b border-[#354a37] bg-[#213723] p-4; }.account .large { @apply size-10 text-xs; }.account div { @apply min-w-0; }.account strong,.account span,.account small { @apply block; }.account strong { @apply truncate text-[11px]; }.account span { @apply mt-1 truncate text-[9px] text-[#a4b0a1]; }.account small { @apply mt-1.5 w-max rounded bg-[#183e22] px-2 py-1 text-[7px] uppercase tracking-wide text-[#4be572]; }
+.menu-section { @apply border-b border-[#354a37] p-1.5 last:border-0; }.menu-section button { @apply grid w-full cursor-pointer grid-cols-[22px_1fr_auto] items-center gap-2 rounded-lg border-0 bg-transparent px-2.5 py-2 text-left text-[#aebaaa] transition-colors hover:bg-[#27402a] hover:text-[#51e477] focus-visible:bg-[#27402a] focus-visible:outline-none; }.menu-section button span strong,.menu-section button span small { @apply block; }.menu-section button span strong { @apply text-[10px] font-medium text-[#e5eee2]; }.menu-section button span small { @apply mt-0.5 text-[8px] text-[#7f8e7c]; }.menu-section button em { @apply grid size-4 place-items-center rounded-full bg-[#e8473d] text-[8px] font-bold not-italic text-white; }
+.sign-out button { @apply text-[#ff655d] hover:bg-[#42221f] hover:text-[#ff655d]; }.sign-out button span strong { @apply text-[#ff655d]; }
+@media(max-width:620px) { .dropdown { @apply fixed top-[62px] right-2 left-auto w-[min(310px,calc(100vw-60px))]; } }
+
+/* At browser zoom or on short laptop screens, keep the complete menu visible
+   instead of making the user discover clipped options below the fold. */
+@media(max-height:760px) {
+  .dropdown { top: calc(100% + 6px); max-height: calc(100vh - 70px); }
+  .account { @apply items-center px-3 py-2.5; }
+  .account .large { @apply size-8; }
+  .account span,.account small { @apply hidden; }
+  .account strong { @apply text-[9px]; }
+  .menu-section { @apply p-1; }
+  .menu-section button { @apply grid-cols-[20px_1fr_auto] gap-1.5 px-2 py-1.5; min-height:34px; }
+  .menu-section button span small { @apply hidden; }
+  .menu-section button span strong { @apply text-[8px]; }
+  .menu-section button svg { width:15px; height:15px; }
+}
+
+/* Scale labels without changing the menu's geometry. */
+.identity strong,.account span,.menu-section button span strong { font-size:calc(9px * var(--ui-text-scale, 1)); }
+.identity small,.menu-section button span small { font-size:calc(8px * var(--ui-text-scale, 1)); }
+.account strong { font-size:calc(11px * var(--ui-text-scale, 1)); }
+.account small { font-size:calc(7px * var(--ui-text-scale, 1)); }

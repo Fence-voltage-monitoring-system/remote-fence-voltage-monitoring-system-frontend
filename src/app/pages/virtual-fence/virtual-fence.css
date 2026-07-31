@@ -1,0 +1,17 @@
+@reference "../../../styles.css";
+
+:host { @apply block min-h-screen; }
+.app-shell { @apply flex min-h-screen bg-[#102114] text-[#edf4e9]; background-image:radial-gradient(circle at 75% 5%,rgba(60,116,67,.14),transparent 30%),linear-gradient(180deg,#142719 0%,#102114 55%,#0d1d11 100%); }
+.page { @apply min-w-0 flex-1; }
+main { @apply mx-auto max-w-[1800px] px-6 pt-6 pb-10 max-[720px]:p-3; }
+.page-intro { @apply mb-5 flex items-end justify-between gap-5 rounded-2xl border border-[#344b36] bg-[#1b3020]/90 px-5 py-4 shadow-[0_14px_35px_rgba(0,0,0,.16)] max-[850px]:items-start max-[850px]:flex-col; }
+.page-heading>span { @apply text-[8px] font-semibold uppercase tracking-[.18em] text-[#4ee672]; }
+.page-heading h1 { @apply mt-1.5 mb-1 text-[22px] font-semibold tracking-[-.02em] text-[#f0f6ed]; }
+.page-heading p { @apply m-0 max-w-[560px] text-[10px] leading-5 text-[#91a18e]; }
+.page-tools { @apply flex items-center gap-2 max-[620px]:w-full max-[620px]:flex-wrap; }
+.page-tools button { @apply flex h-10 cursor-pointer items-center gap-2 rounded-xl border border-[#405943] bg-[#263c2a] px-3.5 text-[9px] text-[#b9c6b6] transition-all duration-200 hover:-translate-y-px hover:border-[#5b7b60] hover:bg-[#2d4632] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#4ee672]; }
+.page-tools button span { @apply text-[15px] leading-none text-[#91a68f]; }
+.monitor-card { @apply overflow-hidden rounded-2xl shadow-[0_22px_55px_rgba(0,0,0,.24)]; }
+.monitor-card app-fence-monitor { @apply block; }
+@media(max-width:620px) { .page-intro { @apply rounded-xl px-4 py-4; }.page-tools button { @apply flex-1 justify-center; } }
+.route-map-section{width:min(100%,1050px);margin:0 auto 20px}

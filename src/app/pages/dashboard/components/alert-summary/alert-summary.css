@@ -1,0 +1,10 @@
+@reference "../../../../../styles.css";
+section { @apply h-[285px] rounded-[14px] border border-[#4a5d45] bg-[#354831] p-[19px]; }
+h2 { @apply mt-0 mb-1 text-[11px]; } section>small { @apply mb-[14px] block font-mono text-[8px] text-[#82907f]; }
+div { @apply my-[18px] flex items-center justify-between text-[9px] text-[#ccd4c9]; }
+i { @apply mr-2 inline-block size-[7px] rounded-full bg-[#4ce36f]; }
+.red { @apply bg-[#ff4c41] text-[#ff4c41]; }
+.amber { @apply bg-[#ffc000] text-[#ffc000]; }
+.gray { @apply bg-[#849083] text-[#849083]; }
+.green { @apply bg-[#4ce36f] text-[#4ce36f]; }
+strong { @apply bg-transparent! font-mono text-xs font-bold; }

@@ -1,0 +1,59 @@
+<div class="app-shell">
+  <app-sidebar />
+  <div class="page">
+    <app-header />
+    <main>
+      <section class="heading">
+        <div><span>Preferences</span><h1>Theme &amp; appearance</h1><p>Personalize how the monitoring workspace looks and feels on this device.</p></div>
+        <div class="heading-actions"><span class="saved" [class.visible]="saved">✓ Changes saved</span><button type="button" class="reset" (click)="reset()">Reset to defaults</button></div>
+      </section>
+
+      <div class="settings-layout">
+        <section class="settings">
+          <article class="setting-card">
+            <header><div class="icon">◐</div><div><h2>Color theme</h2><p>Choose the base appearance for your workspace.</p></div></header>
+            <div class="theme-grid">
+              @for (theme of themes; track theme.value) {
+                <button type="button" class="theme-option" [class.selected]="preferences.theme === theme.value" (click)="setTheme(theme.value)">
+                  <span class="theme-preview" [class]="'theme-preview ' + theme.value"><i></i><b></b><em></em><small></small></span>
+                  <span class="choice-copy"><strong>{{ theme.name }}</strong><small>{{ theme.description }}</small></span>
+                  <span class="radio"></span>
+                </button>
+              }
+            </div>
+          </article>
+
+          <article class="setting-card">
+            <header><div class="icon">✦</div><div><h2>Accent color</h2><p>Used for actions, active states, and data highlights.</p></div></header>
+            <div class="accent-row">
+              @for (accent of accents; track accent.value) {
+                <button type="button" class="accent" [class.selected]="preferences.accent === accent.value" (click)="setAccent(accent.value)">
+                  <i [style.background]="accent.value"></i><span>{{ accent.name }}</span><b>✓</b>
+                </button>
+              }
+            </div>
+          </article>
+
+          <article class="setting-card split-card">
+            <section><header><div class="icon">Aa</div><div><h2>Text size</h2><p>Adjust interface legibility.</p></div></header><div class="segmented"><button type="button" [class.active]="preferences.textSize === 'small'" (click)="setTextSize('small')">Small</button><button type="button" [class.active]="preferences.textSize === 'default'" (click)="setTextSize('default')">Default</button><button type="button" [class.active]="preferences.textSize === 'large'" (click)="setTextSize('large')">Large</button></div></section>
+            <section><header><div class="icon">↕</div><div><h2>Interface density</h2><p>Control spacing between elements.</p></div></header><div class="segmented"><button type="button" [class.active]="preferences.density === 'comfortable'" (click)="setDensity('comfortable')">Comfortable</button><button type="button" [class.active]="preferences.density === 'compact'" (click)="setDensity('compact')">Compact</button></div></section>
+          </article>
+
+          <article class="setting-card toggles">
+            <button type="button" class="toggle-row" (click)="toggleMotion()"><span><strong>Reduce motion</strong><small>Minimize non-essential animations and transitions.</small></span><i [class.on]="preferences.reducedMotion"><b></b></i></button>
+            <button type="button" class="toggle-row" (click)="toggleContrast()"><span><strong>High contrast</strong><small>Increase the separation between text, controls, and surfaces.</small></span><i [class.on]="preferences.highContrast"><b></b></i></button>
+          </article>
+        </section>
+
+        <aside class="preview-card">
+          <div class="preview-heading"><span>LIVE PREVIEW</span><small>Updates as you make changes</small></div>
+          <div class="mini-app" [style.--preview-accent]="preferences.accent">
+            <div class="mini-top"><i>⚡</i><span><b>Fence Monitor</b><small>Operations dashboard</small></span><em></em></div>
+            <div class="mini-body"><nav><i class="active"></i><i></i><i></i><i></i></nav><section><div class="mini-title"><span><small>FENCE STATUS</small><b>North Boundary</b></span><em>LIVE</em></div><div class="metric"><span>Current voltage</span><b>7.42 <small>kV</small></b><div><i></i></div></div><div class="mini-chart"><span></span><svg viewBox="0 0 240 70" preserveAspectRatio="none"><polyline points="0,54 28,48 55,51 82,31 110,37 136,20 163,29 190,15 220,25 240,10" /></svg></div><div class="mini-list"><i></i><span><b>Section F-04</b><small>Operating normally</small></span><em>7.38 kV</em></div></section></div>
+          </div>
+          <p>Appearance preferences are saved locally and apply automatically when you return.</p>
+        </aside>
+      </div>
+    </main>
+  </div>
+</div>

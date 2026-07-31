@@ -4,6 +4,30 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 ## Development server
 
+The dashboard uses `GET /api/dashboard` for overview totals and `GET /api/dashboard/devices/{deviceId}` for alerts and voltage history. In development, `proxy.conf.json` forwards `/api` to `http://localhost:8080`; change its target if the backend uses another port. Response contracts are defined in `src/app/core/models/dashboard-api.ts`.
+
+Until the backend is available, failed requests automatically use the sample dataset in `src/app/core/data/dashboard-mock-data.ts`. The dashboard displays a **Demo mode** notice whenever this fallback is active.
+
+Example overview response:
+
+```json
+{
+  "summary": { "totalFences": 5, "totalDevices": 10, "activeDevices": 8, "criticalAlerts": 2, "lowVoltageFences": 2 },
+  "selectedDevice": { "fenceId": "monaragala", "fenceName": "Monaragala Elephant Protection Fence", "sectionId": "SEC-005", "deviceId": "GTW-MNR-01-005", "voltage": 5.9, "battery": 91, "status": "healthy" }
+}
+```
+
+Example device analytics response:
+
+```json
+{
+  "device": { "fenceId": "monaragala", "fenceName": "Monaragala Elephant Protection Fence", "sectionId": "SEC-005", "deviceId": "GTW-MNR-01-005", "voltage": 5.9, "battery": 91, "status": "healthy" },
+  "voltageHistory": [{ "recordedAt": "2026-07-24T03:00:00Z", "voltage": 5.9 }],
+  "alerts": [{ "id": "alert-1", "title": "Reading Restored", "reference": "SEC-005 · GTW-MNR-01-005", "occurredAt": "2026-07-24T02:56:00Z", "status": "healthy" }],
+  "alertCounts": { "critical": 0, "warning": 0, "offline": 0, "resolved": 18 }
+}
+```
+
 To start a local development server, run:
 
 ```bash

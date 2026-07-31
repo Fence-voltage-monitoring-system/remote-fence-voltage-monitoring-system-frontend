@@ -1,0 +1,95 @@
+<div class="app-shell" (click)="menuDevice = undefined">
+  <app-sidebar />
+  <div class="page">
+    <app-header />
+    <main>
+      <section class="page-heading">
+        <div><span>Asset Administration</span><h1>Device Management</h1><p>Register field hardware, monitor connectivity, and manage assignments across the fence network.</p></div>
+        <div class="heading-actions"><button class="export" type="button" (click)="openAssignment()"><i data-lucide="radio"></i> Assign device</button><button class="add" type="button" (click)="openAdd()"><i data-lucide="plus"></i> Register device</button></div>
+      </section>
+
+      <section class="stats" aria-label="Device statistics">
+        <article><div class="stat-icon"><i data-lucide="cpu"></i></div><div><span>Total devices</span><b>{{devices.length}}</b><small>Across {{fences.length}} fences</small></div></article>
+        <article class="online"><div class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.6a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 20h.01M2 9a14 14 0 0 1 20 0"/></svg></div><div><span>Online</span><b>{{count('online')}}</b><small>{{(count('online') / devices.length * 100).toFixed(0)}}% availability</small></div></article>
+        <article class="warning"><div class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg></div><div><span>Needs attention</span><b>{{count('warning')}}</b><small>Low voltage or signal</small></div></article>
+        <article class="offline"><div class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.48M7.76 16.24a6 6 0 0 1 0-8.48M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14"/></svg></div><div><span>Offline</span><b>{{count('offline')}}</b><small>Communication lost</small></div></article>
+        <article class="unassigned"><div class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div><div><span>Unassigned</span><b>{{unassignedDevices.length}}</b><small>Available inventory</small></div></article>
+      </section>
+
+      <section class="device-panel">
+        <div class="panel-toolbar">
+          <div class="search"><i data-lucide="search"></i><input [(ngModel)]="search" placeholder="Search device, serial, fence or section..." aria-label="Search devices"></div>
+          <label><span>Status</span><select [(ngModel)]="statusFilter"><option value="all">All statuses</option><option value="online">Online</option><option value="warning">Warning</option><option value="offline">Offline</option></select><i data-lucide="chevron-down"></i></label>
+          <label><span>Assignment</span><select [(ngModel)]="assignmentFilter"><option value="all">All assignments</option><option value="assigned">Assigned</option><option value="unassigned">Unassigned</option></select><i data-lucide="chevron-down"></i></label>
+          @if (search || statusFilter !== 'all' || assignmentFilter !== 'all') {<button class="clear" type="button" (click)="clearFilters()"><i data-lucide="x"></i> Clear</button>}
+          <span class="results"><b>{{filteredDevices.length}}</b> of {{devices.length}} devices</span>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Device</th><th>Assignment</th><th>Status</th><th>Telemetry</th><th>Last communication</th><th>Active</th><th></th></tr></thead>
+            <tbody>
+              @for (device of filteredDevices; track device.id) {
+                <tr (click)="selectDevice(device)" [class.selected]="selected === device">
+                  <td><div class="device-cell"><span class="device-icon"><i data-lucide="cpu"></i></span><div><strong>{{device.name}}</strong><small>{{device.id}} <i></i> {{device.serial}}</small><em>{{device.type}}</em></div></div></td>
+                  <td>@if (device.section) {<strong class="fence-name">{{device.fence}}</strong><small class="section">{{device.section}}</small>} @else {<span class="assignment-pill">Unassigned</span><small class="section">Ready for installation</small>}</td>
+                  <td><span class="status-pill" [class]="'status-pill ' + device.status"><i></i>{{device.status}}</span></td>
+                  <td><div class="telemetry"><span><i data-lucide="activity"></i><b>{{device.voltage === null ? '—' : device.voltage.toFixed(1) + ' kV'}}</b></span><span><i data-lucide="signal"></i>{{device.signal}}%</span><span><i data-lucide="battery-charging"></i>{{device.battery}}%</span></div></td>
+                  <td><span class="last-seen">{{device.lastSeen}}</span></td>
+                  <td><button type="button" class="toggle" [class.on]="device.enabled" (click)="toggleEnabled(device, $event)" [attr.aria-label]="device.enabled ? 'Disable device' : 'Enable device'"><i></i></button></td>
+                  <td class="action-cell"><button class="more" type="button" (click)="toggleMenu(device, $event)"><i data-lucide="more-horizontal"></i></button>@if (menuDevice === device) {<div class="row-menu" (click)="$event.stopPropagation()">@if (device.section) {<button type="button" (click)="unassign(device)"><i data-lucide="radio"></i>Unassign device</button>} @else {<button type="button" (click)="openAssignment(device); menuDevice = undefined"><i data-lucide="radio"></i>Assign to section</button>}<button type="button" (click)="openEdit(device)"><i data-lucide="pencil"></i>Edit device</button><button class="danger" type="button" (click)="remove(device)"><i data-lucide="trash-2"></i>Remove</button></div>}</td>
+                </tr>
+              } @empty {<tr><td colspan="7"><div class="empty"><i data-lucide="sliders-horizontal"></i><b>No matching devices</b><span>Try changing or clearing the filters.</span><button type="button" (click)="clearFilters()">Clear filters</button></div></td></tr>}
+            </tbody>
+          </table>
+        </div>
+        <footer><span>Showing {{filteredDevices.length}} devices</span><div><button disabled>Previous</button><b>1</b><button disabled>Next</button></div></footer>
+      </section>
+    </main>
+  </div>
+
+  @if (selected && !dialogOpen && !assignmentOpen) {
+    <button class="drawer-backdrop" type="button" (click)="selected = undefined" aria-label="Close device details"></button>
+    <aside class="device-details" aria-label="Device details" (click)="$event.stopPropagation()">
+      <header><div><span>Device record</span><h2>{{selected.name}}</h2><p>{{selected.id}} &middot; {{selected.serial}}</p></div><button class="details-close" type="button" (click)="selected = undefined" aria-label="Close device details"><span aria-hidden="true">&times;</span></button></header>
+      <div class="detail-status"><span class="status-pill" [class]="'status-pill ' + selected.status"><i></i>{{selected.status}}</span><span [class.unassigned]="!selected.section">{{selected.section ? 'Assigned' : 'Unassigned'}}</span></div>
+      <section><h3>Assignment</h3><dl><div><dt>Fence</dt><dd>{{selected.fence || 'Not assigned'}}</dd></div><div><dt>Section</dt><dd>{{selected.section || 'Not assigned'}}</dd></div><div><dt>Device type</dt><dd>{{selected.type}}</dd></div></dl></section>
+      <section><h3>Current telemetry</h3><div class="detail-metrics"><article><span>Voltage</span><b>{{selected.voltage === null ? '—' : selected.voltage.toFixed(1) + ' kV'}}</b></article><article><span>Battery</span><b>{{selected.battery}}%</b></article><article><span>Signal</span><b>{{selected.signal}}%</b></article><article><span>Last communication</span><b>{{selected.lastSeen}}</b></article></div></section>
+      <footer>@if (selected.section) {<button type="button" (click)="unassign(selected)">Unassign device</button>} @else {<button class="primary" type="button" (click)="openAssignment(selected)">Assign to section</button>}<button type="button" (click)="openEdit(selected)">Edit device</button></footer>
+    </aside>
+  }
+
+  @if (dialogOpen) {
+    <button class="drawer-backdrop register-backdrop" type="button" (click)="dialogOpen = false" aria-label="Close device form"></button>
+    <form class="register-drawer" (submit)="$event.preventDefault(); save()" (click)="$event.stopPropagation()" aria-label="Register device">
+      <header><div><span>{{editing ? 'Update registry' : 'New field asset'}}</span><h2>{{editing ? 'Edit device' : 'Register device'}}</h2><p>{{editing ? 'Update the device record below.' : 'Add hardware to your unassigned device inventory.'}}</p></div><button class="register-close" type="button" (click)="dialogOpen = false" aria-label="Close device form" title="Close"><span aria-hidden="true">&times;</span></button></header>
+      <div class="register-body">
+        <div class="register-intro"><span class="register-icon"><i data-lucide="cpu"></i></span><div><strong>Device identity</strong><small>Use the name and serial number printed on the field hardware.</small></div></div>
+        <div class="form-grid">
+          <label><span>Device name</span><input name="name" [(ngModel)]="form.name" placeholder="e.g. East Gate Monitor" autocomplete="off" [class.invalid]="submitted && !form.name.trim()"><small>A clear name makes the device easier to find later.</small></label>
+          <label><span>Serial number</span><input name="serial" [(ngModel)]="form.serial" placeholder="e.g. SN-2026-0062" autocomplete="off" [class.invalid]="submitted && !form.serial.trim()"><small>Enter the unique serial shown on the device label.</small></label>
+          <div class="assignment-heading"><span>Section assignment</span><small>Optional</small></div>
+          <label><span>Electric fence</span><select name="registrationFence" [(ngModel)]="registrationFence" (ngModelChange)="registrationSection = ''">@for (fence of fences; track fence) {<option [value]="fence">{{fence}}</option>}</select></label>
+          <label><span>Fence section</span><select name="registrationSection" [(ngModel)]="registrationSection"><option value="">Leave unassigned</option>@for (section of availableRegistrationSections; track section) {<option [value]="section">{{section}}</option>}</select><small>Only sections without an active device are shown.</small></label>
+          <div class="registration-note"><i data-lucide="check"></i><span><strong>{{registrationSection ? (editing ? 'Assignment will be updated' : 'Device will be assigned') : 'Ready for assignment'}}</strong><small>{{registrationSection ? 'The device will be linked to ' + registrationSection + '.' : 'The device will be added to unassigned inventory and can be linked later.'}}</small></span></div>
+        </div>
+        @if (submitted && (!form.name.trim() || !form.serial.trim())) {<p class="form-error">Enter a device name and serial number before saving.</p>}
+      </div>
+      <footer><button type="button" (click)="dialogOpen = false">Cancel</button><button class="save" type="submit"><i data-lucide="check"></i>{{editing ? 'Save changes' : 'Register device'}}</button></footer>
+    </form>
+  }
+
+  @if (assignmentOpen) {
+    <div class="drawer-backdrop" (click)="closeAssignment()"></div>
+    <aside class="assignment-drawer" aria-label="Assign device" (click)="$event.stopPropagation()">
+      <header><div><h2>Assign Device</h2><p>3-step assignment wizard</p></div><button type="button" (click)="closeAssignment()" aria-label="Close assignment"><i data-lucide="x"></i></button></header>
+      <div class="wizard-progress"><div [class.active]="wizardStep >= 1"><i></i><span>Step 1: Select Device</span></div><div [class.active]="wizardStep >= 2"><i></i><span>Step 2: Select Location</span></div><div [class.active]="wizardStep >= 3"><i></i><span>Step 3: Confirm</span></div></div>
+      <div class="wizard-viewport">
+        @if (wizardStep === 1) {<section class="wizard-step slide-in"><h3>Select unassigned device</h3><div class="device-options">@for (device of unassignedDevices; track device.id) {<button type="button" [class.selected]="selectedUnassigned === device" (click)="selectedUnassigned = device"><strong>{{device.id}}</strong><span>{{device.serial}} &middot; Not assigned</span><small>{{device.type}}</small></button>}</div></section>}
+        @if (wizardStep === 2) {<section class="wizard-step slide-in"><h3>Select assignment location</h3><label><span>Electric fence</span><select [(ngModel)]="assignmentFence" (ngModelChange)="assignmentSection = ''">@for (fence of fences; track fence) {<option [value]="fence">{{fence}}</option>}</select></label><label><span>Available fence section</span><select [(ngModel)]="assignmentSection"><option value="">Select an unassigned section</option>@for (section of availableSections; track section) {<option [value]="section">{{section}}</option>}</select><small>Only sections without an active device are available.</small></label></section>}
+        @if (wizardStep === 3) {<section class="wizard-step slide-in"><h3>Confirm assignment</h3><div class="confirm-card"><span>Device</span><strong>{{selectedUnassigned?.id}}</strong><small>{{selectedUnassigned?.serial}} &middot; {{selectedUnassigned?.type}}</small></div><div class="assignment-link"><i data-lucide="radio"></i><span></span></div><div class="confirm-card"><span>Installation location</span><strong>{{assignmentSection}}</strong><small>{{assignmentFence}}</small></div><p class="confirm-note"><i data-lucide="check"></i>The device will begin reporting telemetry after assignment.</p></section>}
+      </div>
+      <footer><button type="button" (click)="previousAssignmentStep()">{{wizardStep === 1 ? 'Cancel' : 'Back'}}</button><button class="continue" type="button" (click)="nextAssignmentStep()" [disabled]="(wizardStep === 1 && !selectedUnassigned) || (wizardStep === 2 && !assignmentSection.trim())">{{wizardStep === 3 ? 'Confirm assignment' : 'Continue'}}</button></footer>
+    </aside>
+  }
+</div>
