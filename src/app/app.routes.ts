@@ -10,6 +10,7 @@ import { HistoricalAnalysis } from './pages/historical-analysis/historical-analy
 import { Notifications } from './pages/notifications/notifications';
 import { Alerts } from './pages/alerts/alerts';
 import { Configuration } from './pages/configuration/configuration';
+import { Reports } from './pages/reports/reports';
 
 export const routes: Routes = [
   {
@@ -50,5 +51,10 @@ export const routes: Routes = [
     path: 'configuration',
     component: Configuration,
     canActivate: [superAdminGuard]
+  },
+  {
+    path: 'reports',
+    component: Reports,
+    canActivate: [managementGuard]
   }
 ];

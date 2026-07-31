@@ -2,26 +2,30 @@ import { Component, OnInit, inject } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize } from 'rxjs';
 import { ConfigurationService, ConfigurationValue } from '../../core/services/configuration.service';
+import { MapSettingsService } from '../../core/services/map-settings.service';
 import { ConfigurationMenu } from './components/configuration-menu/configuration-menu';
 import { AlertRulesEditor } from './components/alert-rules-editor/alert-rules-editor';
 import { NotificationSettingsEditor } from './components/notification-settings-editor/notification-settings-editor';
 import { DataRetentionEditor } from './components/data-retention-editor/data-retention-editor';
 import { SecurityPolicyEditor } from './components/security-policy-editor/security-policy-editor';
 import { SessionManagementEditor } from './components/session-management-editor/session-management-editor';
+import { MapSettingsEditor } from './components/map-settings-editor/map-settings-editor';
+import { SystemHealth } from './components/system-health/system-health';
 import { GeneralConfigurationEditor } from './components/general-configuration-editor/general-configuration-editor';
 import { SaveConfigurationModal } from './components/save-configuration-modal/save-configuration-modal';
 import { VoltageThresholdEditor } from './components/voltage-threshold-editor/voltage-threshold-editor';
-import { AlertRuleSettings, ConfigurationSection, DataRetentionSettings, GeneralConfiguration, NotificationSettings, SecurityPolicySettings, SessionManagementSettings, VoltageThresholds } from './configuration.models';
+import { AlertRuleSettings, ConfigurationSection, DataRetentionSettings, GeneralConfiguration, MapSettings, NotificationSettings, SecurityPolicySettings, SessionManagementSettings, VoltageThresholds } from './configuration.models';
 
 @Component({
   selector: 'app-configuration',
   standalone: true,
-  imports: [ConfigurationMenu, GeneralConfigurationEditor, AlertRulesEditor, NotificationSettingsEditor, DataRetentionEditor, SecurityPolicyEditor, SessionManagementEditor, VoltageThresholdEditor, SaveConfigurationModal],
+  imports: [ConfigurationMenu, GeneralConfigurationEditor, AlertRulesEditor, NotificationSettingsEditor, DataRetentionEditor, SecurityPolicyEditor, SessionManagementEditor, MapSettingsEditor, SystemHealth, VoltageThresholdEditor, SaveConfigurationModal],
   templateUrl: './configuration.html',
   styleUrl: './configuration.css'
 })
 export class Configuration implements OnInit {
   private readonly service=inject(ConfigurationService);
+  private readonly mapSettingsStore=inject(MapSettingsService);
   readonly voltageDefaults: VoltageThresholds = { healthyKv: 5, warningKv: 3, criticalKv: 1.5, lowBatteryPercent: 20 };
   readonly generalDefaults: GeneralConfiguration = {
     systemName: 'Remote Voltage Monitoring System', organizationName: 'Department of Wildlife Conservation', systemCode: 'REFVMS',
@@ -55,6 +59,7 @@ export class Configuration implements OnInit {
   };
   readonly securityDefaults:SecurityPolicySettings={minimumPasswordLength:12,passwordHistoryCount:5,temporaryPasswordExpiryHours:24,forceChangeAfterReset:true,failedLoginAttempts:5,failedAttemptWindowMinutes:15,accountLockMinutes:30,requireMfaForSuperAdmins:true,requireMfaForOtherAdmins:false,inactiveAccountDays:180,notifyOnAccountLockout:true,notifyOnPasswordChange:true,notifyOnNewDeviceLogin:true,notifyOnScopeChange:true};
   readonly sessionDefaults:SessionManagementSettings={maximumSessionHours:12,idleTimeoutMinutes:30,rememberMeDays:7,logoutWarningMinutes:5,maximumConcurrentSessions:2,newLoginBehaviour:'REVOKE_OLDEST',requireReauthentication:true,reauthenticationValidityMinutes:5,revokeOnPasswordChange:true,revokeOnPasswordReset:true,revokeOnRoleOrScopeChange:true,revokeOnAccountDeactivation:true,revokeOnSuspiciousLogin:true};
+  readonly mapDefaults:MapSettings={defaultLatitude:7.8731,defaultLongitude:80.7718,defaultZoom:7,healthyColor:'#43d36c',warningColor:'#ffb800',criticalColor:'#ff4136',offlineColor:'#7f8b80',unassignedColor:'#a0aaa0',showGateways:true,showMonitoringDevices:true,showActiveAlerts:true,showMaintenanceWork:true,liveUpdatesEnabled:true,highlightRecentChanges:true,focusCriticalAlerts:true,showStaleDataWarning:true,showOfflineIndicators:true,showProvinceBoundaries:false,showDistrictBoundaries:true,showFenceCoverage:true,showAlertOverlay:true};
 
   savedVoltage = { ...this.voltageDefaults };
   voltageValue = { ...this.savedVoltage };
@@ -70,6 +75,8 @@ export class Configuration implements OnInit {
   securityValue={...this.savedSecurity};
   savedSessions={...this.sessionDefaults};
   sessionValue={...this.savedSessions};
+  savedMap={...this.mapDefaults};
+  mapValue={...this.savedMap};
   active: ConfigurationSection = 'general';
   notice = '';
   showSave = false;
@@ -84,16 +91,19 @@ export class Configuration implements OnInit {
   }
 
   get dirty(): boolean {
+    if (this.active === 'health') return false;
     if (this.active === 'general') return JSON.stringify(this.generalValue) !== JSON.stringify(this.savedGeneral);
     if (this.active === 'alerts') return JSON.stringify(this.alertValue) !== JSON.stringify(this.savedAlerts);
     if (this.active === 'notifications') return JSON.stringify(this.notificationValue) !== JSON.stringify(this.savedNotifications);
     if (this.active === 'retention') return JSON.stringify(this.retentionValue) !== JSON.stringify(this.savedRetention);
     if (this.active === 'security') return JSON.stringify(this.securityValue) !== JSON.stringify(this.savedSecurity);
     if (this.active === 'sessions') return JSON.stringify(this.sessionValue) !== JSON.stringify(this.savedSessions);
+    if (this.active === 'map') return JSON.stringify(this.mapValue) !== JSON.stringify(this.savedMap);
     return JSON.stringify(this.voltageValue) !== JSON.stringify(this.savedVoltage);
   }
 
   get valid(): boolean {
+    if (this.active === 'health') return true;
     if (this.active === 'general') {
       const value = this.generalValue;
       return !!value.systemName.trim() && !!value.organizationName.trim() && !!value.systemCode.trim()
@@ -133,6 +143,7 @@ export class Configuration implements OnInit {
     }
     if(this.active==='security'){const value=this.securityValue;return value.minimumPasswordLength>=10&&value.minimumPasswordLength<=64&&value.passwordHistoryCount>=0&&value.passwordHistoryCount<=24&&value.temporaryPasswordExpiryHours>=1&&value.temporaryPasswordExpiryHours<=168&&value.failedLoginAttempts>=3&&value.failedLoginAttempts<=10&&value.failedAttemptWindowMinutes>=5&&value.failedAttemptWindowMinutes<=60&&value.accountLockMinutes>=5&&value.accountLockMinutes<=1440&&value.inactiveAccountDays>=30&&value.inactiveAccountDays<=730&&value.requireMfaForSuperAdmins;}
     if(this.active==='sessions'){const value=this.sessionValue;return Number.isInteger(value.maximumSessionHours)&&value.maximumSessionHours>=1&&value.maximumSessionHours<=168&&Number.isInteger(value.idleTimeoutMinutes)&&value.idleTimeoutMinutes>=5&&value.idleTimeoutMinutes<value.maximumSessionHours*60&&Number.isInteger(value.rememberMeDays)&&value.rememberMeDays>=1&&value.rememberMeDays<=30&&Number.isInteger(value.logoutWarningMinutes)&&value.logoutWarningMinutes>=1&&value.logoutWarningMinutes<value.idleTimeoutMinutes&&Number.isInteger(value.maximumConcurrentSessions)&&value.maximumConcurrentSessions>=1&&value.maximumConcurrentSessions<=10&&(!value.requireReauthentication||(value.reauthenticationValidityMinutes>=1&&value.reauthenticationValidityMinutes<=30))&&value.revokeOnPasswordReset&&value.revokeOnAccountDeactivation;}
+    if(this.active==='map'){const value=this.mapValue;const colors=[value.healthyColor,value.warningColor,value.criticalColor,value.offlineColor,value.unassignedColor];return value.defaultLatitude>=5.8&&value.defaultLatitude<=10&&value.defaultLongitude>=79.5&&value.defaultLongitude<=82.2&&Number.isInteger(value.defaultZoom)&&value.defaultZoom>=5&&value.defaultZoom<=18&&colors.every(color=>/^#[0-9a-f]{6}$/i.test(color))&&new Set(colors.map(color=>color.toLowerCase())).size===colors.length;}
     return this.voltageValue.healthyKv > this.voltageValue.warningKv
       && this.voltageValue.warningKv > this.voltageValue.criticalKv
       && this.voltageValue.criticalKv >= 0
@@ -140,6 +151,17 @@ export class Configuration implements OnInit {
   }
 
   get validationMessages(): string[] {
+    if (this.active === 'map') {
+      const value = this.mapValue;
+      const messages: string[] = [];
+      const colors = [value.healthyColor, value.warningColor, value.criticalColor, value.offlineColor, value.unassignedColor];
+      if (value.defaultLatitude < 5.8 || value.defaultLatitude > 10) messages.push('Default latitude must be within the Sri Lankan map range (5.8 to 10.0).');
+      if (value.defaultLongitude < 79.5 || value.defaultLongitude > 82.2) messages.push('Default longitude must be within the Sri Lankan map range (79.5 to 82.2).');
+      if (!Number.isInteger(value.defaultZoom) || value.defaultZoom < 5 || value.defaultZoom > 18) messages.push('Default zoom must be a whole number between 5 and 18.');
+      if (!colors.every(color => /^#[0-9a-f]{6}$/i.test(color))) messages.push('Every operational colour must use a valid six-digit hexadecimal value.');
+      if (new Set(colors.map(color => color.toLowerCase())).size !== colors.length) messages.push('Each operational status must use a different colour.');
+      return messages;
+    }
     if (this.active !== 'security') return this.valid ? [] : ['Please correct the highlighted configuration values before saving.'];
     const value = this.securityValue;
     const messages: string[] = [];
@@ -155,13 +177,9 @@ export class Configuration implements OnInit {
   }
 
   selectSection(section: ConfigurationSection): void {
-    if (section === 'general' || section === 'voltage' || section === 'alerts' || section === 'notifications' || section === 'retention' || section === 'security' || section === 'sessions') {
-      this.active = section;
-      this.notice = '';
-      this.loadSection(section);
-      return;
-    }
-    this.notice = `${section.replace('_', ' ')} configuration will be implemented next.`;
+    this.active = section;
+    this.notice = '';
+    this.loadSection(section);
   }
 
   reset(): void {
@@ -171,6 +189,7 @@ export class Configuration implements OnInit {
     else if (this.active === 'retention') this.retentionValue = { ...this.retentionDefaults };
     else if (this.active === 'security') this.securityValue = { ...this.securityDefaults };
     else if (this.active === 'sessions') this.sessionValue = { ...this.sessionDefaults };
+    else if (this.active === 'map') this.mapValue = { ...this.mapDefaults };
     else this.voltageValue = { ...this.voltageDefaults };
     this.notice = 'Default configuration restored. Save to apply the changes.';
   }
@@ -182,6 +201,7 @@ export class Configuration implements OnInit {
     else if (this.active === 'retention') this.retentionValue = { ...this.savedRetention };
     else if (this.active === 'security') this.securityValue = { ...this.savedSecurity };
     else if (this.active === 'sessions') this.sessionValue = { ...this.savedSessions };
+    else if (this.active === 'map') this.mapValue = { ...this.savedMap };
     else this.voltageValue = { ...this.savedVoltage };
     this.notice = 'Unsaved changes discarded.';
   }
@@ -216,7 +236,7 @@ export class Configuration implements OnInit {
   }
 
   private isImplemented(section: ConfigurationSection): boolean {
-    return ['general', 'voltage', 'alerts', 'notifications', 'retention', 'security', 'sessions'].includes(section);
+    return ['general', 'voltage', 'alerts', 'notifications', 'retention', 'security', 'sessions', 'map'].includes(section);
   }
 
   private applyResponse(section: ConfigurationSection, value: ConfigurationValue): void {
@@ -226,6 +246,10 @@ export class Configuration implements OnInit {
     else if (section === 'retention') this.retentionValue = { ...this.retentionDefaults, ...(value as DataRetentionSettings) };
     else if (section === 'security') this.securityValue = { ...this.securityDefaults, ...(value as SecurityPolicySettings) };
     else if (section === 'sessions') this.sessionValue = { ...this.sessionDefaults, ...(value as SessionManagementSettings) };
+    else if (section === 'map') {
+      this.mapValue = { ...this.mapDefaults, ...(value as MapSettings) };
+      this.mapSettingsStore.apply(this.mapValue);
+    }
     else this.voltageValue = { ...this.voltageDefaults, ...(value as VoltageThresholds) };
   }
 
@@ -245,6 +269,7 @@ export class Configuration implements OnInit {
     if(this.active==='retention')return this.retentionValue;
     if(this.active==='security')return this.securityValue;
     if(this.active==='sessions')return this.sessionValue;
+    if(this.active==='map')return this.mapValue;
     return this.voltageValue;
   }
 
@@ -255,6 +280,7 @@ export class Configuration implements OnInit {
     else if (this.active === 'retention') this.savedRetention = { ...this.retentionValue };
     else if (this.active === 'security') this.savedSecurity = { ...this.securityValue };
     else if (this.active === 'sessions') this.savedSessions = { ...this.sessionValue };
+    else if (this.active === 'map') this.savedMap = { ...this.mapValue };
     else this.savedVoltage = { ...this.voltageValue };
   }
 

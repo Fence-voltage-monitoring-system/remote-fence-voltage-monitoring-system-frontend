@@ -52,4 +52,8 @@ describe('Configuration', () => {
   it('requires MFA for super administrators',async()=>{const component=await createComponent();component.active='security';component.securityValue={...component.securityValue,requireMfaForSuperAdmins:false};expect(component.valid).toBe(false);expect(component.validationMessages).toContain('MFA must remain enabled for super administrators.');});
 
   it('validates mandatory session revocation rules',async()=>{const component=await createComponent();component.active='sessions';expect(component.valid).toBe(true);component.sessionValue={...component.sessionValue,revokeOnPasswordReset:false};expect(component.valid).toBe(false);});
+
+  it('validates map coordinates and distinct status colours',async()=>{const component=await createComponent();component.active='map';expect(component.valid).toBe(true);component.mapValue={...component.mapValue,warningColor:component.mapValue.healthyColor};expect(component.valid).toBe(false);component.mapValue={...component.mapDefaults,defaultLatitude:20};expect(component.valid).toBe(false);});
+
+  it('describes invalid map settings',async()=>{const component=await createComponent();component.active='map';component.mapValue={...component.mapValue,defaultZoom:4};expect(component.validationMessages).toContain('Default zoom must be a whole number between 5 and 18.');});
 });

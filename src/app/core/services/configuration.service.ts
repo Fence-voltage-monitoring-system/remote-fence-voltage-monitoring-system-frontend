@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AlertRuleSettings, ConfigurationSection, DataRetentionSettings, GeneralConfiguration, NotificationSettings, SecurityPolicySettings, SessionManagementSettings, SessionOverview, VoltageThresholds } from '../../pages/configuration/configuration.models';
+import { AlertRuleSettings, ConfigurationSection, DataRetentionSettings, GeneralConfiguration, MapSettings, NotificationSettings, SecurityPolicySettings, SessionManagementSettings, SessionOverview, VoltageThresholds } from '../../pages/configuration/configuration.models';
 
-export type ConfigurationValue=GeneralConfiguration|VoltageThresholds|AlertRuleSettings|NotificationSettings|DataRetentionSettings|SecurityPolicySettings|SessionManagementSettings;
+export type ConfigurationValue=GeneralConfiguration|VoltageThresholds|AlertRuleSettings|NotificationSettings|DataRetentionSettings|SecurityPolicySettings|SessionManagementSettings|MapSettings;
 export interface ConfigurationSaveRequest<T extends ConfigurationValue>{value:T;reason:string;}
 export interface ConfigurationSaveResponse<T extends ConfigurationValue>{section:ConfigurationSection;value:T;updatedBy:string;updatedAt:string;version:number;}
 

@@ -127,4 +127,27 @@ export interface SessionOverview {
   suspiciousSessions: number;
   sessions: ActiveSessionRecord[];
 }
+export interface MapSettings {
+  defaultLatitude: number;
+  defaultLongitude: number;
+  defaultZoom: number;
+  healthyColor: string;
+  warningColor: string;
+  criticalColor: string;
+  offlineColor: string;
+  unassignedColor: string;
+  showGateways: boolean;
+  showMonitoringDevices: boolean;
+  showActiveAlerts: boolean;
+  showMaintenanceWork: boolean;
+  liveUpdatesEnabled: boolean;
+  highlightRecentChanges: boolean;
+  focusCriticalAlerts: boolean;
+  showStaleDataWarning: boolean;
+  showOfflineIndicators: boolean;
+  showProvinceBoundaries: boolean;
+  showDistrictBoundaries: boolean;
+  showFenceCoverage: boolean;
+  showAlertOverlay: boolean;
+}
 export type ConfigurationSection='general'|'voltage'|'alerts'|'notifications'|'retention'|'security'|'sessions'|'map'|'health';
