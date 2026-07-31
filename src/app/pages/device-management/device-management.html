@@ -62,7 +62,7 @@
   @if (dialogOpen) {
     <button class="drawer-backdrop register-backdrop" type="button" (click)="dialogOpen = false" aria-label="Close device form"></button>
     <form class="register-drawer" (submit)="$event.preventDefault(); save()" (click)="$event.stopPropagation()" aria-label="Register device">
-      <header><div><span>{{editing ? 'Update registry' : 'New field asset'}}</span><h2>{{editing ? 'Edit device' : 'Register device'}}</h2><p>{{editing ? 'Update the device record below.' : 'Add hardware to your unassigned device inventory.'}}</p></div><button type="button" (click)="dialogOpen = false" aria-label="Close device form"><i data-lucide="x"></i></button></header>
+      <header><div><span>{{editing ? 'Update registry' : 'New field asset'}}</span><h2>{{editing ? 'Edit device' : 'Register device'}}</h2><p>{{editing ? 'Update the device record below.' : 'Add hardware to your unassigned device inventory.'}}</p></div><button class="register-close" type="button" (click)="dialogOpen = false" aria-label="Close device form" title="Close"><span aria-hidden="true">&times;</span></button></header>
       <div class="register-body">
         <div class="register-intro"><span class="register-icon"><i data-lucide="cpu"></i></span><div><strong>Device identity</strong><small>Use the name and serial number printed on the field hardware.</small></div></div>
         <div class="form-grid">
