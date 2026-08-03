@@ -266,6 +266,9 @@ app-save-configuration-modal {
   z-index: 1200 !important;
 }
 
+app-analysis-filters .range-backdrop { z-index: 1190 !important; }
+app-analysis-filters .range-modal { z-index: 1200 !important; }
+
 /* Appearance preferences */
 
 html[data-text-size='small'] {

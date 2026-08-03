@@ -10,9 +10,9 @@
           <p>@if (selectedFenceRoute; as fence) { Monitoring {{ fence.name }} in {{ fence.district }}. } @else { Monitor every registered section and inspect live device telemetry in one place. }</p>
         </div>
       </section>
-
-      <section #routeMapSection class="route-map-section" aria-label="Selected fence route map"><app-fence-route-map [fence]="selectedFenceRoute" [selectedSectionId]="selectedSectionId()" /></section>
-
+      <section #routeMapSection class="route-map-section" aria-label="Selected fence route map">
+        <app-fence-route-map [fence]="selectedFenceRoute" [selectedSectionId]="selectedSectionId()" />
+      </section>
       <section class="monitor-card" aria-label="Live fence monitoring workspace">
         <app-fence-monitor [showSectionTable]="true" [fenceId]="activeFenceId()" (fenceChange)="selectFence($event.id)" (fenceRouteChange)="selectedFenceRoute = $event" (sectionMapRequest)="showSectionOnMap($event)" />
       </section>
