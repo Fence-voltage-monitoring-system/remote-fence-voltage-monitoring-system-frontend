@@ -1,0 +1,27 @@
+<section class="editor">
+  <header><h2>Notification Settings</h2><p>Configure global delivery availability and how operational notifications are presented.</p></header>
+
+  <div class="notice"><span>ⓘ</span><p><strong>Recipient scope remains automatic.</strong> Notifications are delivered only to users responsible for the affected province, district, fence or section.</p></div>
+
+  <div class="groups">
+    <fieldset>
+      <legend>Delivery Channels</legend>
+      <div class="cards three">
+        <label class="card"><span class="icon">♧</span><span><strong>In-app notifications</strong><small>Store notifications in the notification centre</small></span><input type="checkbox" [ngModel]="value.inAppEnabled" (ngModelChange)="update('inAppEnabled',$event)" /></label>
+        <label class="card"><span class="icon">⌁</span><span><strong>WebSocket live delivery</strong><small>Push notifications to connected clients immediately</small></span><input type="checkbox" [ngModel]="value.websocketEnabled" (ngModelChange)="update('websocketEnabled',$event)" /></label>
+        <label class="card"><span class="icon">▯</span><span><strong>SMS delivery</strong><small>Allow rules to send messages through the SMS provider</small></span><input type="checkbox" [ngModel]="value.smsEnabled" (ngModelChange)="update('smsEnabled',$event)" /></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Notification Categories</legend>
+      <div class="cards four">
+        <label class="card critical"><span><strong>Critical alerts</strong><small>Wire breaks, critical voltage and offline incidents</small></span><input type="checkbox" [ngModel]="value.criticalAlertsEnabled" (ngModelChange)="update('criticalAlertsEnabled',$event)" /></label>
+        <label class="card warning"><span><strong>Warnings</strong><small>Low voltage, battery and early warning conditions</small></span><input type="checkbox" [ngModel]="value.warningAlertsEnabled" (ngModelChange)="update('warningAlertsEnabled',$event)" /></label>
+        <label class="card"><span><strong>Maintenance updates</strong><small>Assignments, comments and completion updates</small></span><input type="checkbox" [ngModel]="value.maintenanceUpdatesEnabled" (ngModelChange)="update('maintenanceUpdatesEnabled',$event)" /></label>
+        <label class="card"><span><strong>System updates</strong><small>Firmware, configuration and generated report events</small></span><input type="checkbox" [ngModel]="value.systemUpdatesEnabled" (ngModelChange)="update('systemUpdatesEnabled',$event)" /></label>
+      </div>
+    </fieldset>
+
+  </div>
+</section>

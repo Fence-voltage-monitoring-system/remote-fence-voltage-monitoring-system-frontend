@@ -1,0 +1,56 @@
+<section class="editor">
+  <header><h2>Map Settings</h2><p>Define system-wide map defaults for infrastructure, live operational state and geographic overlays.</p></header>
+
+  <div class="notice"><span>🗺</span><p><strong>Map style remains a map-view control.</strong> Users select Street, Satellite, Terrain or Hybrid in the map itself. Navigation is fixed to the Sri Lankan operational area by the application.</p></div>
+
+  <div class="top-grid">
+    <fieldset><legend>Default View</legend><div class="fields">
+      <label>Default latitude<input type="number" min="5.8" max="10" step="0.0001" [ngModel]="value.defaultLatitude" (ngModelChange)="update('defaultLatitude',+$event)"/><small>Sri Lanka range: 5.8 to 10.0</small></label>
+      <label>Default longitude<input type="number" min="79.5" max="82.2" step="0.0001" [ngModel]="value.defaultLongitude" (ngModelChange)="update('defaultLongitude',+$event)"/><small>Sri Lanka range: 79.5 to 82.2</small></label>
+      <label>Default zoom<input type="number" min="5" max="18" step="1" [ngModel]="value.defaultZoom" (ngModelChange)="update('defaultZoom',+$event)"/><small>7 displays the whole country.</small></label>
+    </div></fieldset>
+
+    <div class="preview" aria-label="Map settings preview">
+      <div class="grid-lines"></div><span class="island">Sri Lanka</span>
+      @if(value.showGateways){<i class="marker gateway" title="Gateway">G</i>}
+      @if(value.showMonitoringDevices){<i class="marker device" title="Monitoring device">D</i>}
+      @if(value.showActiveAlerts&&value.showAlertOverlay){<i class="marker alert" title="Active alert">!</i>}
+      @if(value.showMaintenanceWork){<i class="marker maintenance" title="Maintenance work">M</i>}
+      @if(value.showDistrictBoundaries){<span class="boundary district"></span>}
+      @if(value.showProvinceBoundaries){<span class="boundary province"></span>}
+      <footer><strong>Live preview</strong><span>Zoom {{value.defaultZoom}} · {{value.defaultLatitude}}, {{value.defaultLongitude}}</span></footer>
+    </div>
+  </div>
+
+  <fieldset><legend>Operational Status Colours</legend><div class="colours">
+    <label><span><i [style.background]="value.healthyColor"></i><strong>Healthy</strong></span><div><input type="color" [ngModel]="value.healthyColor" (ngModelChange)="updateColor('healthyColor',$event)"/><code>{{value.healthyColor}}</code></div></label>
+    <label><span><i [style.background]="value.warningColor"></i><strong>Warning</strong></span><div><input type="color" [ngModel]="value.warningColor" (ngModelChange)="updateColor('warningColor',$event)"/><code>{{value.warningColor}}</code></div></label>
+    <label><span><i [style.background]="value.criticalColor"></i><strong>Critical</strong></span><div><input type="color" [ngModel]="value.criticalColor" (ngModelChange)="updateColor('criticalColor',$event)"/><code>{{value.criticalColor}}</code></div></label>
+    <label><span><i [style.background]="value.offlineColor"></i><strong>Offline</strong></span><div><input type="color" [ngModel]="value.offlineColor" (ngModelChange)="updateColor('offlineColor',$event)"/><code>{{value.offlineColor}}</code></div></label>
+    <label><span><i [style.background]="value.unassignedColor"></i><strong>Unassigned</strong></span><div><input type="color" [ngModel]="value.unassignedColor" (ngModelChange)="updateColor('unassignedColor',$event)"/><code>{{value.unassignedColor}}</code></div></label>
+  </div><p class="hint">Colours must be valid and different so operational states remain distinguishable.</p></fieldset>
+
+  <div class="columns">
+    <fieldset><legend>Infrastructure Markers Visible by Default</legend><div class="toggles">
+      <label class="toggle"><span><strong>Gateways</strong><small>Communication status, connected devices and last contact.</small></span><input type="checkbox" [ngModel]="value.showGateways" (ngModelChange)="update('showGateways',$event)"/></label>
+      <label class="toggle"><span><strong>Monitoring devices</strong><small>Voltage, battery, solar state and last telemetry.</small></span><input type="checkbox" [ngModel]="value.showMonitoringDevices" (ngModelChange)="update('showMonitoringDevices',$event)"/></label>
+      <label class="toggle"><span><strong>Active alerts</strong><small>Unresolved fault location, severity and acknowledgement.</small></span><input type="checkbox" [ngModel]="value.showActiveAlerts" (ngModelChange)="update('showActiveAlerts',$event)"/></label>
+      <label class="toggle"><span><strong>Active maintenance work</strong><small>Assigned incident and work status; not staff live location.</small></span><input type="checkbox" [ngModel]="value.showMaintenanceWork" (ngModelChange)="update('showMaintenanceWork',$event)"/></label>
+    </div></fieldset>
+
+    <fieldset><legend>Live-map Behaviour</legend><div class="toggles">
+      <label class="toggle mandatory"><span><strong>WebSocket live updates</strong><small>Apply telemetry and status events without polling.</small></span><input type="checkbox" [ngModel]="value.liveUpdatesEnabled" (ngModelChange)="update('liveUpdatesEnabled',$event)"/></label>
+      <label class="toggle" [class.disabled]="!value.liveUpdatesEnabled"><span><strong>Highlight recent changes</strong><small>Requires WebSocket live updates.</small></span><input type="checkbox" [disabled]="!value.liveUpdatesEnabled" [ngModel]="value.highlightRecentChanges" (ngModelChange)="update('highlightRecentChanges',$event)"/></label>
+      <label class="toggle" [class.disabled]="!value.liveUpdatesEnabled||!value.showActiveAlerts||!value.showAlertOverlay"><span><strong>Focus critical alerts</strong><small>Requires live updates, active-alert markers and alert overlay.</small></span><input type="checkbox" [disabled]="!value.liveUpdatesEnabled||!value.showActiveAlerts||!value.showAlertOverlay" [ngModel]="value.focusCriticalAlerts" (ngModelChange)="update('focusCriticalAlerts',$event)"/></label>
+      <label class="toggle"><span><strong>Stale-data warning</strong><small>Mark assets whose expected telemetry has not arrived.</small></span><input type="checkbox" [ngModel]="value.showStaleDataWarning" (ngModelChange)="update('showStaleDataWarning',$event)"/></label>
+      <label class="toggle"><span><strong>Offline indicators</strong><small>Show assets classified offline by the backend.</small></span><input type="checkbox" [ngModel]="value.showOfflineIndicators" (ngModelChange)="update('showOfflineIndicators',$event)"/></label>
+    </div></fieldset>
+  </div>
+
+  <fieldset><legend>Default Map Layers</legend><div class="toggles layers">
+    <label class="toggle"><span><strong>Province boundaries</strong><small>Administrative province outline.</small></span><input type="checkbox" [ngModel]="value.showProvinceBoundaries" (ngModelChange)="update('showProvinceBoundaries',$event)"/></label>
+    <label class="toggle"><span><strong>District boundaries</strong><small>Administrative district outline.</small></span><input type="checkbox" [ngModel]="value.showDistrictBoundaries" (ngModelChange)="update('showDistrictBoundaries',$event)"/></label>
+    <label class="toggle"><span><strong>Fence coverage</strong><small>Registered electric-fence coverage overlay.</small></span><input type="checkbox" [ngModel]="value.showFenceCoverage" (ngModelChange)="update('showFenceCoverage',$event)"/></label>
+    <label class="toggle"><span><strong>Active-alert overlay</strong><small>Operational overlay for unresolved alerts.</small></span><input type="checkbox" [ngModel]="value.showAlertOverlay" (ngModelChange)="update('showAlertOverlay',$event)"/></label>
+  </div></fieldset>
+</section>

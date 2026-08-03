@@ -1,0 +1,18 @@
+.periods { flex: none; height: 35px; align-self: center; }
+.periods button { flex: none; min-width: 48px; height: 100%; white-space: nowrap; }
+.periods button:last-child { min-width: 68px; }
+.actions { flex: none; }
+@media (max-width: 1400px) {
+  .filter-bar { align-items: stretch; flex-wrap: wrap; }
+  .selects { display: grid; flex: 1 1 100%; grid-template-columns: repeat(5, minmax(110px, 1fr)); }
+  .selects select { width: 100%; }
+}
+@media (max-width: 700px) {
+  .selects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.range-backdrop { position:fixed; inset:0; z-index:70; background:rgb(2 7 3 / 75%); backdrop-filter:blur(1px); }
+.range-modal { position:fixed; z-index:71; left:50%; top:50%; width:calc(100% - 32px); max-width:520px; transform:translate(-50%,-50%); border:1px solid #405742; border-radius:14px; background:#142a19; padding:20px; box-shadow:0 24px 70px rgb(0 0 0 / 45%); }
+.range-modal header { display:flex; align-items:start; justify-content:space-between; margin-bottom:18px; }.range-modal h2 { margin:0; color:white; font-size:15px; }.range-modal header p { margin:4px 0 0; color:#91a494; font-size:10px; }.range-modal header button { display:grid; width:30px; height:30px; place-items:center; border:1px solid #425543; border-radius:7px; background:#273a2a; color:#a5b1a5; font-size:18px; }
+.range-fields { display:grid; grid-template-columns:1fr 1fr; gap:12px; }.range-fields label { display:grid; gap:6px; color:#96b29b; font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }.range-fields input { height:36px; border:1px solid #415642; border-radius:8px; background:#253a29; padding:0 10px; color:#eef3ed; color-scheme:dark; font-size:11px; }
+.range-error { margin:10px 0 0; color:#ff8e84; font-size:10px; }.range-modal footer { display:flex; justify-content:flex-end; gap:10px; margin-top:18px; }.range-modal footer button { height:36px; border-radius:8px; padding:0 16px; font-size:10px; font-weight:700; }.range-cancel { border:1px solid #415642; background:#253a29; color:#d6ddd4; }.range-apply { border:0; background:#43d36c; color:#071c0d; }
+@media(max-width:520px){.range-fields{grid-template-columns:1fr}}

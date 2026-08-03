@@ -1,0 +1,4 @@
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+@Component({ selector:'app-section-toolbar', standalone:true, imports:[FormsModule], templateUrl:'./section-toolbar.html', styleUrl:'./section-toolbar.css' })
+export class SectionToolbar { @Input() search=''; @Input() status=''; @Input() province=''; @Input() district=''; @Input() provinces:string[]=[]; @Input() districts:string[]=[]; @Input() provinceLocked=false; @Input() districtLocked=false; @Output() searchChange=new EventEmitter<string>(); @Output() statusChange=new EventEmitter<string>(); @Output() provinceChange=new EventEmitter<string>(); @Output() districtChange=new EventEmitter<string>(); @Output() bulkAdd=new EventEmitter<void>(); @Output() register=new EventEmitter<void>(); }

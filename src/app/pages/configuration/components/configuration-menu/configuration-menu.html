@@ -1,0 +1,1 @@
+<nav><h2>Configuration</h2>@for(item of items;track item.id){<button [class.active]="active===item.id" (click)="sectionChange.emit(item.id)">{{item.label}}</button>}</nav>

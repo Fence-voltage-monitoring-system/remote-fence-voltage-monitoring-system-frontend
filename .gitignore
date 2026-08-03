@@ -1,5 +1,5 @@
 node_modules/
 dist/
+out-tsc/
 .angular/
-.vscode/
-.env
+.DS_Store

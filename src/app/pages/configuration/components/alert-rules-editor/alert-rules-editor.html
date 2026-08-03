@@ -1,0 +1,63 @@
+<section class="editor">
+  <header>
+    <h2>Alert Rules</h2>
+    <p>Configure how telemetry conditions become alerts, recover and notify responsible users.</p>
+  </header>
+
+  <div class="threshold-note">
+    <span>⚡</span><div><strong>Threshold source</strong><p>Low voltage, critical voltage and low battery limits use values from the Voltage Thresholds tab.</p></div>
+  </div>
+
+  <div class="groups">
+    <fieldset>
+      <legend>Electrical Rules</legend>
+      <div class="rule-grid">
+        <label class="rule"><span><strong>Low voltage</strong><small>Warning threshold from Voltage Thresholds</small></span><input type="checkbox" [ngModel]="value.lowVoltageEnabled" (ngModelChange)="update('lowVoltageEnabled',$event)" /></label>
+        <label class="rule critical"><span><strong>Critical voltage</strong><small>Critical threshold from Voltage Thresholds</small></span><input type="checkbox" [ngModel]="value.criticalVoltageEnabled" (ngModelChange)="update('criticalVoltageEnabled',$event)" /></label>
+        <label class="rule critical"><span><strong>Wire break / zero voltage</strong><small>Create a critical alert when voltage drops to zero</small></span><input type="checkbox" [ngModel]="value.wireBreakEnabled" (ngModelChange)="update('wireBreakEnabled',$event)" /></label>
+        <label class="rule"><span><strong>Repeated voltage fluctuations</strong><small>Detect unstable voltage within a time window</small></span><input type="checkbox" [ngModel]="value.voltageFluctuationEnabled" (ngModelChange)="update('voltageFluctuationEnabled',$event)" /></label>
+      </div>
+      @if(value.voltageFluctuationEnabled){<div class="fields two"><label>Changes required<input type="number" min="2" [ngModel]="value.fluctuationCount" (ngModelChange)="update('fluctuationCount',+$event)" /></label><label>Time window (minutes)<input type="number" min="1" [ngModel]="value.fluctuationWindowMinutes" (ngModelChange)="update('fluctuationWindowMinutes',+$event)" /></label></div>}
+    </fieldset>
+
+    <fieldset>
+      <legend>Connectivity and Power Rules</legend>
+      <div class="rule-grid">
+        <label class="rule critical"><span><strong>Gateway offline</strong><small>Uses the timeout configured in General settings</small></span><input type="checkbox" [ngModel]="value.gatewayOfflineEnabled" (ngModelChange)="update('gatewayOfflineEnabled',$event)" /></label>
+        <label class="rule"><span><strong>Low battery</strong><small>Uses the warning value from Voltage Thresholds</small></span><input type="checkbox" [ngModel]="value.lowBatteryEnabled" (ngModelChange)="update('lowBatteryEnabled',$event)" /></label>
+        <label class="rule critical"><span><strong>Critical battery</strong><small>Create a critical alert below a separate emergency value</small></span><input type="checkbox" [ngModel]="value.criticalBatteryEnabled" (ngModelChange)="update('criticalBatteryEnabled',$event)" /></label>
+        <label class="rule"><span><strong>Solar charging failure</strong><small>Alert when charging input remains unavailable</small></span><input type="checkbox" [ngModel]="value.solarFailureEnabled" (ngModelChange)="update('solarFailureEnabled',$event)" /></label>
+      </div>
+      @if(value.criticalBatteryEnabled){<div class="fields"><label>Critical battery level (%)<input type="number" min="0" max="100" [ngModel]="value.criticalBatteryPercent" (ngModelChange)="update('criticalBatteryPercent',+$event)" /></label></div>}
+    </fieldset>
+
+    <fieldset>
+      <legend>Alert Behaviour</legend>
+      <div class="fields four">
+        <label>Abnormal readings required<select [ngModel]="value.abnormalReadingsRequired" (ngModelChange)="update('abnormalReadingsRequired',+$event)"><option [value]="1">1 reading — immediate</option><option [value]="2">2 consecutive readings</option><option [value]="3">3 consecutive readings</option></select><small>Consecutive abnormal datasets required before creating an alert.</small></label>
+        <label>Healthy readings required<select [ngModel]="value.healthyReadingsRequired" (ngModelChange)="update('healthyReadingsRequired',+$event)"><option [value]="1">1 healthy reading</option><option [value]="2">2 consecutive readings</option><option [value]="3">3 consecutive readings</option></select><small>Consecutive healthy datasets required to confirm recovery.</small></label>
+        <label>Post-resolution cooldown (minutes)<select [ngModel]="value.cooldownMinutes" (ngModelChange)="update('cooldownMinutes',+$event)"><option [value]="30">30 minutes</option><option [value]="60">60 minutes</option><option [value]="120">120 minutes</option></select><small>Prevents a new identical alert after the previous alert is resolved.</small></label>
+        <label class="rule compact"><span><strong>Auto-resolve after recovery</strong><small>Resolve after the required healthy datasets arrive</small></span><input type="checkbox" [ngModel]="value.autoResolve" (ngModelChange)="update('autoResolve',$event)" /></label>
+      </div>
+      <div class="behaviour-note"><strong>Urgent-rule handling:</strong> wire break, zero voltage, critical voltage and critical battery create an alert from the first abnormal dataset. Gateway offline uses the reporting timeout from General Configuration.</div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Delivery and Escalation</legend>
+      <div class="subheading">Delivery channels</div>
+      <div class="choice-row">
+        <label><input type="checkbox" [ngModel]="value.inAppEnabled" (ngModelChange)="update('inAppEnabled',$event)" /> In-app</label>
+        <label><input type="checkbox" [ngModel]="value.websocketEnabled" (ngModelChange)="update('websocketEnabled',$event)" /> WebSocket</label>
+        <label><input type="checkbox" [ngModel]="value.smsEnabled" (ngModelChange)="update('smsEnabled',$event)" /> SMS</label>
+      </div>
+      <div class="subheading">Recipients within the affected operational scope</div>
+      <div class="choice-row recipients">
+        <label><input type="checkbox" [ngModel]="value.notifySuperAdmins" (ngModelChange)="update('notifySuperAdmins',$event)" /> Super administrators</label>
+        <label><input type="checkbox" [ngModel]="value.notifyRegionalAdmins" (ngModelChange)="update('notifyRegionalAdmins',$event)" /> Regional administrators</label>
+        <label><input type="checkbox" [ngModel]="value.notifyFieldAdmins" (ngModelChange)="update('notifyFieldAdmins',$event)" /> Field administrators</label>
+        <label><input type="checkbox" [ngModel]="value.notifyMaintenance" (ngModelChange)="update('notifyMaintenance',$event)" /> Maintenance staff</label>
+      </div>
+      <div class="escalation"><label class="rule compact"><span><strong>Escalation workflow</strong><small>Escalate when administrators or assigned maintenance staff do not respond</small></span><input type="checkbox" [ngModel]="value.escalationEnabled" (ngModelChange)="update('escalationEnabled',$event)" /></label>@if(value.escalationEnabled){<label>Administrator acknowledgement timeout (minutes)<input type="number" min="1" [ngModel]="value.acknowledgementTimeoutMinutes" (ngModelChange)="update('acknowledgementTimeoutMinutes',+$event)" /></label><label>Maintenance acceptance timeout (minutes)<input type="number" min="1" [ngModel]="value.maintenanceAcceptanceTimeoutMinutes" (ngModelChange)="update('maintenanceAcceptanceTimeoutMinutes',+$event)" /></label>}</div>
+    </fieldset>
+  </div>
+</section>

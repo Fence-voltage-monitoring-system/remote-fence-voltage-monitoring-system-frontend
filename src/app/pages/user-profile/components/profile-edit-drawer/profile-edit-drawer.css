@@ -1,0 +1,51 @@
+:host { position: fixed; inset: 0; z-index: 50; display: block; }
+.field { display: grid; gap: .45rem; }
+.field label { color: #96b29b; font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+.control { width: 100%; height: 40px; box-sizing: border-box; border: 1px solid #415642; border-radius: 9px; padding: 0 12px; color: #eef3ed; background: #253a29; font: inherit; font-size: 12px; outline: none; }
+.control:focus { border-color: #43d36c; box-shadow: 0 0 0 3px rgb(67 211 108 / 10%); }
+.error { margin: 0; color: #ff8e84; font-size: 9px; }
+.hint { margin: 0; color: #7f9082; font-size: 9px; }
+
+.drawer-backdrop {
+  animation: backdrop-in 180ms ease-out both;
+}
+
+.edit-drawer {
+  animation: drawer-in 280ms cubic-bezier(.22, 1, .36, 1) both;
+}
+
+.drawer-backdrop.closing {
+  animation: backdrop-out 220ms ease-in both;
+}
+
+.edit-drawer.closing {
+  animation: drawer-out 220ms cubic-bezier(.4, 0, 1, 1) both;
+  pointer-events: none;
+}
+
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes drawer-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes backdrop-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes drawer-out {
+  from { transform: translateX(0); }
+  to { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drawer-backdrop,
+  .edit-drawer {
+    animation: none;
+  }
+}

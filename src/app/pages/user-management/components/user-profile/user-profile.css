@@ -1,0 +1,8 @@
+:host {
+  display: block;
+  height: calc(100dvh - 104px);
+  min-height: 0;
+  overflow: hidden;
+}
+.profile-label { margin-bottom: .25rem; color: #849080; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
+.profile-value { margin: 0; color: #d3d9d1; }

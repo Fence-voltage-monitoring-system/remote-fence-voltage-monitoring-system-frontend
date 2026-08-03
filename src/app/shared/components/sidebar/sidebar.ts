@@ -36,7 +36,7 @@ export class SidebarComponent implements AfterViewInit {
   activeItem = 'Dashboard';
 
   readonly items: NavigationItem[] = [
-    { label: 'Dashboard', icon: 'layout-dashboard', route: '/' },
+    { label: 'Dashboard', icon: 'layout-dashboard', route: '/dashboard' },
     { label: 'Live View', icon: 'fence', route: '/virtual-fence' },
     { label: 'Map', icon: 'map', route: '/map' },
     { label: 'Historical Analysis', icon: 'chart-no-axes-combined' },

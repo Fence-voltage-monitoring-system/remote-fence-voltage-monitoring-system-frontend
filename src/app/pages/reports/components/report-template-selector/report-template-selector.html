@@ -1,0 +1,1 @@
+<section class="panel"><h2>Select Report Template</h2><div class="templates">@for(template of templates;track template.id){<button type="button" [class.selected]="selected===template.id" (click)="selectedChange.emit(template.id)"><i>{{template.icon}}</i><span><strong>{{template.name}}</strong><small>{{template.description}}</small></span></button>}</div></section>

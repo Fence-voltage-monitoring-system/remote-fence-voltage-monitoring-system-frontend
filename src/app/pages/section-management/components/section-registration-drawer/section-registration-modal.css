@@ -1,0 +1,19 @@
+.drawer {
+  transform: translate(-50%, -50%);
+  animation: section-modal-in .28s cubic-bezier(.2, .8, .2, 1);
+}
+.drawer.is-closing {
+  animation: section-modal-out .28s cubic-bezier(.4, 0, 1, 1) forwards;
+}
+.field { gap: .35rem; }
+.field label { font-size: 9px; }
+.control { height: 34px; border-radius: 8px; padding: 0 10px; font-size: 11px; }
+textarea.control { min-height: 62px; padding-top: 8px; padding-bottom: 8px; }
+@keyframes section-modal-in {
+  from { opacity: 0; transform: translate(-50%, -46%) scale(.96); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes section-modal-out {
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 0; transform: translate(-50%, -46%) scale(.96); }
+}

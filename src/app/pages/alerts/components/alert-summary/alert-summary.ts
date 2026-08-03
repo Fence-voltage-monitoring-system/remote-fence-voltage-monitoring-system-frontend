@@ -1,0 +1,1 @@
+import{Component,Input}from'@angular/core';@Component({selector:'app-alert-summary',standalone:true,templateUrl:'./alert-summary.html',styleUrl:'./alert-summary.css'})export class AlertSummary{@Input()critical=0;@Input()warnings=0;@Input()unacknowledged=0;@Input()maintenance=0;@Input()resolved=0;}

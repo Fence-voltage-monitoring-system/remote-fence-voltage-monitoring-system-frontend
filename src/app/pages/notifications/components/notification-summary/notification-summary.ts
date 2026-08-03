@@ -1,0 +1,1 @@
+import{Component,Input}from'@angular/core';@Component({selector:'app-notification-summary',standalone:true,templateUrl:'./notification-summary.html',styleUrl:'./notification-summary.css'})export class NotificationSummary{@Input()inApp=0;@Input()websocket=0;@Input()sms=0;@Input()unread=0;}
