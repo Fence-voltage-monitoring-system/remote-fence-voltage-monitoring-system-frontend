@@ -1,5 +1,6 @@
 @reference "../../../../styles.css";
-header { @apply sticky top-0 z-1000 flex h-[60px] items-center gap-3 border-b border-[#233b27] bg-[#0f2314] px-[18px] shadow-[0_4px_14px_rgba(0,0,0,.22)] max-[620px]:h-14 max-[620px]:px-2.5; }
+:host { @apply block h-[60px] max-[620px]:h-14; }
+header { @apply fixed top-0 right-0 left-14 z-[1000] flex h-[60px] items-center gap-3 border-b border-[#233b27] bg-[var(--color-header-bg)] px-[18px] shadow-[0_4px_14px_rgba(0,0,0,.22)] max-[720px]:left-11 max-[620px]:h-14 max-[620px]:px-2.5; }
 .brand-mark { @apply grid size-[34px] place-items-center rounded-[9px] border border-[#225f31] bg-[#102d18]; }
 .brand { @apply grid min-w-[285px] grid-cols-[auto_auto] leading-[1.1] max-[980px]:min-w-0 max-[620px]:block; column-gap: 6px; }
 .brand strong { @apply text-[10px] text-[#44e66e]; }

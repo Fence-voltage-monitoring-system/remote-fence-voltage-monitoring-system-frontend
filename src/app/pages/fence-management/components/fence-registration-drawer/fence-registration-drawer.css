@@ -1,4 +1,4 @@
-:host { position: fixed; inset: 0; z-index: 60; display: block; }
+:host { position: fixed; inset: 0; z-index: 1200; display: block; }
 .backdrop { animation: fade-in .2s ease-out; }.drawer { transform:translate(-50%,-50%); animation:modal-in .28s cubic-bezier(.2,.8,.2,1); }
 .backdrop.is-closing { animation: fade-out .28s ease-in forwards; pointer-events:none; }.drawer.is-closing { animation:modal-out .28s cubic-bezier(.4,0,1,1) forwards; pointer-events:none; }
 .field { display:grid; gap:.35rem; }.field label { color:#96b29b; font-size:9px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; }

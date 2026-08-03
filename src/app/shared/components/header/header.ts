@@ -1,9 +1,9 @@
 import { Component, HostListener, OnDestroy, signal } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { UserMenuComponent } from '../user-menu/user-menu';
 
-@Component({ selector: 'app-header', standalone: true, imports: [UserMenuComponent], templateUrl: './header.html', styleUrl: './header.css' })
+@Component({ selector: 'app-header', standalone: true, imports: [RouterLink, UserMenuComponent], templateUrl: './header.html', styleUrl: './header.css' })
 export class HeaderComponent implements OnDestroy {
   readonly currentTime = signal('');
   readonly currentDate = signal('');
@@ -33,6 +33,29 @@ export class HeaderComponent implements OnDestroy {
   private updateClock(): void { const now = new Date(); this.currentTime.set(this.timeFormatter.format(now)); this.currentDate.set(this.dateFormatter.format(now)); }
   private updatePageName(url: string): void {
     const path = url.split('?')[0].split('#')[0];
-    this.pageName.set(path.startsWith('/virtual-fence') ? 'Live View' : path.startsWith('/map') ? 'Fence Map' : path.startsWith('/devices') || path.startsWith('/device-management') ? 'Device Management' : path.startsWith('/gateways') || path.startsWith('/gateway-management') ? 'Gateway Management' : path.startsWith('/fences') ? 'Fence Management' : path.startsWith('/sections') ? 'Section Management' : path.startsWith('/audit-logs') ? 'Audit Logs' : path.startsWith('/profile') ? 'My Profile' : path.startsWith('/security') ? 'Security Settings' : path.startsWith('/appearance') ? 'Theme & Appearance' : path.startsWith('/help-support') ? 'Help & Support' : 'Live Dashboard');
+    const pageNames: Array<[string, string]> = [
+      ['/dashboard', 'Live Dashboard'],
+      ['/virtual-fence', 'Live View'],
+      ['/map', 'Fence Map'],
+      ['/devices', 'Device Management'],
+      ['/device-management', 'Device Management'],
+      ['/gateways', 'Gateway Management'],
+      ['/gateway-management', 'Gateway Management'],
+      ['/historical-analysis', 'Historical Analysis'],
+      ['/alerts', 'Alerts'],
+      ['/notifications', 'Notifications'],
+      ['/fences', 'Fence Management'],
+      ['/sections', 'Section Management'],
+      ['/users', 'User Management'],
+      ['/reports', 'Reports'],
+      ['/audit-logs', 'Audit Logs'],
+      ['/configuration', 'System Configuration'],
+      ['/user-profile', 'User Profile'],
+      ['/profile', 'My Profile'],
+      ['/security', 'Security Settings'],
+      ['/appearance', 'Theme & Appearance'],
+      ['/help-support', 'Help & Support'],
+    ];
+    this.pageName.set(pageNames.find(([route]) => path.startsWith(route))?.[1] ?? 'Live Dashboard');
   }
 }

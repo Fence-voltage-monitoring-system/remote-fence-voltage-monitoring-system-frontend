@@ -9,6 +9,23 @@ html {
   min-height: 100%;
   background: #152718;
   --ui-text-scale: 1;
+  --color-app-bg: #102114;
+  --color-header-bg: #0f2314;
+  --color-sidebar-bg: #102317;
+  --color-surface: #172a1c;
+  --color-surface-raised: #1d3422;
+  --color-surface-input: #203725;
+  --color-border: #38513b;
+  --color-border-strong: #405943;
+  --color-accent: #4ee672;
+  --color-text: #edf4e9;
+  --color-text-muted: #8fa08c;
+  --color-danger: #ff655d;
+  --page-title-size: 22px;
+  --section-title-size: 13px;
+  --body-text-size: 9px;
+  --label-text-size: 8px;
+  --page-radius: 16px;
 }
 
 body {
@@ -23,7 +40,8 @@ body {
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
-  background: #152718;
+  color: var(--color-text);
+  background: var(--color-app-bg);
 }
 
 button,
@@ -33,6 +51,219 @@ input {
 
 button {
   color: inherit;
+}
+
+/* Shared primary action button — used for create, register, save and submit. */
+button.primary,
+button.save,
+button.app-primary-action,
+a.app-primary-action,
+button[class*="bg-[#43d36c]"],
+button[class*="bg-[#4ee672]"] {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 20px;
+  color: #08210e !important;
+  background: linear-gradient(135deg, #50e978, #3bdc67) !important;
+  border: 1px solid #54ed7b !important;
+  border-radius: 12px !important;
+  box-shadow: 0 7px 18px rgb(28 191 76 / 15%);
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 140ms ease, background 140ms ease, box-shadow 140ms ease;
+}
+
+button.primary:hover,
+button.save:hover,
+button.app-primary-action:hover,
+a.app-primary-action:hover,
+button[class*="bg-[#43d36c]"]:hover,
+button[class*="bg-[#4ee672]"]:hover {
+  background: linear-gradient(135deg, #62ef87, #49e274) !important;
+  box-shadow: 0 9px 24px rgb(42 219 94 / 24%);
+  transform: translateY(-1px);
+}
+
+button.primary:active,
+button.save:active,
+button.app-primary-action:active,
+a.app-primary-action:active,
+button[class*="bg-[#43d36c]"]:active,
+button[class*="bg-[#4ee672]"]:active {
+  box-shadow: 0 4px 12px rgb(28 191 76 / 14%);
+  transform: translateY(0);
+}
+
+button.primary:focus-visible,
+button.save:focus-visible,
+button.app-primary-action:focus-visible,
+a.app-primary-action:focus-visible,
+button[class*="bg-[#43d36c]"]:focus-visible,
+button[class*="bg-[#4ee672]"]:focus-visible {
+  outline: 2px solid #a2f8b8;
+  outline-offset: 2px;
+}
+
+button.primary:disabled,
+button.save:disabled,
+button.app-primary-action:disabled,
+button[class*="bg-[#43d36c]"]:disabled,
+button[class*="bg-[#4ee672]"]:disabled {
+  opacity: .48;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+button.primary svg,
+button.save svg,
+button.app-primary-action svg,
+a.app-primary-action svg,
+button[class*="bg-[#43d36c]"] svg,
+button[class*="bg-[#4ee672]"] svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+/* Shared typography and color foundation for every routed application page. */
+app-dashboard,
+app-virtual-fence-page,
+app-map-page,
+app-device-management-page,
+app-gateway-management-page,
+app-audit-logs-page,
+app-profile-page,
+app-security-page,
+app-appearance-page,
+app-help-support-page,
+app-historical-analysis,
+app-alerts,
+app-notifications,
+app-fence-management,
+app-section-management,
+app-user-management,
+app-reports,
+app-configuration,
+app-user-profile-page {
+  display: block;
+  min-width: 0;
+  min-height: calc(100vh - 60px);
+  color: var(--color-text);
+  background: var(--color-app-bg);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* The integrated pages previously used a lighter olive canvas. */
+app-authenticated-layout router-outlet + * > main {
+  min-height: calc(100vh - 60px) !important;
+  color: var(--color-text) !important;
+  background: var(--color-app-bg) !important;
+}
+
+app-authenticated-layout router-outlet + * > main h1 {
+  color: var(--color-text) !important;
+  font-size: var(--page-title-size) !important;
+  line-height: 1.2 !important;
+}
+
+app-authenticated-layout router-outlet + * > main h2 {
+  color: var(--color-text);
+}
+
+app-authenticated-layout router-outlet + * > main > .page > header p,
+app-authenticated-layout router-outlet + * > main > div > header p,
+app-authenticated-layout router-outlet + * > main > header p {
+  color: var(--color-accent) !important;
+  font-size: var(--label-text-size) !important;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+app-authenticated-layout router-outlet + * > main > .page > header span,
+app-authenticated-layout router-outlet + * > main > div > header span,
+app-authenticated-layout router-outlet + * > main > header span {
+  color: var(--color-text-muted) !important;
+  font-size: var(--body-text-size) !important;
+}
+
+app-authenticated-layout router-outlet + * > main > .page > header b,
+app-authenticated-layout router-outlet + * > main > div > header b,
+app-authenticated-layout router-outlet + * > main > header b {
+  border-color: #2d6b3a !important;
+  color: var(--color-accent) !important;
+  background: #15391d !important;
+  font-size: var(--label-text-size) !important;
+}
+
+app-authenticated-layout router-outlet + * > main > .page > header,
+app-authenticated-layout router-outlet + * > main > div > header,
+app-authenticated-layout router-outlet + * > main > header {
+  border-color: var(--color-border);
+}
+
+app-authenticated-layout router-outlet + * input,
+app-authenticated-layout router-outlet + * select,
+app-authenticated-layout router-outlet + * textarea {
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+app-authenticated-layout router-outlet + * input:focus,
+app-authenticated-layout router-outlet + * select:focus,
+app-authenticated-layout router-outlet + * textarea:focus {
+  border-color: var(--color-accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(78 230 114 / 10%);
+}
+
+app-authenticated-layout router-outlet + * label,
+app-authenticated-layout router-outlet + * th {
+  letter-spacing: .08em;
+}
+
+@media(max-width:620px) {
+  app-dashboard,
+  app-virtual-fence-page,
+  app-map-page,
+  app-device-management-page,
+  app-gateway-management-page,
+  app-audit-logs-page,
+  app-profile-page,
+  app-security-page,
+  app-appearance-page,
+  app-help-support-page,
+  app-historical-analysis,
+  app-alerts,
+  app-notifications,
+  app-fence-management,
+  app-section-management,
+  app-user-management,
+  app-reports,
+  app-configuration,
+  app-user-profile-page {
+    min-height: calc(100vh - 56px);
+  }
+}
+
+/* Routed page dialogs must render above the fixed header (z-index: 1000). */
+app-fence-registration-drawer,
+app-fence-edit-drawer,
+app-section-registration-drawer,
+app-section-edit-modal,
+app-section-bulk-add-modal,
+app-user-create-drawer,
+app-profile-edit-drawer,
+app-change-password-drawer,
+app-save-configuration-modal {
+  z-index: 1200 !important;
 }
 
 /* Appearance preferences */

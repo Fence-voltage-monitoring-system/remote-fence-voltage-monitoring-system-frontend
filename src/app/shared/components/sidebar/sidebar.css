@@ -1,8 +1,15 @@
 @reference "../../../../styles.css";
-aside { @apply sticky top-0 z-[500] h-screen w-14 flex-none border-r border-[#213925] bg-[#102317] max-[720px]:w-11; }
+:host { @apply block w-14 flex-none max-[720px]:w-11; }
+aside { @apply fixed top-0 bottom-0 left-0 z-[500] w-14 border-r border-[#213925] bg-[var(--color-sidebar-bg)] max-[720px]:w-11; }
 .logo { @apply mx-auto mt-[7px] mb-3 grid size-[38px] place-items-center rounded-[10px] bg-linear-to-br from-[#44d96a] to-[#249544] text-[#06200c] shadow-[0_5px_18px_#06140a] max-[720px]:size-8; }
 nav { @apply flex flex-col items-center gap-px; }
 button { @apply relative grid h-[38px] w-full cursor-pointer place-items-center border-0 border-l-2 border-transparent bg-transparent text-[#799076] hover:border-l-[#47e26c] hover:bg-[#16351e] hover:text-[#4ee672] focus-visible:outline-2 focus-visible:outline-[#4ee672] focus-visible:outline-offset-[-3px] max-[720px]:h-9; }
 button.active { @apply border-l-[#47e26c] bg-[#16351e] text-[#4ee672]; }
 .tooltip { @apply pointer-events-none absolute left-[calc(100%+10px)] z-20 w-max translate-x-[-4px] rounded-md border border-[#3a523d] bg-[#14291a] px-2.5 py-1.5 text-[10px] font-medium text-[#dce7d8] opacity-0 shadow-xl transition-all duration-150; }
 button:hover .tooltip, button:focus-visible .tooltip { @apply translate-x-0 opacity-100; }
+
+@media(max-height:650px) {
+  nav { @apply overflow-y-auto overflow-x-hidden pb-2; max-height:calc(100vh - 58px); scrollbar-width:none; }
+  nav::-webkit-scrollbar { display:none; }
+  button { @apply min-h-9; }
+}

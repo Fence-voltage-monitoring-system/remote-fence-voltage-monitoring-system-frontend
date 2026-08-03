@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { AuthService } from '../../core/services/auth.service';
@@ -14,6 +15,7 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class Login {
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   readonly loginForm = new FormGroup({
     username: new FormControl('', {
@@ -60,6 +62,7 @@ export class Login {
       .subscribe({
         next: (response) => {
           this.successMessage = `Welcome, ${response.user.name}.`;
+          void this.router.navigateByUrl('/dashboard');
         },
         error: (error: HttpErrorResponse) => {
           this.errorMessage = this.getLoginErrorMessage(error);

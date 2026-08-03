@@ -1,0 +1,5 @@
+@reference "../../../../styles.css";
+
+:host { @apply block min-h-screen; }
+.app-shell { @apply flex min-h-screen bg-[var(--color-app-bg)] text-[var(--color-text)]; }
+.page { @apply min-w-0 flex-1; }

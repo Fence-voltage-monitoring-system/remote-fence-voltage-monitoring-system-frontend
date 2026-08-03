@@ -10,6 +10,7 @@ import { Notifications } from './pages/notifications/notifications';
 import { Alerts } from './pages/alerts/alerts';
 import { Configuration } from './pages/configuration/configuration';
 import { Reports } from './pages/reports/reports';
+import { AuthenticatedLayout } from './shared/components/authenticated-layout/authenticated-layout';
 
 import { managementGuard } from './core/guards/management.guard';
 import { superAdminGuard } from './core/guards/super-admin.guard';
@@ -17,6 +18,7 @@ import { superAdminGuard } from './core/guards/super-admin.guard';
 export const routes: Routes = [
   {
     path: '',
+    pathMatch: 'full',
     component: Login,
     title: 'Login | Remote Fence Monitoring',
   },
@@ -91,11 +93,6 @@ export const routes: Routes = [
 
   // Teammate's profile implementation
   {
-    path: 'user-profile',
-    component: UserProfilePage,
-    title: 'User Profile | Remote Fence Monitoring',
-  },
-  {
     path: 'security',
     loadComponent: () =>
       import('./pages/security/security').then(
@@ -120,48 +117,19 @@ export const routes: Routes = [
     title: 'Help & Support | Remote Fence Monitoring',
   },
   {
-    path: 'users',
-    component: UserManagement,
-    title: 'User Management | Remote Fence Monitoring',
-  },
-  {
-    path: 'fences',
-    component: FenceManagement,
-    canActivate: [managementGuard],
-    title: 'Fence Management | Remote Fence Monitoring',
-  },
-  {
-    path: 'sections',
-    component: SectionManagement,
-    canActivate: [managementGuard],
-    title: 'Section Management | Remote Fence Monitoring',
-  },
-  {
-    path: 'historical-analysis',
-    component: HistoricalAnalysis,
-    title: 'Historical Analysis | Remote Fence Monitoring',
-  },
-  {
-    path: 'notifications',
-    component: Notifications,
-    title: 'Notifications | Remote Fence Monitoring',
-  },
-  {
-    path: 'alerts',
-    component: Alerts,
-    title: 'Alerts | Remote Fence Monitoring',
-  },
-  {
-    path: 'configuration',
-    component: Configuration,
-    canActivate: [superAdminGuard],
-    title: 'System Configuration | Remote Fence Monitoring',
-  },
-  {
-    path: 'reports',
-    component: Reports,
-    canActivate: [managementGuard],
-    title: 'Reports | Remote Fence Monitoring',
+    path: '',
+    component: AuthenticatedLayout,
+    children: [
+      { path: 'historical-analysis', component: HistoricalAnalysis, title: 'Historical Analysis | Remote Fence Monitoring' },
+      { path: 'alerts', component: Alerts, title: 'Alerts | Remote Fence Monitoring' },
+      { path: 'notifications', component: Notifications, title: 'Notifications | Remote Fence Monitoring' },
+      { path: 'fences', component: FenceManagement, canActivate: [managementGuard], title: 'Fence Management | Remote Fence Monitoring' },
+      { path: 'sections', component: SectionManagement, canActivate: [managementGuard], title: 'Section Management | Remote Fence Monitoring' },
+      { path: 'users', component: UserManagement, title: 'User Management | Remote Fence Monitoring' },
+      { path: 'reports', component: Reports, canActivate: [managementGuard], title: 'Reports | Remote Fence Monitoring' },
+      { path: 'configuration', component: Configuration, canActivate: [superAdminGuard], title: 'System Configuration | Remote Fence Monitoring' },
+      { path: 'user-profile', component: UserProfilePage, title: 'User Profile | Remote Fence Monitoring' },
+    ],
   },
   {
     path: '**',

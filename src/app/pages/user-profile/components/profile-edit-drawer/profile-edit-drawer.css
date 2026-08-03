@@ -29,8 +29,8 @@
 }
 
 @keyframes drawer-in {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  from { opacity: 0; transform: translate(-50%, -46%) scale(.96); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
 
 @keyframes backdrop-out {
@@ -39,8 +39,8 @@
 }
 
 @keyframes drawer-out {
-  from { transform: translateX(0); }
-  to { transform: translateX(100%); }
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 0; transform: translate(-50%, -46%) scale(.96); }
 }
 
 @media (prefers-reduced-motion: reduce) {
