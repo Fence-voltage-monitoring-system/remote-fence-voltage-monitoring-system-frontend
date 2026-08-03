@@ -12,6 +12,7 @@ export interface LoginResponse {
     role: string;
     provinces?: string[];
     districts?: string[];
+    fences?: string[];
   };
 }
 

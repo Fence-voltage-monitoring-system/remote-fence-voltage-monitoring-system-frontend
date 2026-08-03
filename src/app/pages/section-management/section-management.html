@@ -6,7 +6,7 @@
     </header>
     <app-section-overview [fences]="accessibleFences" [selected]="selectedFence" (fenceChanged)="selectFence($event)" />
     @if(notice){<div class="mt-3 rounded-lg border border-[#3c7448] bg-[#1d4328] px-3 py-2 text-xs text-[#74df90]">{{notice}}<button class="float-right" (click)="notice=''">×</button></div>}
-    <section class="mt-4 overflow-hidden rounded-xl border border-[#50604c] bg-[#354a31]">
+    <section class="mt-4 overflow-hidden rounded-xl border border-[#38513b] bg-[#172a1c]">
       <app-section-toolbar [search]="search" [status]="status" [province]="province" [district]="district" [provinces]="provinces" [districts]="districts" [provinceLocked]="access.scope().role !== 'SUPER_ADMIN'" [districtLocked]="access.scope().role === 'FIELD_ADMIN'" (searchChange)="search=$event" (statusChange)="status=$event" (provinceChange)="changeProvince($event)" (districtChange)="changeDistrict($event)" (bulkAdd)="openBulkAdd()" (register)="openRegistration()" />
       <app-section-table [sections]="filteredSections" (edit)="editSection($event)" />
     </section>

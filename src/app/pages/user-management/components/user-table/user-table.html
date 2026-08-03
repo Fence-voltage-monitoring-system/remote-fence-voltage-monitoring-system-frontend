@@ -1,4 +1,4 @@
-<div class="scrollbar-hidden overflow-x-auto">
+<div class="scrollbar-hidden min-h-0 flex-1 overflow-auto">
   <table class="w-full min-w-[1050px] border-collapse text-left">
     <thead class="text-[10px] tracking-[.1em] text-[#909b8c] uppercase"><tr><th class="px-4 py-3">Name</th><th class="px-4 py-3">Role</th><th class="px-4 py-3">Province / District</th><th class="px-4 py-3">Status</th><th class="px-4 py-3">Last Login</th><th class="px-4 py-3">Created</th><th class="px-4 py-3 text-center">Actions</th></tr></thead>
     <tbody>
@@ -15,7 +15,7 @@
     </tbody>
   </table>
 </div>
-<footer class="flex items-center justify-between border-t border-[#53614d] px-5 py-4 text-xs text-[#939d90]">
+<footer class="shrink-0 flex items-center justify-between border-t border-[#53614d] bg-[#172a1c] px-5 py-4 text-xs text-[#939d90]">
   <span>Showing {{ firstItem }}–{{ lastItem }} of {{ totalUsers }} users</span>
   @if (totalPages > 1) {
     <nav class="flex gap-1" aria-label="User table pagination">

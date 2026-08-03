@@ -1,1 +1,13 @@
-<article class="chart-card"><header><h2>Voltage Trend</h2><p>{{subtitle}}</p></header><svg viewBox="0 0 1200 155" preserveAspectRatio="none" aria-label="Voltage trend chart"><defs><linearGradient id="voltage-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#43d36c" stop-opacity=".16"/><stop offset="1" stop-color="#43d36c" stop-opacity="0"/></linearGradient></defs>@for(y of [20,55,90,125];track y){<line x1="30" [attr.y1]="y" x2="1180" [attr.y2]="y" class="grid"/>}<line x1="30" y1="72" x2="1180" y2="72" class="warning"/><line x1="30" y1="108" x2="1180" y2="108" class="critical"/><path class="area" d="M30 70 C120 63 180 41 250 43 S350 45 410 42 S480 57 560 61 S670 65 730 82 S830 84 900 88 S1010 80 1080 70 S1150 68 1180 64 L1180 130 L30 130Z"/><path class="trend" d="M30 70 C120 63 180 41 250 43 S350 45 410 42 S480 57 560 61 S670 65 730 82 S830 84 900 88 S1010 80 1080 70 S1150 68 1180 64"/><g class="labels"><text x="30" y="148">00:00</text><text x="310" y="148">06:00</text><text x="590" y="148">12:00</text><text x="870" y="148">18:00</text><text x="1150" y="148">24:00</text></g></svg></article>
+<article class="chart-card">
+  <header><h2>Voltage Trend</h2><p>{{subtitle}}</p></header>
+  <svg viewBox="0 0 1200 155" preserveAspectRatio="none" role="img" aria-label="Voltage trend chart generated from dummy data">
+    <defs><linearGradient id="voltage-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#43d36c" stop-opacity=".16"/><stop offset="1" stop-color="#43d36c" stop-opacity="0"/></linearGradient></defs>
+    @for(y of [20,55,90,125];track y){<line x1="30" [attr.y1]="y" x2="1180" [attr.y2]="y" class="grid"/>}
+    <line x1="30" y1="72" x2="1180" y2="72" class="warning"/>
+    <line x1="30" y1="108" x2="1180" y2="108" class="critical"/>
+    <polygon class="area" [attr.points]="areaPoints"/>
+    <polyline class="trend" [attr.points]="points"/>
+    @for(point of coordinates;track $index){<circle class="data-point" [attr.cx]="point.x" [attr.cy]="point.y" r="2"><title>{{point.value.toFixed(2)}} kV</title></circle>}
+    <g class="labels">@for(label of labels;track $index){<text [attr.x]="labelX($index)" y="148" [attr.text-anchor]="$index===0?'start':$index===labels.length-1?'end':'middle'">{{label}}</text>}</g>
+  </svg>
+</article>

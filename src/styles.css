@@ -95,14 +95,254 @@ app-fence-monitor .section-drawer.is-closing {
 }
 
 * { box-sizing: border-box; }
-html { min-height: 100%; background: #152718; --ui-text-scale: 1; }
+html {
+  min-height: 100%;
+  background: #152718;
+  --ui-text-scale: 1;
+  --type-page-title: calc(22px * var(--ui-text-scale));
+  --type-page-subtitle: calc(10px * var(--ui-text-scale));
+  --type-eyebrow: calc(9px * var(--ui-text-scale));
+  --type-card-title: calc(13px * var(--ui-text-scale));
+  --type-section-title: calc(11px * var(--ui-text-scale));
+  --type-body: calc(10px * var(--ui-text-scale));
+  --type-control: calc(11px * var(--ui-text-scale));
+  --type-label: calc(8px * var(--ui-text-scale));
+  --type-table-head: calc(8px * var(--ui-text-scale));
+  --type-table-body: calc(9px * var(--ui-text-scale));
+  --type-button: calc(9px * var(--ui-text-scale));
+  --type-dialog-title: calc(18px * var(--ui-text-scale));
+}
 body { min-height: 100%; margin: 0; min-width: 320px; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #071b0d; }
 button, input { font: inherit; }
 button { color: inherit; }
+
+/* Bright primary actions use dark copy for consistent contrast across pages. */
+button[class*="bg-[#43d36c]"],
+button[class*="bg-[#4ee672]"],
+button[class*="bg-[#45d869]"] {
+  color: #071c0d !important;
+}
 html[data-text-size='small'] { --ui-text-scale: .9; }
 html[data-text-size='large'] { --ui-text-scale: 1.12; }
 html[data-high-contrast='true'] { filter: contrast(1.12); }
 html[data-reduced-motion='true'] *, html[data-reduced-motion='true'] *::before, html[data-reduced-motion='true'] *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+
+/* Shared application typography. Login keeps its intentionally cinematic scale. */
+:is(
+  app-dashboard,
+  app-user-management,
+  app-user-profile,
+  app-fence-management,
+  app-section-management,
+  app-historical-analysis,
+  app-notifications,
+  app-alerts,
+  app-configuration,
+  app-reports,
+  app-device-management-page,
+  app-gateway-management-page,
+  app-map-page,
+  app-virtual-fence-page,
+  app-audit-logs-page,
+  app-appearance-page,
+  app-security-page,
+  app-help-support-page,
+  app-profile-page
+) :is(.page, main) > header h1 {
+  font-size: var(--type-page-title) !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+}
+
+:is(app-historical-analysis, app-notifications, app-alerts, app-configuration, app-reports) .page > header p {
+  font-size: var(--type-eyebrow) !important;
+}
+
+:is(app-historical-analysis, app-notifications, app-alerts, app-configuration, app-reports) .page > header span {
+  font-size: var(--type-page-subtitle) !important;
+  line-height: 1.45 !important;
+}
+
+:is(
+  app-fence-table,
+  app-section-table,
+  app-user-table,
+  app-alert-list,
+  app-notification-feed,
+  app-report-history,
+  app-session-management-editor,
+  app-system-health,
+  app-device-management-page,
+  app-gateway-management-page,
+  app-audit-logs-page,
+  app-fence-monitor
+) table th {
+  font-size: var(--type-table-head) !important;
+  line-height: 1.35 !important;
+  font-weight: 600 !important;
+}
+
+:is(
+  app-fence-table,
+  app-section-table,
+  app-user-table,
+  app-alert-list,
+  app-notification-feed,
+  app-report-history,
+  app-session-management-editor,
+  app-system-health,
+  app-device-management-page,
+  app-gateway-management-page,
+  app-audit-logs-page,
+  app-fence-monitor
+) table td {
+  font-size: var(--type-table-body) !important;
+  line-height: 1.45 !important;
+}
+
+:is(
+  app-user-create-drawer,
+  app-profile-edit-drawer,
+  app-change-password-drawer,
+  app-fence-registration-drawer,
+  app-fence-edit-drawer,
+  app-section-registration-drawer,
+  app-section-edit-modal,
+  app-section-bulk-add-modal,
+  app-save-configuration-modal,
+  app-device-management-page,
+  app-gateway-management-page,
+  app-audit-logs-page
+) :is(input, select, textarea) {
+  font-size: var(--type-control) !important;
+}
+
+:is(
+  app-user-create-drawer,
+  app-profile-edit-drawer,
+  app-change-password-drawer,
+  app-fence-registration-drawer,
+  app-fence-edit-drawer,
+  app-section-registration-drawer,
+  app-section-edit-modal,
+  app-section-bulk-add-modal,
+  app-save-configuration-modal
+) :is(.field > label, .field > span, .field-label) {
+  font-size: var(--type-label) !important;
+}
+
+:is(
+  app-user-create-drawer,
+  app-profile-edit-drawer,
+  app-change-password-drawer,
+  app-fence-registration-drawer,
+  app-fence-edit-drawer,
+  app-section-registration-drawer,
+  app-section-edit-modal,
+  app-section-bulk-add-modal,
+  app-save-configuration-modal
+) [role='dialog'] h2,
+:is(
+  app-user-create-drawer,
+  app-profile-edit-drawer,
+  app-change-password-drawer,
+  app-fence-registration-drawer,
+  app-fence-edit-drawer,
+  app-section-registration-drawer,
+  app-section-edit-modal,
+  app-section-bulk-add-modal,
+  app-save-configuration-modal
+) :is(.drawer, .modal) > header h2 {
+  font-size: var(--type-dialog-title) !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+}
+
+code,
+.mono,
+.font-mono,
+[class*='telemetry'],
+[class*='timestamp'] {
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Final application-wide type contract. Component CSS may control colour,
+ * spacing and layout, while these roles keep their visual hierarchy identical
+ * across pages from both feature branches.
+ */
+.page-content {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: var(--type-body);
+  line-height: 1.45;
+}
+
+.page-content :where(h1) {
+  font-family: inherit !important;
+  font-size: var(--type-page-title) !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -.015em;
+}
+
+.page-content :where(h2) {
+  font-family: inherit !important;
+  font-size: var(--type-card-title) !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+}
+
+.page-content :where(h3, legend) {
+  font-family: inherit !important;
+  font-size: var(--type-section-title) !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+}
+
+.page-content :where(p) {
+  font-size: var(--type-body) !important;
+  line-height: 1.5 !important;
+}
+
+.page-content :where(small) {
+  font-size: var(--type-label) !important;
+  line-height: 1.4 !important;
+}
+
+.page-content :where(label, dt) {
+  font-size: var(--type-label) !important;
+  line-height: 1.35 !important;
+}
+
+.page-content :where(input:not([type='checkbox']):not([type='radio']), select, textarea) {
+  font-family: inherit !important;
+  font-size: var(--type-control) !important;
+  line-height: 1.4 !important;
+}
+
+.page-content :where(table th) {
+  font-family: inherit !important;
+  font-size: var(--type-table-head) !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+}
+
+.page-content :where(table td) {
+  font-size: var(--type-table-body) !important;
+  line-height: 1.45 !important;
+}
+
+.page-content :where(code, kbd, samp, pre, .mono, .font-mono) {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Dialog headings are intentionally one step above ordinary card headings. */
+.page-content :where([role='dialog'], .drawer, .modal, .form-drawer, .details-drawer) h2 {
+  font-size: var(--type-dialog-title) !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+}
 ::-webkit-scrollbar { height: 8px; width: 8px; }
 ::-webkit-scrollbar-track { background: #0b1a0e; }
 ::-webkit-scrollbar-thumb { background: #38533a; border-radius: 99px; }

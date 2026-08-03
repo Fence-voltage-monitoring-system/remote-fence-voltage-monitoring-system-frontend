@@ -14,7 +14,14 @@ export class AuthService {
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(this.loginEndpoint, credentials, {
       withCredentials: true,
-    }).pipe(tap(({user})=>this.managementAccess.setScope({role:user.role as ManagementRole,provinces:user.provinces??[],districts:user.districts??[]})));
+    }).pipe(tap(({user})=>this.managementAccess.setScope({
+      role:user.role as ManagementRole,
+      provinces:user.provinces??[],
+      districts:user.districts??[],
+      fences:user.fences??[],
+      userId:user.id,
+      userName:user.name,
+    })));
   }
 
   changePassword(request: ChangePasswordRequest): Observable<{ message: string }> {
