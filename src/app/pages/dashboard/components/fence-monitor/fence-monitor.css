@@ -265,6 +265,58 @@
 .fence-section:after {
   display: none;
 }
+.fence-section.warning:after,
+.fence-section.critical:after,
+.fence-section.offline:after {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: 0;
+  top: 5px;
+  left: -5px;
+  width: 158px;
+  height: 150px;
+  border-radius: 10px;
+  pointer-events: none;
+}
+.fence-section.warning:after {
+  background: linear-gradient(180deg, rgb(255 189 32 / 0.05), rgb(255 189 32 / 0.15));
+  box-shadow:
+    inset 0 0 24px rgb(255 189 32 / 0.22),
+    0 0 18px rgb(255 189 32 / 0.2);
+}
+.fence-section.critical:after {
+  background: linear-gradient(180deg, rgb(255 73 65 / 0.07), rgb(255 73 65 / 0.2));
+  box-shadow:
+    inset 0 0 28px rgb(255 73 65 / 0.28),
+    0 0 22px rgb(255 73 65 / 0.28);
+  animation: critical-fence-glow 1.8s ease-in-out infinite;
+}
+.fence-section.offline:after {
+  background: rgb(34 43 37 / 0.42);
+  box-shadow: inset 0 0 22px rgb(0 0 0 / 0.3);
+}
+.fence-section.warning .wire {
+  background: linear-gradient(180deg, #ffe6a0, #d6a72c);
+  box-shadow: 0 0 7px rgb(255 189 32 / 0.72);
+}
+.fence-section.critical .wire {
+  background: linear-gradient(180deg, #ffaaa6, #e83b34);
+  box-shadow: 0 0 9px rgb(255 73 65 / 0.82);
+}
+@keyframes critical-fence-glow {
+  50% {
+    opacity: 0.68;
+    box-shadow:
+      inset 0 0 20px rgb(255 73 65 / 0.2),
+      0 0 12px rgb(255 73 65 / 0.2);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fence-section.critical:after {
+    animation: none;
+  }
+}
 .fault {
   top: 63px;
 }

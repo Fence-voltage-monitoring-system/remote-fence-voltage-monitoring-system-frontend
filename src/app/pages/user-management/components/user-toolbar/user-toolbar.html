@@ -8,6 +8,6 @@
     <select class="filter-select" aria-label="Filter by role" [ngModel]="filters.role" (ngModelChange)="updateFilter('role', $event)"><option value="">All Roles</option><option value="SUPER_ADMIN">Super Administrator</option><option value="REGIONAL_ADMIN">Regional Administrator</option><option value="FIELD_ADMIN">Field Administrator</option><option value="MAINTENANCE">Maintenance</option></select>
     <select class="filter-select" aria-label="Filter by province" [ngModel]="filters.province" (ngModelChange)="updateFilter('province', $event)"><option value="">All Provinces</option>@for (province of provinces; track province) { <option [value]="province">{{ province }}</option> }</select>
     <select class="filter-select" aria-label="Filter by status" [ngModel]="filters.status" (ngModelChange)="updateFilter('status', $event)"><option value="">All Status</option><option value="ACTIVE">Active</option><option value="INACTIVE">Inactive</option></select>
-    <button class="flex h-10 items-center justify-center gap-2 rounded-lg bg-[#43d36c] px-5 text-xs font-bold text-[#071c0d] transition hover:bg-[#5be181]" type="button" (click)="createUser.emit()"><span class="text-lg leading-none">+</span> Create User</button>
+    <button class="flex h-10 items-center justify-center gap-2 rounded-lg bg-[#4ee672] px-5 text-xs font-bold text-[#071c0d] transition hover:bg-[#5be181]" type="button" (click)="createUser.emit()"><span class="text-lg leading-none">+</span> Create User</button>
   </div>
 </section>

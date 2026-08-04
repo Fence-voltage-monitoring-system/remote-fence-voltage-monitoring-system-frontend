@@ -1,3 +1,3 @@
 .control { height: 2.75rem; border: 1px solid #586a54; border-radius: .7rem; background: #3b5037; padding-left: .9rem; padding-right: .9rem; color: #edf3eb; outline: none; }
-.control:focus { border-color: #43d36c; box-shadow: 0 0 0 2px rgb(67 211 108 / 15%); }
+.control:focus { border-color: #4ee672; box-shadow: 0 0 0 2px rgb(67 211 108 / 15%); }
 .control::placeholder { color: #95a291; }

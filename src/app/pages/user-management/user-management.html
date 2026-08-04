@@ -1,8 +1,8 @@
-<main class="min-h-dvh bg-[#263923] p-4 font-sans text-[#eef3ec] sm:p-6">
-  <header class="mx-auto mb-4 flex max-w-[1780px] items-end justify-between"><div><p class="mb-1 text-[10px] tracking-[.14em] text-[#43d36c] uppercase">Administration</p><h1 class="m-0 text-xl font-bold">User Management</h1></div><span class="rounded-md border border-[#2f7544] bg-[#1d4c2b]/50 px-3 py-1.5 text-[9px] font-bold tracking-[.1em] text-[#48df73]">● SYSTEM ONLINE</span></header>
-  @if (notice) { <div class="mx-auto mb-3 max-w-[1780px] rounded-lg border border-[#43d36c]/35 bg-[#1d4c2b]/55 px-4 py-2 text-xs text-[#75e694]" role="status">{{ notice }}</div> }
+<main class="min-h-dvh bg-[#102114] p-4 font-sans text-[#edf4e9] sm:p-6">
+  <header class="mx-auto mb-4 flex max-w-[1780px] items-end justify-between"><div><p class="mb-1 text-[10px] tracking-[.14em] text-[#4ee672] uppercase">Administration</p><h1 class="m-0 text-xl font-bold">User Management</h1></div><span class="rounded-md border border-[#2f7544] bg-[#173d25]/50 px-3 py-1.5 text-[9px] font-bold tracking-[.1em] text-[#48df73]">● SYSTEM ONLINE</span></header>
+  @if (notice) { <div class="mx-auto mb-3 max-w-[1780px] rounded-lg border border-[#4ee672]/35 bg-[#173d25]/55 px-4 py-2 text-xs text-[#75e694]" role="status">{{ notice }}</div> }
   <div class="mx-auto grid max-w-[1780px] gap-4 md:h-[calc(100dvh-104px)] md:grid-cols-[minmax(0,1fr)_300px] md:items-stretch">
-    <section class="scrollbar-hidden min-w-0 overflow-auto rounded-2xl border border-[#52634d] bg-[#354a31] shadow-xl md:h-full">
+    <section class="scrollbar-hidden min-w-0 overflow-auto rounded-2xl border border-[#405943] bg-[#1b3020] shadow-xl md:h-full">
       <app-user-toolbar [filters]="filters" [provinces]="provinces" (filtersChange)="updateFilters($event)" (createUser)="isCreateDrawerOpen = true" />
       <app-user-table [users]="paginatedUsers" [selectedUserId]="selectedUser?.id ?? null" [currentPage]="currentPage" [pageSize]="pageSize" [totalUsers]="filteredUsers.length" (userSelected)="selectUser($event)" (pageChange)="currentPage = $event" />
     </section>

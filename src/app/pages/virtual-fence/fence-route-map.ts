@@ -21,6 +21,23 @@ export class FenceRouteMapComponent implements AfterViewInit, OnChanges, OnDestr
     return (this.fence?.sections ?? []).reduce((totals, section) => ({ ...totals, [section.status]: totals[section.status] + 1 }), { healthy: 0, warning: 0, critical: 0, offline: 0 });
   }
 
+  get overallStatus(): RouteStatus {
+    if (this.counts.critical > 0) return 'critical';
+    if (this.counts.offline > 0) return 'offline';
+    if (this.counts.warning > 0) return 'warning';
+    return 'healthy';
+  }
+
+  get statusMessage(): string {
+    const messages: Record<RouteStatus, string> = {
+      healthy: 'All fence sections are operating normally.',
+      warning: `${this.counts.warning} section${this.counts.warning === 1 ? '' : 's'} need attention.`,
+      critical: `${this.counts.critical} critical section${this.counts.critical === 1 ? '' : 's'} detected. Inspect the red route segments.`,
+      offline: `${this.counts.offline} section monitor${this.counts.offline === 1 ? '' : 's'} offline. Check the gray route segments.`,
+    };
+    return messages[this.overallStatus];
+  }
+
   ngAfterViewInit(): void {
     this.map = L.map(this.mapElement.nativeElement, { zoomControl: true, minZoom: 8, maxZoom: 19, preferCanvas: true });
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxNativeZoom: 19, maxZoom: 19, attribution: '&copy; OpenStreetMap contributors' }).addTo(this.map);

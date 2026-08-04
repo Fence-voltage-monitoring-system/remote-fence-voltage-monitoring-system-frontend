@@ -4,9 +4,9 @@
     <tbody>
       @for (fence of fences; track fence.id) {
         <tr>
-          <td class="font-mono font-semibold text-[#43d36c]">{{ fence.code }}</td><td class="font-semibold text-white">{{ fence.name }}</td>
+          <td class="font-mono font-semibold text-[#4ee672]">{{ fence.code }}</td><td class="font-semibold text-white">{{ fence.name }}</td>
           <td>{{ fence.province }} · {{ fence.district }}</td><td class="font-mono">{{ fence.lengthKm.toFixed(1) }} km</td><td>{{ fence.sections }}</td><td class="font-mono">{{ fence.gateway }}</td>
-          <td class="font-mono font-semibold" [class.text-[#43d36c]]="fence.health === 'HEALTHY'" [class.text-[#ffb800]]="fence.health === 'WARNING'" [class.text-[#ff4338]]="fence.health === 'CRITICAL'">{{ fence.averageVoltageKv === null ? '—' : fence.averageVoltageKv.toFixed(1) + ' kV' }}</td>
+          <td class="font-mono font-semibold" [class.text-[#4ee672]]="fence.health === 'HEALTHY'" [class.text-[#ffb800]]="fence.health === 'WARNING'" [class.text-[#ff4338]]="fence.health === 'CRITICAL'">{{ fence.averageVoltageKv === null ? '—' : fence.averageVoltageKv.toFixed(1) + ' kV' }}</td>
           <td><span class="health" [class]="'health ' + healthClass(fence.health)">● {{ fence.health }}</span></td><td>{{ fence.lastUpdated }}</td>
           <td><button type="button" class="details" [attr.aria-label]="'View ' + fence.name" (click)="fenceSelected.emit(fence)">›</button></td>
         </tr>

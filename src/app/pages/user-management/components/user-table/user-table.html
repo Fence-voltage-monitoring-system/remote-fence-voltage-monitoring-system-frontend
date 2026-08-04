@@ -4,12 +4,12 @@
     <tbody>
       @for (user of users; track user.id) {
         <tr class="cursor-pointer border-t border-[#53614d] text-xs transition hover:bg-[#40533b]" [class.bg-[#3d5138]]="selectedUserId === user.id" (click)="userSelected.emit(user)">
-          <td class="px-4 py-2"><div class="flex items-center gap-3"><span class="grid size-7 shrink-0 place-items-center rounded-full border border-[#3b8050] bg-[#31553a] text-[9px] font-bold text-[#43d36c]">{{ user.initials }}</span><span><strong class="block text-xs text-[#f0f3ef]">{{ user.name }}</strong><small class="font-mono text-[10px] text-[#8f998b]">{{ user.email }}</small></span></div></td>
+          <td class="px-4 py-2"><div class="flex items-center gap-3"><span class="grid size-7 shrink-0 place-items-center rounded-full border border-[#3b8050] bg-[#31553a] text-[9px] font-bold text-[#4ee672]">{{ user.initials }}</span><span><strong class="block text-xs text-[#f0f3ef]">{{ user.name }}</strong><small class="font-mono text-[10px] text-[#8f998b]">{{ user.email }}</small></span></div></td>
           <td class="px-4 py-2"><span class="rounded-md border px-2 py-1 text-[9px] font-bold tracking-[.06em] uppercase" [class]="roleClass(user.role)">{{ roleLabels[user.role] }}</span></td>
           <td class="px-4 py-2 text-[#c3cac0]">{{ user.province }} · {{ user.district }}</td>
           <td class="px-4 py-2"><span class="inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[9px]" [class]="user.status === 'ACTIVE' ? 'border-[#33814b] bg-[#245d34]/45 text-[#45db70]' : 'border-[#5d655d] bg-[#4c554d]/45 text-[#858d86]'"><i class="size-1.5 rounded-full bg-current"></i>{{ user.status === 'ACTIVE' ? 'Active' : 'Inactive' }}</span></td>
           <td class="px-4 py-2 font-mono text-[10px] text-[#939d90]">{{ user.lastLogin }}</td><td class="px-4 py-2 font-mono text-[10px] text-[#939d90]">{{ user.created }}</td>
-          <td class="px-4 py-2 text-center"><button class="h-7 min-w-9 rounded-full border border-[#667062] bg-[#4a5945] text-[#cbd1c8] hover:border-[#43d36c]" type="button" [attr.aria-label]="'View ' + user.name">›</button></td>
+          <td class="px-4 py-2 text-center"><button class="h-7 min-w-9 rounded-full border border-[#667062] bg-[#4a5945] text-[#cbd1c8] hover:border-[#4ee672]" type="button" [attr.aria-label]="'View ' + user.name">›</button></td>
         </tr>
       } @empty { <tr><td class="px-4 py-14 text-center text-sm text-[#9ba497]" colspan="7">No users match the selected filters.</td></tr> }
     </tbody>
