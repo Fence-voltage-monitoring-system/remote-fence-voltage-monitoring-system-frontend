@@ -68,7 +68,8 @@
   @apply bg-[#ff443d];
 }
 .legend .offline:before {
-  @apply h-px bg-[#667065];
+  @apply h-[3px] bg-[#aab8b0];
+  background-image: repeating-linear-gradient(90deg, #aab8b0 0 5px, transparent 5px 8px);
 }
 .workspace {
   @apply grid grid-cols-[minmax(0,1fr)_245px] max-[900px]:grid-cols-1;
@@ -160,11 +161,10 @@
   color: #ff4941;
 }
 .offline {
-  color: #52625a;
+  color: #aab8b0;
 }
 .offline .wire {
-  opacity: 0.28;
-  box-shadow: none;
+  opacity: 0.78;
 }
 .fault {
   @apply absolute top-[72px] left-1/2 z-3 size-[9px] rounded-full bg-[#ff4139] shadow-[0_0_8px_#ff2828];
@@ -172,14 +172,14 @@
 .fence-track {
   position: relative;
   isolation: isolate;
-  background: #15331e;
+  background: #1a3b23;
 }
 .fence-track:before {
   position: absolute;
   inset: 0 0 auto;
   z-index: -1;
   height: 190px;
-  background: linear-gradient(180deg, #1b3a23, #102a18);
+  background: linear-gradient(180deg, #21482b, #14351e);
   content: "";
 }
 .fence-section .wire {
@@ -293,8 +293,25 @@
   animation: critical-fence-glow 1.8s ease-in-out infinite;
 }
 .fence-section.offline:after {
-  background: rgb(34 43 37 / 0.42);
-  box-shadow: inset 0 0 22px rgb(0 0 0 / 0.3);
+  content: "OFFLINE";
+  display: grid;
+  place-items: start center;
+  padding-top: 10px;
+  border: 1px dashed rgb(192 204 197 / 0.42);
+  background: linear-gradient(180deg, rgb(170 184 176 / 0.13), rgb(41 54 46 / 0.28));
+  box-shadow:
+    inset 0 0 22px rgb(170 184 176 / 0.12),
+    0 0 16px rgb(170 184 176 / 0.13);
+  color: #d1dbd5;
+  font: 700 8px ui-monospace, monospace;
+  letter-spacing: 0.14em;
+}
+.fence-section.offline .wire {
+  background: repeating-linear-gradient(90deg, #c0ccc5 0 12px, #637169 12px 19px);
+  box-shadow: 0 0 5px rgb(192 204 197 / 0.38);
+}
+.fence-section.offline .post {
+  filter: saturate(0.25) brightness(1.08);
 }
 .fence-section.warning .wire {
   background: linear-gradient(180deg, #ffe6a0, #d6a72c);
@@ -351,10 +368,10 @@
 }
 .offline .reading strong,
 .offline .reading span {
-  @apply text-[#788178];
+  @apply text-[#c0ccc5];
 }
 .offline .reading span {
-  @apply border-[#3c463d] bg-[#283229];
+  @apply border-[#65736a] bg-[#303c34];
 }
 .arrow {
   @apply absolute top-[134px] z-2 size-8 cursor-pointer rounded-full border border-[#2b4530] bg-[#102319] text-[23px] text-[#93a491] hover:border-[#23863d] hover:text-[#50ec72];
