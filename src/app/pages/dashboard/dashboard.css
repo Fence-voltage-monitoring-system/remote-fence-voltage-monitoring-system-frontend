@@ -1,10 +1,7 @@
 @reference "../../../styles.css";
 
-:host { @apply block min-h-screen; }
-.app-shell { @apply flex min-h-screen bg-[#152718] text-[#edf4e9]; }
-.page { @apply min-w-0 flex-1; }
+:host { @apply block min-h-full; }
 main { @apply mx-auto max-w-[1600px] px-5 pt-[18px] pb-7 max-[720px]:p-3; }
-.app-shell:fullscreen{width:100%;height:100%;overflow:auto}
 .stats-grid { @apply mb-5 grid grid-cols-5 gap-3.5 max-[1100px]:grid-cols-3 max-[720px]:grid-cols-2 max-[720px]:gap-[9px] max-[430px]:grid-cols-1; }
 .analytics-grid { @apply mt-[18px] grid grid-cols-[280px_minmax(0,1fr)_160px] gap-3.5 max-[1100px]:grid-cols-[1fr_1.7fr] max-[720px]:grid-cols-1; }
 .dashboard-map { @apply mt-[18px] overflow-hidden rounded-[14px]; }
