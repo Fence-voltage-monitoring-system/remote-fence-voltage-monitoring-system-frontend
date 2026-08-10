@@ -3,3 +3,5 @@ dist/
 .angular/
 .vscode/
 .env
+.DS_Store
+
