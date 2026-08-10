@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { Bell, createIcons } from 'lucide';
 import { filter, Subscription } from 'rxjs';
 import { UserMenuComponent } from '../user-menu/user-menu';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({ selector: 'app-header', standalone: true, imports: [RouterLink, UserMenuComponent], templateUrl: './header.html', styleUrl: './header.css' })
 export class HeaderComponent implements AfterViewInit, OnDestroy {
@@ -13,14 +14,21 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   readonly fullscreen = signal(false);
   private readonly timer: ReturnType<typeof setInterval>;
   private readonly routeSubscription: Subscription;
+  private readonly liveSub?: Subscription;
+  private statsSubscription?: Subscription;
+  readonly unread = signal(0);
   private readonly timeFormatter = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Colombo', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
   private readonly dateFormatter = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Colombo', day: '2-digit', month: 'short', year: 'numeric' });
 
-  constructor(private readonly router: Router) {
+  constructor(private readonly router: Router, private readonly notifications: NotificationService) {
     this.updateClock();
     this.updatePageName(this.router.url);
     this.timer = setInterval(() => this.updateClock(), 1000);
     this.routeSubscription = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => this.updatePageName(event.urlAfterRedirects));
+    // subscribe to published stats so header updates immediately (including preview stats)
+    this.notifications.stats$.subscribe({ next: (s) => this.unread.set(s.unread), error: () => {/* ignore */} });
+    // subscribe to live notifications and update unread count when new unread items arrive
+    this.liveSub = this.notifications.connectLive().subscribe({ next: (item) => { if (!item.read) this.unread.update(n => n + 1); }, error: () => {/* ignore */} });
   }
 
   @HostListener('document:fullscreenchange')
@@ -28,6 +36,8 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     createIcons({ icons: { Bell }, attrs: { 'stroke-width': 1.7, width: 17, height: 17 } });
+    // fetch initial stats so the header shows correct unread count immediately
+    this.notifications.getStats().subscribe({ next: () => {/* stats published to stats$ */}, error: () => {/* ignore */} });
   }
 
   async toggleFullscreen(): Promise<void> {
@@ -35,7 +45,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     else await document.documentElement.requestFullscreen();
   }
 
-  ngOnDestroy(): void { clearInterval(this.timer); this.routeSubscription.unsubscribe(); }
+  ngOnDestroy(): void { clearInterval(this.timer); this.routeSubscription.unsubscribe(); this.liveSub?.unsubscribe(); this.statsSubscription?.unsubscribe(); }
   private updateClock(): void { const now = new Date(); this.currentTime.set(this.timeFormatter.format(now)); this.currentDate.set(this.dateFormatter.format(now)); }
   private updatePageName(url: string): void {
     const path = url.split('?')[0].split('#')[0];

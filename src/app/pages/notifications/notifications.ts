@@ -32,7 +32,10 @@ export class Notifications implements OnInit,OnDestroy {
   private playNotificationTone(){try{const AudioContextClass=window.AudioContext;const context=new AudioContextClass();const oscillator=context.createOscillator();const gain=context.createGain();oscillator.frequency.value=660;gain.gain.value=.04;oscillator.connect(gain);gain.connect(context.destination);oscillator.start();oscillator.stop(context.currentTime+.12);oscillator.onended=()=>void context.close();}catch{}}
   private applyRead(target:SystemNotification,updated?:SystemNotification){Object.assign(target,updated??{read:true});this.stats={...this.stats,unread:Math.max(0,this.stats.unread-1)};}
   private usePreview(){this.usingPreview=true;this.notifications=this.preview.map(item=>({...item,channels:[...item.channels]}));this.totalPages=1;this.error='The notification API is unavailable. Displaying local preview data.';this.refreshPreviewStats();}
-  private refreshPreviewStats(){const items=this.notifications.filter(item=>this.canView(item));this.stats={inApp:items.length,websocket:items.filter(item=>item.channels.includes('WEBSOCKET')).length,smsDelivered:items.filter(item=>item.channels.includes('SMS')).length,unread:items.filter(item=>!item.read).length};}
+  private refreshPreviewStats(){const items=this.notifications.filter(item=>this.canView(item));this.stats={inApp:items.length,websocket:items.filter(item=>item.channels.includes('WEBSOCKET')).length,smsDelivered:items.filter(item=>item.channels.includes('SMS')).length,unread:items.filter(item=>!item.read).length};
+    // publish stats for other UI elements (header, menu)
+    this.service.updateStats(this.stats);
+  }
   private previewFilter(items:SystemNotification[]){return items.filter(item=>this.filter==='ALL'||this.filter==='UNREAD'&&!item.read||item.category===this.filter);}
   private canView(item:SystemNotification){if(item.fence==='All fences')return this.access.scope().role==='SUPER_ADMIN';const locations:Record<string,[string,string]>={'EPF-MNR-A':['Uva','Monaragala'],'EPF-PLN-C':['North Central','Polonnaruwa'],'EPF-HMB-E':['Southern','Hambantota'],'EPF-ANR-B':['North Central','Anuradhapura']};const [province,district]=item.province&&item.district?[item.province,item.district]:(locations[item.fence]??['','']);return this.access.canView(province,district,item.fence);}
 }

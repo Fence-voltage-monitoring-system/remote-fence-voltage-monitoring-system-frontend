@@ -382,3 +382,12 @@ code,
 .fence-map-popup strong, .fence-map-popup span, .fence-map-popup b, .fence-map-popup em { display: block; }
 .fence-map-popup strong { font-size: 11px; }.fence-map-popup span { margin-top: 4px; color: #8d9a8a; font-size: 9px; }.fence-map-popup b { margin-top: 10px; color: #51e477; font: 700 15px monospace; }.fence-map-popup em { margin-top: 5px; color: #b2bdb0; font-size: 8px; font-style: normal; text-transform: uppercase; }
 @keyframes map-marker-pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.22); opacity: .82; } }
+
+/* Dashboard: force mini-analysis charts to stack as full-width rows */
+.mini-grid {
+  grid-template-columns: 1fr !important;
+}
+.mini-grid article {
+  width: 100% !important;
+  justify-self: stretch !important;
+}

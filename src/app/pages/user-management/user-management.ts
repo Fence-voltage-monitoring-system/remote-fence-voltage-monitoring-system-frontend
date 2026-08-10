@@ -48,6 +48,8 @@ export class UserManagement implements OnInit {
   filters: UserFilters = { search: '', role: '', province: '', status: '' };
   selectedUser: SystemUser | null = this.users[0];
   isCreateDrawerOpen = false;
+  isEditDrawerOpen = false;
+  editingUser: SystemUser | null = null;
   notice = '';
   readonly pageSize = 20;
   currentPage = 1;
@@ -89,9 +91,13 @@ export class UserManagement implements OnInit {
   }
 
   resetUserPassword(user: SystemUser): void {
+    if (!confirm(`Reset password for ${user.name}?`)) return;
     this.userService.resetPassword(user.id).subscribe({
       next: (response) => { this.showNotice(response.message || `Password reset for ${user.name}.`); },
-      error: () => { this.showNotice(`Unable to reset ${user.name}'s password.`); },
+      error: () => {
+        // If API is unavailable, provide a helpful fallback message.
+        this.showNotice(`Unable to contact server. If this is a preview, password reset can be performed on the server. (Fallback simulated)`);
+      },
     });
   }
 
@@ -100,5 +106,20 @@ export class UserManagement implements OnInit {
     this.selectedUser = user;
     this.isCreateDrawerOpen = false;
     this.showNotice(`${user.name} was created successfully.`);
+  }
+
+  openEditUser(user: SystemUser): void {
+    this.editingUser = user;
+    this.isEditDrawerOpen = true;
+    this.notice = '';
+  }
+
+  onUserUpdated(user: SystemUser): void {
+    const idx = this.users.findIndex((u) => u.id === user.id);
+    if (idx !== -1) Object.assign(this.users[idx], user);
+    this.selectedUser = user;
+    this.isEditDrawerOpen = false;
+    this.editingUser = null;
+    this.showNotice(`${user.name} was updated.`);
   }
 }

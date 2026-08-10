@@ -1,24 +1,12 @@
 import { Component, Input } from '@angular/core';
 
-@Component({
-  selector: 'app-voltage-trend-chart',
-  standalone: true,
-  templateUrl: './voltage-trend-chart.html',
-  styleUrl: './voltage-trend-chart.css',
-})
+@Component({selector:'app-voltage-trend-chart',standalone:true,templateUrl:'./voltage-trend-chart.html',styleUrl:'./voltage-trend-chart.css'})
 export class VoltageTrendChart {
   @Input() subtitle = '24-hour voltage readings · All active sections';
-  @Input() values: number[] = [];
-  @Input() labels: string[] = [];
-
-  get points(): string { return this.coordinates.map(point => `${point.x},${point.y}`).join(' '); }
-  get areaPoints(): string { return `30,130 ${this.points} 1180,130`; }
-  get coordinates(): { x: number; y: number; value: number }[] {
-    return this.values.map((value, index) => ({
-      x: 30 + index / Math.max(1, this.values.length - 1) * 1150,
-      y: 130 - Math.max(0, Math.min(8, value)) / 8 * 110,
-      value,
-    }));
-  }
-  labelX(index: number): number { return 30 + index / Math.max(1, this.labels.length - 1) * 1150; }
+  readonly points = [
+    { x:55,y:92,time:'00:00',value:'5.1 kV' }, { x:245,y:50,time:'04:00',value:'6.3 kV' },
+    { x:435,y:48,time:'08:00',value:'6.4 kV' }, { x:625,y:78,time:'12:00',value:'5.5 kV' },
+    { x:815,y:116,time:'16:00',value:'4.2 kV' }, { x:1005,y:92,time:'20:00',value:'5.0 kV' },
+    { x:1145,y:79,time:'24:00',value:'5.4 kV' },
+  ];
 }

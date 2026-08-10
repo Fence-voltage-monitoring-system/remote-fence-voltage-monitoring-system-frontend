@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, EventEmitter, HostListener, inject, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, inject, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize, timeout } from 'rxjs';
 import { UserService } from '../../../../core/services/user.service';
@@ -10,6 +10,8 @@ export class UserCreateDrawer implements OnInit {
   private readonly userService = inject(UserService);
   @Output() closed = new EventEmitter<void>();
   @Output() userCreated = new EventEmitter<SystemUser>();
+  @Output() userUpdated = new EventEmitter<SystemUser>();
+  @Input() editingUser?: SystemUser | null;
 
   roles: RoleOption[] = [];
   provinces: LocationOption[] = [];
@@ -42,6 +44,23 @@ export class UserCreateDrawer implements OnInit {
 
   ngOnInit(): void {
     this.loadCreateOptions();
+    if (this.editingUser) {
+      // populate form for editing
+      const u = this.editingUser;
+      this.form.controls.fullName.setValue(u.name);
+      this.form.controls.username.setValue(u.email.split('@')[0]);
+      this.form.controls.email.setValue(u.email);
+      this.form.controls.contactNumber.setValue('');
+      this.form.controls.role.setValue(u.role as any);
+      // region fields - best-effort mapping from sample data
+      this.form.controls.provinceId.setValue(null);
+      this.form.controls.districtId.setValue(null);
+      this.form.controls.fenceIds.setValue([]);
+      this.form.controls.status.setValue(u.status as any);
+      // do not require temporary password when editing
+      this.form.controls.temporaryPassword.clearValidators();
+      this.form.controls.temporaryPassword.updateValueAndValidity({ emitEvent: false });
+    }
   }
 
   loadCreateOptions(): void {
@@ -114,10 +133,18 @@ export class UserCreateDrawer implements OnInit {
     };
     this.apiError = '';
     this.isSubmitting = true;
-    this.userService.createUser(request).pipe(finalize(() => { this.isSubmitting = false; })).subscribe({
-      next: (user) => { this.userCreated.emit(user); },
-      error: (error: HttpErrorResponse) => { this.applyApiError(error); },
-    });
+    if (this.editingUser) {
+      // perform update
+      this.userService.updateUser(this.editingUser.id, request).pipe(finalize(() => { this.isSubmitting = false; })).subscribe({
+        next: (user) => { this.userUpdated.emit(user); },
+        error: (error: HttpErrorResponse) => { this.applyApiError(error); },
+      });
+    } else {
+      this.userService.createUser(request).pipe(finalize(() => { this.isSubmitting = false; })).subscribe({
+        next: (user) => { this.userCreated.emit(user); },
+        error: (error: HttpErrorResponse) => { this.applyApiError(error); },
+      });
+    }
   }
 
   private configureAssignmentValidators(): void {

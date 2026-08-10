@@ -17,7 +17,7 @@
 
   <div class="menu-section">
     <button type="button" role="menuitem" routerLink="/profile" (click)="choose()"><i data-menu-icon="UserRound"></i><span><strong>My profile</strong><small>Personal details and contact info</small></span></button>
-    <button type="button" role="menuitem" routerLink="/notifications" (click)="choose()"><i data-menu-icon="BellRing"></i><span><strong>Notifications</strong><small>View operational notifications</small></span><em>2</em></button>
+    <button type="button" role="menuitem" routerLink="/notifications" (click)="choose()"><i data-menu-icon="BellRing"></i><span><strong>Notifications</strong><small>View operational notifications</small></span><em *ngIf="unread > 0">{{ unread }}</em></button>
   </div>
 
   <div class="menu-section">
