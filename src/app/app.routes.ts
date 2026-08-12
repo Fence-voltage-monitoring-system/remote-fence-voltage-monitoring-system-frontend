@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { Login } from './pages/login/login';
 import { UserManagement } from './pages/user-management/user-management';
-import { UserProfilePage } from './pages/user-profile/user-profile';
 import { FenceManagement } from './pages/fence-management/fence-management';
 import { SectionManagement } from './pages/section-management/section-management';
 import { managementGuard } from './core/guards/management.guard';
@@ -11,6 +10,7 @@ import { Notifications } from './pages/notifications/notifications';
 import { Alerts } from './pages/alerts/alerts';
 import { Configuration } from './pages/configuration/configuration';
 import { Reports } from './pages/reports/reports';
+import { ApplicationLayout } from './shared/layouts/application-layout/application-layout';
 
 export const routes: Routes = [
   {
@@ -24,50 +24,24 @@ export const routes: Routes = [
     title: 'Live Dashboard | Remote Fence Monitoring'
   },
   {
-    path: 'users',
-    component: UserManagement
+    path: '',
+    component: ApplicationLayout,
+    children: [
+      { path: 'users', component: UserManagement, title: 'User Management | Remote Fence Monitoring' },
+      { path: 'fences', component: FenceManagement, canActivate: [managementGuard], title: 'Fence Management | Remote Fence Monitoring' },
+      { path: 'sections', component: SectionManagement, canActivate: [managementGuard], title: 'Section Management | Remote Fence Monitoring' },
+      { path: 'historical-analysis', component: HistoricalAnalysis, title: 'Historical Analysis | Remote Fence Monitoring' },
+      { path: 'notifications', component: Notifications, title: 'Notifications | Remote Fence Monitoring' },
+      { path: 'alerts', component: Alerts, title: 'Alerts | Remote Fence Monitoring' },
+      { path: 'configuration', component: Configuration, canActivate: [superAdminGuard], title: 'System Configuration | Remote Fence Monitoring' },
+      { path: 'reports', component: Reports, canActivate: [managementGuard], title: 'Reports | Remote Fence Monitoring' },
+    ]
   },
   {
     path: 'profile',
-    component: UserProfilePage
-  },
-  {
-    path: 'account-profile',
     loadComponent: () =>
       import('./pages/profile/profile').then((page) => page.ProfilePage),
     title: 'My Profile | Remote Fence Monitoring'
-  },
-  {
-    path: 'fences',
-    component: FenceManagement,
-    canActivate: [managementGuard]
-  },
-  {
-    path: 'sections',
-    component: SectionManagement,
-    canActivate: [managementGuard]
-  },
-  {
-    path: 'historical-analysis',
-    component: HistoricalAnalysis
-  },
-  {
-    path: 'notifications',
-    component: Notifications
-  },
-  {
-    path: 'alerts',
-    component: Alerts
-  },
-  {
-    path: 'configuration',
-    component: Configuration,
-    canActivate: [superAdminGuard]
-  },
-  {
-    path: 'reports',
-    component: Reports,
-    canActivate: [managementGuard]
   },
   {
     path: 'virtual-fence',

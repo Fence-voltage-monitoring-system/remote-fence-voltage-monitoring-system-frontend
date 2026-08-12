@@ -1,15 +1,348 @@
 @import 'leaflet/dist/leaflet.css';
 @import 'tailwindcss';
 
+/* Full-screen application overlays must sit above the shared header and sidebar. */
+app-profile-edit-drawer,
+app-change-password-drawer,
+app-user-create-drawer,
+app-fence-registration-drawer,
+app-fence-edit-drawer,
+app-section-registration-drawer,
+app-section-edit-modal,
+app-section-bulk-add-modal,
+app-save-configuration-modal {
+  z-index: 2000 !important;
+}
+
+app-device-management-page .register-backdrop,
+app-device-management-page .drawer-backdrop,
+app-gateway-management-page .backdrop,
+app-audit-logs-page .backdrop,
+app-historical-analysis .range-backdrop {
+  z-index: 2000 !important;
+}
+
+app-device-management-page .register-drawer,
+app-device-management-page .device-details,
+app-device-management-page .assignment-drawer,
+app-gateway-management-page .details-drawer,
+app-gateway-management-page .form-drawer,
+app-audit-logs-page .drawer,
+app-historical-analysis .range-modal {
+  z-index: 2001 !important;
+}
+
+app-session-management-editor .confirmation,
+app-system-health .modal {
+  z-index: 2000 !important;
+}
+
+/* Use a consistent centred-dialog layout instead of page-edge drawers. */
+app-user-create-drawer aside[role='dialog'],
+app-profile-edit-drawer .edit-drawer,
+app-device-management-page .register-drawer,
+app-device-management-page .device-details,
+app-device-management-page .assignment-drawer,
+app-gateway-management-page .details-drawer,
+app-gateway-management-page .form-drawer,
+app-audit-logs-page .drawer,
+app-fence-monitor .section-drawer {
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: min(var(--dialog-width, 520px), calc(100vw - 32px)) !important;
+  height: auto !important;
+  max-height: calc(100dvh - 32px) !important;
+  overflow-y: auto !important;
+  transform: translate(-50%, -50%) !important;
+  border: 1px solid #49604b !important;
+  border-radius: 16px !important;
+  box-shadow: 0 24px 70px rgb(0 0 0 / 55%) !important;
+  animation: app-centred-dialog-in .22s ease-out !important;
+}
+
+app-user-create-drawer aside[role='dialog'] { --dialog-width: 480px; }
+app-profile-edit-drawer .edit-drawer { --dialog-width: 430px; }
+app-device-management-page .register-drawer { --dialog-width: 500px; }
+app-device-management-page .device-details { --dialog-width: 520px; }
+app-device-management-page .assignment-drawer { --dialog-width: 560px; }
+app-gateway-management-page .details-drawer,
+app-gateway-management-page .form-drawer { --dialog-width: 520px; }
+app-audit-logs-page .drawer { --dialog-width: 620px; }
+app-fence-monitor .section-drawer { --dialog-width: 500px; }
+
+app-user-create-drawer aside[role='dialog'].is-closing,
+app-profile-edit-drawer .edit-drawer.closing,
+app-device-management-page .register-drawer.is-closing,
+app-device-management-page .device-details.is-closing,
+app-device-management-page .assignment-drawer.is-closing,
+app-gateway-management-page .details-drawer.is-closing,
+app-gateway-management-page .form-drawer.is-closing,
+app-audit-logs-page .drawer.is-closing,
+app-fence-monitor .section-drawer.is-closing {
+  animation: app-centred-dialog-out .2s ease-in forwards !important;
+}
+
+@keyframes app-centred-dialog-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes app-centred-dialog-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
 * { box-sizing: border-box; }
-html { min-height: 100%; background: #152718; --ui-text-scale: 1; }
+html {
+  min-height: 100%;
+  background: #152718;
+  --ui-text-scale: 1;
+  --type-page-title: calc(22px * var(--ui-text-scale));
+  --type-page-subtitle: calc(10px * var(--ui-text-scale));
+  --type-eyebrow: calc(9px * var(--ui-text-scale));
+  --type-card-title: calc(13px * var(--ui-text-scale));
+  --type-section-title: calc(11px * var(--ui-text-scale));
+  --type-body: calc(10px * var(--ui-text-scale));
+  --type-control: calc(11px * var(--ui-text-scale));
+  --type-label: calc(8px * var(--ui-text-scale));
+  --type-table-head: calc(8px * var(--ui-text-scale));
+  --type-table-body: calc(9px * var(--ui-text-scale));
+  --type-button: calc(9px * var(--ui-text-scale));
+  --type-dialog-title: calc(18px * var(--ui-text-scale));
+}
 body { min-height: 100%; margin: 0; min-width: 320px; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #071b0d; }
 button, input { font: inherit; }
 button { color: inherit; }
+
+/* Bright primary actions use dark copy for consistent contrast across pages. */
+button[class*="bg-[#43d36c]"],
+button[class*="bg-[#4ee672]"],
+button[class*="bg-[#45d869]"] {
+  color: #071c0d !important;
+}
 html[data-text-size='small'] { --ui-text-scale: .9; }
 html[data-text-size='large'] { --ui-text-scale: 1.12; }
 html[data-high-contrast='true'] { filter: contrast(1.12); }
 html[data-reduced-motion='true'] *, html[data-reduced-motion='true'] *::before, html[data-reduced-motion='true'] *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+
+/* Shared application typography. Login keeps its intentionally cinematic scale. */
+:is(
+  app-dashboard,
+  app-user-management,
+  app-user-profile,
+  app-fence-management,
+  app-section-management,
+  app-historical-analysis,
+  app-notifications,
+  app-alerts,
+  app-configuration,
+  app-reports,
+  app-device-management-page,
+  app-gateway-management-page,
+  app-map-page,
+  app-virtual-fence-page,
+  app-audit-logs-page,
+  app-appearance-page,
+  app-security-page,
+  app-help-support-page,
+  app-profile-page
+) :is(.page, main) > header h1 {
+  font-size: var(--type-page-title) !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+}
+
+:is(app-historical-analysis, app-notifications, app-alerts, app-configuration, app-reports) .page > header p {
+  font-size: var(--type-eyebrow) !important;
+}
+
+:is(app-historical-analysis, app-notifications, app-alerts, app-configuration, app-reports) .page > header span {
+  font-size: var(--type-page-subtitle) !important;
+  line-height: 1.45 !important;
+}
+
+:is(
+  app-fence-table,
+  app-section-table,
+  app-user-table,
+  app-alert-list,
+  app-notification-feed,
+  app-report-history,
+  app-session-management-editor,
+  app-system-health,
+  app-device-management-page,
+  app-gateway-management-page,
+  app-audit-logs-page,
+  app-fence-monitor
+) table th {
+  font-size: var(--type-table-head) !important;
+  line-height: 1.35 !important;
+  font-weight: 600 !important;
+}
+
+:is(
+  app-fence-table,
+  app-section-table,
+  app-user-table,
+  app-alert-list,
+  app-notification-feed,
+  app-report-history,
+  app-session-management-editor,
+  app-system-health,
+  app-device-management-page,
+  app-gateway-management-page,
+  app-audit-logs-page,
+  app-fence-monitor
+) table td {
+  font-size: var(--type-table-body) !important;
+  line-height: 1.45 !important;
+}
+
+:is(
+  app-user-create-drawer,
+  app-profile-edit-drawer,
+  app-change-password-drawer,
+  app-fence-registration-drawer,
+  app-fence-edit-drawer,
+  app-section-registration-drawer,
+  app-section-edit-modal,
+  app-section-bulk-add-modal,
+  app-save-configuration-modal,
+  app-device-management-page,
+  app-gateway-management-page,
+  app-audit-logs-page
+) :is(input, select, textarea) {
+  font-size: var(--type-control) !important;
+}
+
+:is(
+  app-user-create-drawer,
+  app-profile-edit-drawer,
+  app-change-password-drawer,
+  app-fence-registration-drawer,
+  app-fence-edit-drawer,
+  app-section-registration-drawer,
+  app-section-edit-modal,
+  app-section-bulk-add-modal,
+  app-save-configuration-modal
+) :is(.field > label, .field > span, .field-label) {
+  font-size: var(--type-label) !important;
+}
+
+:is(
+  app-user-create-drawer,
+  app-profile-edit-drawer,
+  app-change-password-drawer,
+  app-fence-registration-drawer,
+  app-fence-edit-drawer,
+  app-section-registration-drawer,
+  app-section-edit-modal,
+  app-section-bulk-add-modal,
+  app-save-configuration-modal
+) [role='dialog'] h2,
+:is(
+  app-user-create-drawer,
+  app-profile-edit-drawer,
+  app-change-password-drawer,
+  app-fence-registration-drawer,
+  app-fence-edit-drawer,
+  app-section-registration-drawer,
+  app-section-edit-modal,
+  app-section-bulk-add-modal,
+  app-save-configuration-modal
+) :is(.drawer, .modal) > header h2 {
+  font-size: var(--type-dialog-title) !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+}
+
+code,
+.mono,
+.font-mono,
+[class*='telemetry'],
+[class*='timestamp'] {
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Final application-wide type contract. Component CSS may control colour,
+ * spacing and layout, while these roles keep their visual hierarchy identical
+ * across pages from both feature branches.
+ */
+.page-content {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: var(--type-body);
+  line-height: 1.45;
+}
+
+.page-content :where(h1) {
+  font-family: inherit !important;
+  font-size: var(--type-page-title) !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -.015em;
+}
+
+.page-content :where(h2) {
+  font-family: inherit !important;
+  font-size: var(--type-card-title) !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+}
+
+.page-content :where(h3, legend) {
+  font-family: inherit !important;
+  font-size: var(--type-section-title) !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+}
+
+.page-content :where(p) {
+  font-size: var(--type-body) !important;
+  line-height: 1.5 !important;
+}
+
+.page-content :where(small) {
+  font-size: var(--type-label) !important;
+  line-height: 1.4 !important;
+}
+
+.page-content :where(label, dt) {
+  font-size: var(--type-label) !important;
+  line-height: 1.35 !important;
+}
+
+.page-content :where(input:not([type='checkbox']):not([type='radio']), select, textarea) {
+  font-family: inherit !important;
+  font-size: var(--type-control) !important;
+  line-height: 1.4 !important;
+}
+
+.page-content :where(table th) {
+  font-family: inherit !important;
+  font-size: var(--type-table-head) !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+}
+
+.page-content :where(table td) {
+  font-size: var(--type-table-body) !important;
+  line-height: 1.45 !important;
+}
+
+.page-content :where(code, kbd, samp, pre, .mono, .font-mono) {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Dialog headings are intentionally one step above ordinary card headings. */
+.page-content :where([role='dialog'], .drawer, .modal, .form-drawer, .details-drawer) h2 {
+  font-size: var(--type-dialog-title) !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+}
 ::-webkit-scrollbar { height: 8px; width: 8px; }
 ::-webkit-scrollbar-track { background: #0b1a0e; }
 ::-webkit-scrollbar-thumb { background: #38533a; border-radius: 99px; }
@@ -41,6 +374,20 @@ html[data-reduced-motion='true'] *, html[data-reduced-motion='true'] *::before, 
 .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: #17291b; color: #dce8d9; }
 .leaflet-popup-content-wrapper { border: 1px solid #496047; border-radius: 10px; box-shadow: 0 12px 30px rgba(0,0,0,.45); }
 .leaflet-popup-content { margin: 12px 14px; }
+.route-popup { display: grid; min-width: 245px; grid-template-areas: "title name" "value updated"; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; column-gap: 7px; row-gap: 5px; }
+.route-popup strong { grid-area: title; color: #eef6ec; font-size: 11px; white-space: nowrap; }
+.route-popup span { grid-area: name; min-width: 0; color: #dce8d9; font-size: 10px; }
+.route-popup b { grid-area: value; color: #51e477; font: 700 12px monospace; white-space: nowrap; }
+.route-popup small { grid-area: updated; color: #9caa99; font-size: 9px; }
 .fence-map-popup strong, .fence-map-popup span, .fence-map-popup b, .fence-map-popup em { display: block; }
 .fence-map-popup strong { font-size: 11px; }.fence-map-popup span { margin-top: 4px; color: #8d9a8a; font-size: 9px; }.fence-map-popup b { margin-top: 10px; color: #51e477; font: 700 15px monospace; }.fence-map-popup em { margin-top: 5px; color: #b2bdb0; font-size: 8px; font-style: normal; text-transform: uppercase; }
 @keyframes map-marker-pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.22); opacity: .82; } }
+
+/* Dashboard: force mini-analysis charts to stack as full-width rows */
+.mini-grid {
+  grid-template-columns: 1fr !important;
+}
+.mini-grid article {
+  width: 100% !important;
+  justify-self: stretch !important;
+}

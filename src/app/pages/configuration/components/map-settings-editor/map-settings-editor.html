@@ -10,14 +10,8 @@
       <label>Default zoom<input type="number" min="5" max="18" step="1" [ngModel]="value.defaultZoom" (ngModelChange)="update('defaultZoom',+$event)"/><small>7 displays the whole country.</small></label>
     </div></fieldset>
 
-    <div class="preview" aria-label="Map settings preview">
-      <div class="grid-lines"></div><span class="island">Sri Lanka</span>
-      @if(value.showGateways){<i class="marker gateway" title="Gateway">G</i>}
-      @if(value.showMonitoringDevices){<i class="marker device" title="Monitoring device">D</i>}
-      @if(value.showActiveAlerts&&value.showAlertOverlay){<i class="marker alert" title="Active alert">!</i>}
-      @if(value.showMaintenanceWork){<i class="marker maintenance" title="Maintenance work">M</i>}
-      @if(value.showDistrictBoundaries){<span class="boundary district"></span>}
-      @if(value.showProvinceBoundaries){<span class="boundary province"></span>}
+    <div class="preview" aria-label="Interactive Sri Lanka map settings preview">
+      <div #previewMap class="preview-map"></div>
       <footer><strong>Live preview</strong><span>Zoom {{value.defaultZoom}} · {{value.defaultLatitude}}, {{value.defaultLongitude}}</span></footer>
     </div>
   </div>

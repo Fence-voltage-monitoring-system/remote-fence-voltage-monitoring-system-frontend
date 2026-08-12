@@ -1,7 +1,14 @@
 import { Injectable, signal } from '@angular/core';
 
 export type ManagementRole = 'SUPER_ADMIN' | 'REGIONAL_ADMIN' | 'FIELD_ADMIN' | 'MAINTENANCE';
-export interface ManagementScope { role: ManagementRole; provinces: string[]; districts: string[]; }
+export interface ManagementScope {
+  role: ManagementRole;
+  provinces: string[];
+  districts: string[];
+  fences?: string[];
+  userId?: string;
+  userName?: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class ManagementAccessService {
@@ -17,7 +24,7 @@ export class ManagementAccessService {
   get canConfigureSystem(): boolean { return this.scope().role === 'SUPER_ADMIN'; }
   get lockedProvince(): string { return ''; }
   get lockedDistrict(): string { return ''; }
-  canView(_province?: string, _district?: string): boolean { return true; }
+  canView(_province?: string, _district?: string, _fence?: string): boolean { return true; }
   provinces(all: string[]): string[] { return all; }
   districts(province: string, all: string[]): string[] { return this.districtMap[province] ?? all; }
 }

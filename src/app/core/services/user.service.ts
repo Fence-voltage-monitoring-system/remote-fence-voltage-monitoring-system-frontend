@@ -31,6 +31,10 @@ export class UserService {
     return this.http.post<SystemUser>(this.endpoint, request, { withCredentials: true });
   }
 
+  updateUser(userId: number, request: Partial<CreateUserRequest>): Observable<SystemUser> {
+    return this.http.patch<SystemUser>(`${this.endpoint}/${userId}`, request, { withCredentials: true });
+  }
+
   updateStatus(userId: number, status: UserStatus): Observable<SystemUser> {
     return this.http.patch<SystemUser>(`${this.endpoint}/${userId}/status`, { status }, { withCredentials: true });
   }

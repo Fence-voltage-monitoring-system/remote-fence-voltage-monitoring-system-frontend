@@ -1,11 +1,11 @@
 @reference "../../../../styles.css";
 header { @apply sticky top-0 z-1000 flex h-[60px] items-center gap-3 border-b border-[#233b27] bg-[#0f2314] px-[18px] shadow-[0_4px_14px_rgba(0,0,0,.22)] max-[620px]:h-14 max-[620px]:px-2.5; }
-.brand-mark { @apply grid size-[34px] place-items-center rounded-[9px] border border-[#225f31] bg-[#102d18]; }
-.brand { @apply grid min-w-[285px] grid-cols-[auto_auto] leading-[1.1] max-[980px]:min-w-0 max-[620px]:block; column-gap: 6px; }
-.brand strong { @apply text-[10px] text-[#44e66e]; }
-.brand span { @apply text-[9px] text-[#85927e] max-[620px]:hidden; }
-.brand b { @apply col-span-full text-[11px] max-[620px]:block max-[620px]:text-[9px]; }
-.brand small { @apply col-span-full mt-[3px] text-[8px] text-[#7f9a79] max-[620px]:hidden; }
+.brand { @apply relative -ml-[66px] flex h-[56px] w-[250px] shrink-0 items-center gap-1.5 max-[980px]:w-[215px] max-[720px]:-ml-[54px] max-[620px]:w-[42px]; }
+.brand-logo { @apply block h-[50px] w-[41px] shrink-0; background: url('../../../assets/full_logo.png') center / contain no-repeat; }
+.brand-text { @apply block h-[50px] w-[195px] max-[980px]:w-[160px] max-[620px]:hidden; background-image: url('../../../assets/logo_text.png'); background-position: center; background-size: auto 145px; background-repeat: no-repeat; }
+.application-name { @apply flex min-w-[178px] shrink-0 flex-col justify-center border-x border-[#29432e] px-4 leading-[1.2] max-[1180px]:hidden; }
+.application-name strong { @apply whitespace-nowrap text-[11px] font-semibold text-[#edf4e9]; }
+.application-name span { @apply mt-0.5 whitespace-nowrap text-[10px] text-[#7f9a79]; }
 .crumb { @apply m-auto rounded-md border border-[#314735] px-4 py-[7px] font-mono text-[10px] text-[#9ca99a] max-[980px]:hidden; }
 .status { @apply whitespace-nowrap rounded-[7px] border border-[#1d552a] bg-[#12361c] px-2.5 py-1.5 font-mono text-[9px] font-bold text-[#49ec71] max-[980px]:ml-auto max-[620px]:px-2 max-[620px]:text-[0]; }
 .status i { @apply inline-block size-1.5 rounded-full bg-[#46e86e] shadow-[0_0_7px_#46e86e]; }

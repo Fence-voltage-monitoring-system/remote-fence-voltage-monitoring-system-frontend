@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { BellRing, ChevronDown, CircleHelp, createElement, LogOut, Palette, ShieldCheck, UserRound } from 'lucide';
 import { Router, RouterLink } from '@angular/router';
 
@@ -11,6 +11,7 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class UserMenuComponent implements AfterViewInit {
   @Output() readonly signOut = new EventEmitter<void>();
+  @Input() unread = 0;
   open = false;
 
   private readonly icons = { UserRound, BellRing, ShieldCheck, Palette, CircleHelp, LogOut, ChevronDown };

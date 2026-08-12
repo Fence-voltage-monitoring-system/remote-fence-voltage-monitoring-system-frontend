@@ -1,6 +1,6 @@
-th { padding: .7rem .75rem; font-size: .6rem; }
-td { padding: .78rem .75rem; font-size: .72rem; }
-.badge { border-radius: .4rem; padding: .2rem .45rem; font-size: .6rem; }
+th { padding: .7rem .75rem; font-size: var(--type-table-head, 8px); }
+td { padding: .78rem .75rem; font-size: var(--type-table-body, 9px); }
+.badge { border-radius: .4rem; padding: .2rem .45rem; font-size: var(--type-label, 8px); }
 .battery i { width: 52px; height: 4px; }
-.edit { padding: .2rem .6rem; font-size: .68rem; }
+.edit { padding: .2rem .6rem; font-size: var(--type-button, 9px); }
 .empty { padding: 2.5rem; }
