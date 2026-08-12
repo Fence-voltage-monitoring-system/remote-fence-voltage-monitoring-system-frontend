@@ -10,7 +10,7 @@
   <div class="crumb">Operations&nbsp; / &nbsp;{{ pageName() }}</div>
   <div class="status"><i></i> SYSTEM ONLINE</div>
   <div class="clock"><strong>{{ currentTime() }}</strong><span>{{ currentDate() }} &middot; UTC+5:30</span></div>
-  <button class="bell" type="button" routerLink="/notifications" [attr.aria-label]="'Notifications, ' + unread() + ' unread'" title="Notifications"><i data-lucide="bell"></i><em *ngIf="unread() > 0">{{ unread() }}</em></button>
+  <button class="bell" type="button" routerLink="/notifications" [attr.aria-label]="'Notifications, ' + unread() + ' unread'" title="Notifications"><i data-lucide="bell"></i>@if (unread() > 0) { <em>{{ unread() }}</em> }</button>
   <app-user-menu [unread]="unread()" />
   <button class="view-action" type="button" (click)="toggleFullscreen()" [attr.aria-label]="fullscreen() ? 'Exit fullscreen' : 'Open page in fullscreen'" [attr.title]="fullscreen() ? 'Exit fullscreen' : 'Fullscreen'">
       @if (fullscreen()) {
