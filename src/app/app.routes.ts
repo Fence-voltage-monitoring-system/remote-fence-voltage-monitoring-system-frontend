@@ -35,13 +35,13 @@ export const routes: Routes = [
       { path: 'alerts', component: Alerts, title: 'Alerts | Remote Fence Monitoring' },
       { path: 'configuration', component: Configuration, canActivate: [superAdminGuard], title: 'System Configuration | Remote Fence Monitoring' },
       { path: 'reports', component: Reports, canActivate: [managementGuard], title: 'Reports | Remote Fence Monitoring' },
+      {
+        path: 'profile',
+        loadComponent: () =>
+          import('./pages/user-profile/user-profile').then((page) => page.UserProfilePage),
+        title: 'My Profile | Remote Fence Monitoring'
+      },
     ]
-  },
-  {
-    path: 'profile',
-    loadComponent: () =>
-      import('./pages/profile/profile').then((page) => page.ProfilePage),
-    title: 'My Profile | Remote Fence Monitoring'
   },
   {
     path: 'virtual-fence',

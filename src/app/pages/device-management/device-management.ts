@@ -1,27 +1,12 @@
-import { AfterViewChecked, Component, inject } from '@angular/core';
+import { AfterViewChecked, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { finalize } from 'rxjs';
 import { Activity, BatteryCharging, Check, ChevronDown, CirclePlus, Cpu, createIcons, MoreHorizontal, Pencil, Plus, Radio, Search, Signal, SlidersHorizontal, Trash2, Wifi, X } from 'lucide';
+import { Device, DeviceStatus } from '../../core/models/device.models';
+import { DeviceService } from '../../core/services/device.service';
 import { HeaderComponent } from '../../shared/components/header/header';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
-
-type DeviceStatus = 'online' | 'warning' | 'offline';
-type DeviceType = 'Voltage Monitor';
-
-interface Device {
-  id: string;
-  name: string;
-  serial: string;
-  type: DeviceType;
-  fence: string | null;
-  section: string | null;
-  status: DeviceStatus;
-  voltage: number | null;
-  signal: number;
-  battery: number;
-  lastSeen: string;
-  enabled: boolean;
-}
 
 @Component({
   selector: 'app-device-management-page',
@@ -30,8 +15,10 @@ interface Device {
   templateUrl: './device-management.html',
   styleUrl: './device-management.css',
 })
-export class DeviceManagementPage implements AfterViewChecked {
+export class DeviceManagementPage implements OnInit, AfterViewChecked {
   private readonly router = inject(Router);
+  private readonly deviceService = inject(DeviceService);
+
   readonly fences = ['Monaragala Elephant Protection Fence', 'Wilpattu North Buffer Fence', 'Mihintale Wildlife Buffer Fence', 'Gal Oya East Protection Fence'];
   readonly sectionsByFence: Record<string, string[]> = {
     [this.fences[0]]: ['SEC-001', 'SEC-002', 'SEC-003', 'SEC-004'],
@@ -39,17 +26,13 @@ export class DeviceManagementPage implements AfterViewChecked {
     [this.fences[2]]: ['SEC-001', 'SEC-002', 'SEC-003'],
     [this.fences[3]]: ['SEC-001', 'SEC-002', 'SEC-003', 'SEC-004'],
   };
-  devices: Device[] = [
-    { id: 'DVC-1024', name: 'North Gate Monitor', serial: 'VM-8F42-A109', type: 'Voltage Monitor', fence: this.fences[0], section: 'Section A-01', status: 'online', voltage: 6.2, signal: 92, battery: 88, lastSeen: '12 sec ago', enabled: true },
-    { id: 'DVC-1023', name: 'River Bend Controller', serial: 'FC-2C11-B208', type: 'Voltage Monitor', fence: this.fences[0], section: 'Section A-08', status: 'warning', voltage: 4.1, signal: 64, battery: 41, lastSeen: '2 min ago', enabled: true },
-    { id: 'DVC-1022', name: 'Wilpattu Relay 02', serial: 'RP-7D90-C511', type: 'Voltage Monitor', fence: this.fences[1], section: 'Section N-12', status: 'online', voltage: null, signal: 87, battery: 76, lastSeen: '28 sec ago', enabled: true },
-    { id: 'DVC-1021', name: 'Mihintale East Monitor', serial: 'VM-5A33-D047', type: 'Voltage Monitor', fence: this.fences[2], section: 'Section E-03', status: 'offline', voltage: 0, signal: 0, battery: 12, lastSeen: '3 hr ago', enabled: true },
-    { id: 'DVC-1020', name: 'Gal Oya Controller', serial: 'FC-9B74-E633', type: 'Voltage Monitor', fence: this.fences[3], section: 'Section G-01', status: 'warning', voltage: 3.8, signal: 52, battery: 57, lastSeen: '8 min ago', enabled: true },
-    { id: 'DVC-1019', name: 'West Boundary Monitor', serial: 'VM-1E28-F904', type: 'Voltage Monitor', fence: this.fences[1], section: 'Section W-06', status: 'online', voltage: 5.9, signal: 78, battery: 93, lastSeen: '41 sec ago', enabled: true },
-    { id: 'DVC-1018', name: 'Old Service Relay', serial: 'RP-4K17-G321', type: 'Voltage Monitor', fence: this.fences[2], section: 'Section S-02', status: 'offline', voltage: null, signal: 0, battery: 0, lastSeen: '2 days ago', enabled: false },
-    { id: 'DEV-EFE-0060', name: 'Field Monitor 0060', serial: 'SN-2024-0060', type: 'Voltage Monitor', fence: null, section: null, status: 'offline', voltage: null, signal: 0, battery: 100, lastSeen: 'Not installed', enabled: false },
-    { id: 'DEV-EFE-0061', name: 'Field Monitor 0061', serial: 'SN-2024-0061', type: 'Voltage Monitor', fence: null, section: null, status: 'offline', voltage: null, signal: 0, battery: 100, lastSeen: 'Not installed', enabled: false },
-  ];
+
+  devices: Device[] = [];
+  isLoading = false;
+  isSubmitting = false;
+  usingPreview = false;
+  notice = '';
+  errorMessage = '';
 
   search = '';
   statusFilter: DeviceStatus | 'all' = 'all';
@@ -68,6 +51,37 @@ export class DeviceManagementPage implements AfterViewChecked {
   registrationSection = '';
   submitted = false;
   private iconsReady = false;
+
+  ngOnInit(): void {
+    this.loadDevices();
+  }
+
+  loadDevices(): void {
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.deviceService.getDevices().pipe(finalize(() => { this.isLoading = false; })).subscribe({
+      next: (devices) => {
+        if (devices && devices.length > 0) {
+          this.devices = devices;
+          this.usingPreview = false;
+          this.notice = '';
+        } else {
+          this.devices = this.deviceService.previewDevices;
+          this.usingPreview = true;
+          this.notice = 'Device API returned empty list. Displaying preview dataset.';
+        }
+      },
+      error: () => {
+        this.devices = this.deviceService.previewDevices;
+        this.usingPreview = true;
+        this.notice = 'Device API unavailable. Displaying preview dataset.';
+      },
+    });
+  }
+
+  get onlinePercentage(): number {
+    return this.devices.length ? Math.round((this.count('online') / this.devices.length) * 100) : 0;
+  }
 
   get filteredDevices(): Device[] {
     const term = this.search.trim().toLowerCase();
@@ -102,7 +116,17 @@ export class DeviceManagementPage implements AfterViewChecked {
     this.iconsReady = false;
   }
   toggleMenu(device: Device, event: Event): void { event.stopPropagation(); this.menuDevice = this.menuDevice === device ? undefined : device; }
-  toggleEnabled(device: Device, event: Event): void { event.stopPropagation(); device.enabled = !device.enabled; }
+  
+  toggleEnabled(device: Device, event: Event): void {
+    event.stopPropagation();
+    const nextState = !device.enabled;
+    device.enabled = nextState;
+    this.deviceService.toggleEnabled(device.id, nextState).subscribe({
+      error: () => {
+        this.notice = 'Status update saved locally.';
+      },
+    });
+  }
 
   openAdd(): void {
     this.editing = undefined;
@@ -137,12 +161,26 @@ export class DeviceManagementPage implements AfterViewChecked {
     else this.closeAssignment();
   }
 
-  private confirmAssignment(): void {
+  confirmAssignment(): void {
     if (!this.selectedUnassigned) return;
-    Object.assign(this.selectedUnassigned, { fence: this.assignmentFence, section: this.assignmentSection, status: 'online' as DeviceStatus, voltage: 6, signal: 100, lastSeen: 'Just now', enabled: true });
-    this.assignmentOpen = false;
-    this.selected = undefined;
-    void this.router.navigate(['/devices']);
+    const target = this.selectedUnassigned;
+    const fence = this.assignmentFence;
+    const section = this.assignmentSection;
+    this.isSubmitting = true;
+
+    this.deviceService.assignDevice(target.id, { fence, section }).pipe(finalize(() => { this.isSubmitting = false; })).subscribe({
+      next: (updated) => {
+        Object.assign(target, updated);
+        this.assignmentOpen = false;
+        this.selected = undefined;
+      },
+      error: () => {
+        Object.assign(target, { fence, section, status: 'online' as DeviceStatus, voltage: 6, signal: 100, lastSeen: 'Just now', enabled: true });
+        this.assignmentOpen = false;
+        this.selected = undefined;
+        this.notice = 'Assignment saved locally.';
+      },
+    });
   }
 
   openEdit(device: Device): void {
@@ -159,50 +197,100 @@ export class DeviceManagementPage implements AfterViewChecked {
   save(): void {
     this.submitted = true;
     if (!this.form.name.trim() || !this.form.serial.trim()) return;
+    this.isSubmitting = true;
+
+    const assigned = !!this.registrationSection;
+    const wasAssigned = !!this.editing?.section;
+
     if (this.editing) {
-      const assigned = !!this.registrationSection;
-      const wasAssigned = !!this.editing.section;
-      Object.assign(this.editing, this.form, {
+      const payload = {
+        name: this.form.name,
+        serial: this.form.serial,
         fence: assigned ? this.registrationFence : null,
         section: assigned ? this.registrationSection : null,
-        status: assigned ? (wasAssigned ? this.form.status : 'online') : 'offline',
-        voltage: assigned ? (wasAssigned ? this.form.voltage : 6) : null,
-        signal: assigned ? (wasAssigned ? this.form.signal : 100) : 0,
-        lastSeen: assigned ? (wasAssigned ? this.form.lastSeen : 'Just now') : 'Unassigned',
-        enabled: assigned ? (wasAssigned ? this.form.enabled : true) : false,
+      };
+
+      this.deviceService.updateDevice(this.editing.id, payload).pipe(finalize(() => { this.isSubmitting = false; })).subscribe({
+        next: (updated) => {
+          Object.assign(this.editing!, updated);
+          this.dialogOpen = false;
+        },
+        error: () => {
+          Object.assign(this.editing!, this.form, {
+            fence: assigned ? this.registrationFence : null,
+            section: assigned ? this.registrationSection : null,
+            status: assigned ? (wasAssigned ? this.form.status : 'online') : 'offline',
+            voltage: assigned ? (wasAssigned ? this.form.voltage : 6) : null,
+            signal: assigned ? (wasAssigned ? this.form.signal : 100) : 0,
+            lastSeen: assigned ? (wasAssigned ? this.form.lastSeen : 'Just now') : 'Unassigned',
+            enabled: assigned ? (wasAssigned ? this.form.enabled : true) : false,
+          });
+          this.dialogOpen = false;
+          this.notice = 'Device update saved locally.';
+        },
       });
-    }
-    else {
-      const assigned = !!this.registrationSection;
-      this.devices = [{
-        ...this.form,
-        id: `DEV-EFE-${String(60 + this.devices.length).padStart(4, '0')}`,
+    } else {
+      const payload = {
+        name: this.form.name,
+        serial: this.form.serial,
         fence: assigned ? this.registrationFence : null,
         section: assigned ? this.registrationSection : null,
-        status: assigned ? 'online' : 'offline',
-        voltage: assigned ? 6 : null,
-        signal: assigned ? 100 : 0,
-        lastSeen: assigned ? 'Just now' : 'Not installed',
-        enabled: assigned,
-      }, ...this.devices];
-    }
-    this.dialogOpen = false;
-    this.submitted = false;
-    if (this.editing) {
-      this.selected = undefined;
-      void this.router.navigate(['/devices']);
+      };
+
+      this.deviceService.createDevice(payload).pipe(finalize(() => { this.isSubmitting = false; })).subscribe({
+        next: (created) => {
+          this.devices = [created, ...this.devices];
+          this.dialogOpen = false;
+        },
+        error: () => {
+          const newDevice: Device = {
+            ...this.form,
+            id: `DEV-EFE-${String(60 + this.devices.length).padStart(4, '0')}`,
+            fence: assigned ? this.registrationFence : null,
+            section: assigned ? this.registrationSection : null,
+            status: assigned ? 'online' : 'offline',
+            voltage: assigned ? 6 : null,
+            signal: assigned ? 100 : 0,
+            lastSeen: assigned ? 'Just now' : 'Not installed',
+            enabled: assigned,
+          };
+          this.devices = [newDevice, ...this.devices];
+          this.dialogOpen = false;
+          this.notice = 'New device created locally.';
+        },
+      });
     }
   }
 
   remove(device: Device): void {
-    this.devices = this.devices.filter((item) => item !== device);
-    if (this.selected === device) this.selected = undefined;
-    this.menuDevice = undefined;
+    if (!window.confirm(`Are you sure you want to remove device ${device.name} (${device.id})?`)) return;
+    this.deviceService.deleteDevice(device.id).subscribe({
+      next: () => {
+        this.devices = this.devices.filter((item) => item !== device);
+        if (this.selected === device) this.selected = undefined;
+        this.menuDevice = undefined;
+      },
+      error: () => {
+        this.devices = this.devices.filter((item) => item !== device);
+        if (this.selected === device) this.selected = undefined;
+        this.menuDevice = undefined;
+        this.notice = 'Device removed locally.';
+      },
+    });
   }
 
   unassign(device: Device): void {
-    Object.assign(device, { fence: null, section: null, status: 'offline' as DeviceStatus, voltage: null, signal: 0, lastSeen: 'Unassigned', enabled: false });
-    this.menuDevice = undefined;
+    this.deviceService.unassignDevice(device.id).subscribe({
+      next: (updated) => {
+        Object.assign(device, updated);
+        this.menuDevice = undefined;
+      },
+      error: () => {
+        Object.assign(device, { fence: null, section: null, status: 'offline' as DeviceStatus, voltage: null, signal: 0, lastSeen: 'Unassigned', enabled: false });
+        this.menuDevice = undefined;
+        this.notice = 'Device unassigned locally.';
+      },
+    });
   }
 
   private blankDevice(): Device {

@@ -1,1 +1,39 @@
-<section class="h-full rounded-2xl border border-[#465c45] bg-[#263c28] p-5 shadow-lg"><header class="mb-5 flex items-center justify-between"><div><h2 class="m-0 text-sm font-bold">Personal Information</h2><p class="mt-1 text-[10px] text-[#8f9f91]">Your account and contact details</p></div><button class="rounded-lg border border-[#426448] bg-[#294831] px-3 py-2 text-[10px] font-semibold text-[#63dd82] hover:bg-[#31583b]" type="button" (click)="editRequested.emit()">Edit Details</button></header><dl class="grid gap-x-6 gap-y-5 sm:grid-cols-2"><div><dt class="profile-label">Full Name</dt><dd>{{ profile.fullName }}</dd></div><div><dt class="profile-label">Username</dt><dd>{{ profile.username }}</dd></div><div><dt class="profile-label">Email Address</dt><dd>{{ profile.email }}</dd></div><div><dt class="profile-label">Contact Number</dt><dd>{{ profile.contactNumber }}</dd></div><div><dt class="profile-label">Department</dt><dd>{{ profile.department }}</dd></div><div><dt class="profile-label">Account Created</dt><dd>{{ profile.createdAt }}</dd></div></dl></section>
+<section class="card-base h-full">
+  <header class="card-header">
+    <div>
+      <h2>Personal Information</h2>
+      <p>Your account and workplace details.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="badge-verified">✓ Verified account</span>
+      <button class="cursor-pointer rounded-xl border border-[#397347] bg-[#1d4528] px-3.5 py-1.5 text-[8.5px] font-semibold text-[#51e474] hover:bg-[#255b33]" type="button" (click)="editRequested.emit()">Edit Details</button>
+    </div>
+  </header>
+
+  <dl class="detail-grid">
+    <div>
+      <dt class="detail-label">Full Name</dt>
+      <dd class="detail-value">{{ profile.fullName }}</dd>
+    </div>
+    <div>
+      <dt class="detail-label">Username</dt>
+      <dd class="detail-value">&#64;{{ profile.username }}</dd>
+    </div>
+    <div>
+      <dt class="detail-label">Email Address</dt>
+      <dd class="detail-value">{{ profile.email }} <small class="ml-2 text-[#4ee672]">Verified</small></dd>
+    </div>
+    <div>
+      <dt class="detail-label">Contact Number</dt>
+      <dd class="detail-value">{{ profile.contactNumber }}</dd>
+    </div>
+    <div>
+      <dt class="detail-label">Department</dt>
+      <dd class="detail-value">{{ profile.department }}</dd>
+    </div>
+    <div>
+      <dt class="detail-label">Member Since</dt>
+      <dd class="detail-value">{{ profile.createdAt }}</dd>
+    </div>
+  </dl>
+</section>

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
@@ -12,7 +12,7 @@ import { SecuritySettings } from './components/security-settings/security-settin
 import { NotificationPreferences } from './components/notification-preferences/notification-preferences';
 import { CurrentUserProfile, UserNotificationPreferences } from './user-profile.models';
 
-@Component({ selector: 'app-current-user-profile', standalone: true, imports: [ProfileSummary, PersonalInformation, AssignmentSummary, SecuritySettings, NotificationPreferences, ActivityList, ProfileEditDrawer, ChangePasswordDrawer], templateUrl: './user-profile.html' })
+@Component({ selector: 'app-current-user-profile', standalone: true, imports: [ProfileSummary, PersonalInformation, AssignmentSummary, SecuritySettings, NotificationPreferences, ActivityList, ProfileEditDrawer, ChangePasswordDrawer], templateUrl: './user-profile.html', styleUrl: './user-profile.css', encapsulation: ViewEncapsulation.None })
 export class UserProfilePage implements OnInit {
   private readonly userService = inject(UserService);
   private readonly authService = inject(AuthService);

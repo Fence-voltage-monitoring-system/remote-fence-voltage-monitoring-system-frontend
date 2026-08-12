@@ -1,9 +1,104 @@
-<section><header><div><h2>Notification Preferences</h2><p>Control notification behaviour for your account and current devices.</p></div><span>Personal settings</span></header>
-<div class="grid">
- <label class="toggle"><span><strong>Notification sound</strong><small>Play a sound for new live notifications while the app is open.</small></span><input type="checkbox" [(ngModel)]="draft.soundEnabled"/></label>
- <label class="toggle"><span><strong>Desktop notifications</strong><small>Show operating-system notifications after browser permission is granted.</small></span><input type="checkbox" [(ngModel)]="draft.desktopNotificationsEnabled"/></label>
- <label class="toggle"><span><strong>Mark as read on open</strong><small>Mark a notification read when you open its detail panel.</small></span><input type="checkbox" [(ngModel)]="draft.markAsReadOnOpen"/></label>
-</div>
-<div class="block"><label class="toggle"><span><strong>Quiet hours</strong><small>Silence your non-critical sound, desktop and SMS delivery. Critical incidents always bypass quiet hours.</small></span><input type="checkbox" [(ngModel)]="draft.quietHoursEnabled"/></label>@if(draft.quietHoursEnabled){<div class="fields"><label>Start<input type="time" [(ngModel)]="draft.quietHoursStart"/></label><label>End<input type="time" [(ngModel)]="draft.quietHoursEnd"/></label></div>}</div>
-<div class="split"><div class="block"><label class="toggle"><span><strong>Group similar notifications</strong><small>Combine repeated events from the same fence, section and type.</small></span><input type="checkbox" [(ngModel)]="draft.groupSimilarNotifications"/></label>@if(draft.groupSimilarNotifications){<label class="number">Grouping window (minutes)<input type="number" min="1" [(ngModel)]="draft.groupingWindowMinutes"/></label>}</div><div class="block"><label class="toggle"><span><strong>Notification digest</strong><small>Receive a periodic summary of non-critical notifications.</small></span><input type="checkbox" [(ngModel)]="draft.digestEnabled"/></label>@if(draft.digestEnabled){<label class="number">Digest interval (minutes)<input type="number" min="5" [(ngModel)]="draft.digestIntervalMinutes"/></label>}</div></div>
-<footer><small>Browser permission is managed separately by your browser. Critical alerts cannot be silenced.</small><div><button type="button" [disabled]="!dirty||isSaving" (click)="reset()">Cancel</button><button class="save" type="button" [disabled]="!dirty||!valid||isSaving" (click)="saved.emit(draft)">{{isSaving?'Saving…':'Save Preferences'}}</button></div></footer></section>
+<section class="card-base">
+  <header class="card-header">
+    <div>
+      <h2>Notification Preferences</h2>
+      <p>Control notification behavior for your account and current devices.</p>
+    </div>
+    <span class="badge-tag-muted">Personal Settings</span>
+  </header>
+
+  <div class="grid gap-4 p-5">
+    <div class="grid gap-3 sm:grid-cols-3">
+      <label class="toggle-item">
+        <div>
+          <strong class="block text-[10px] font-semibold text-[#edf4e9]">Notification Sound</strong>
+          <small class="mt-0.5 block text-[8px] text-[#8fa08c]">Play sound for live alerts</small>
+        </div>
+        <input type="checkbox" [(ngModel)]="draft.soundEnabled"/>
+      </label>
+
+      <label class="toggle-item">
+        <div>
+          <strong class="block text-[10px] font-semibold text-[#edf4e9]">Desktop Notifications</strong>
+          <small class="mt-0.5 block text-[8px] text-[#8fa08c]">System notifications</small>
+        </div>
+        <input type="checkbox" [(ngModel)]="draft.desktopNotificationsEnabled"/>
+      </label>
+
+      <label class="toggle-item">
+        <div>
+          <strong class="block text-[10px] font-semibold text-[#edf4e9]">Auto Mark as Read</strong>
+          <small class="mt-0.5 block text-[8px] text-[#8fa08c]">On opening detail panel</small>
+        </div>
+        <input type="checkbox" [(ngModel)]="draft.markAsReadOnOpen"/>
+      </label>
+    </div>
+
+    <div class="rounded-xl border border-[#304735] bg-[#112316] p-4">
+      <label class="toggle-item border-0 bg-transparent p-0">
+        <div>
+          <strong class="block text-[10px] font-semibold text-[#edf4e9]">Quiet Hours</strong>
+          <small class="mt-0.5 block text-[8px] text-[#8fa08c]">Silence non-critical notifications. Critical alerts always bypass quiet hours.</small>
+        </div>
+        <input type="checkbox" [(ngModel)]="draft.quietHoursEnabled"/>
+      </label>
+      
+      @if (draft.quietHoursEnabled) {
+        <div class="mt-3 flex flex-wrap items-center gap-4 border-t border-[#233828] pt-3">
+          <label class="flex items-center gap-2 text-[8px] uppercase tracking-wider text-[#81917f]">
+            Start Time
+            <input type="time" class="form-input !h-8 !w-32" [(ngModel)]="draft.quietHoursStart"/>
+          </label>
+          <label class="flex items-center gap-2 text-[8px] uppercase tracking-wider text-[#81917f]">
+            End Time
+            <input type="time" class="form-input !h-8 !w-32" [(ngModel)]="draft.quietHoursEnd"/>
+          </label>
+        </div>
+      }
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <div class="rounded-xl border border-[#304735] bg-[#112316] p-4">
+        <label class="toggle-item border-0 bg-transparent p-0">
+          <div>
+            <strong class="block text-[10px] font-semibold text-[#edf4e9]">Group Similar Alerts</strong>
+            <small class="mt-0.5 block text-[8px] text-[#8fa08c]">Combine repeated events from same fence</small>
+          </div>
+          <input type="checkbox" [(ngModel)]="draft.groupSimilarNotifications"/>
+        </label>
+        @if (draft.groupSimilarNotifications) {
+          <label class="mt-3 block border-t border-[#233828] pt-3 text-[8px] uppercase tracking-wider text-[#81917f]">
+            Grouping Window (minutes)
+            <input type="number" min="1" class="form-input mt-1.5 !h-8 !w-full" [(ngModel)]="draft.groupingWindowMinutes"/>
+          </label>
+        }
+      </div>
+
+      <div class="rounded-xl border border-[#304735] bg-[#112316] p-4">
+        <label class="toggle-item border-0 bg-transparent p-0">
+          <div>
+            <strong class="block text-[10px] font-semibold text-[#edf4e9]">Notification Digest</strong>
+            <small class="mt-0.5 block text-[8px] text-[#8fa08c]">Receive periodic summary digests</small>
+          </div>
+          <input type="checkbox" [(ngModel)]="draft.digestEnabled"/>
+        </label>
+        @if (draft.digestEnabled) {
+          <label class="mt-3 block border-t border-[#233828] pt-3 text-[8px] uppercase tracking-wider text-[#81917f]">
+            Digest Interval (minutes)
+            <input type="number" min="5" class="form-input mt-1.5 !h-8 !w-full" [(ngModel)]="draft.digestIntervalMinutes"/>
+          </label>
+        }
+      </div>
+    </div>
+  </div>
+
+  <footer class="flex items-center justify-between border-t border-[#304735] p-4">
+    <small class="text-[8px] text-[#71836f]">Browser permissions managed separately. Critical alerts cannot be silenced.</small>
+    <div class="flex gap-2">
+      <button type="button" class="cursor-pointer rounded-xl border border-[#405943] px-4 py-2 text-[9px] text-[#edf4e9] hover:bg-[#1f3827]" [disabled]="!dirty||isSaving" (click)="reset()">Cancel</button>
+      <button type="button" class="cursor-pointer rounded-xl border border-[#4ee672] bg-[#45d869] px-4 py-2 text-[9px] font-semibold text-[#0c2512] hover:bg-[#52e777] disabled:opacity-50" [disabled]="!dirty||!valid||isSaving" (click)="saved.emit(draft)">
+        {{ isSaving ? 'Saving…' : 'Save Preferences' }}
+      </button>
+    </div>
+  </footer>
+</section>

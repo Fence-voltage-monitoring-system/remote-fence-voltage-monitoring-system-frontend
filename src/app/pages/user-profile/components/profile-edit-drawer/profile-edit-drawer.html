@@ -1,14 +1,68 @@
-<div class="drawer-backdrop absolute inset-0 bg-[#020703]/75 backdrop-blur-[1px]" [class.closing]="isClosing" (click)="!isSubmitting && requestClose()" aria-hidden="true"></div>
-<aside class="edit-drawer absolute inset-y-0 right-0 w-full max-w-[430px] overflow-y-auto border-l border-[#304632] bg-[#142a19] px-6 py-7 shadow-2xl" [class.closing]="isClosing" role="dialog" aria-modal="true" aria-labelledby="edit-profile-title">
-  <header class="mb-7 flex items-start justify-between"><div><h2 id="edit-profile-title" class="m-0 text-base font-extrabold">Edit Profile</h2><p class="mt-1 text-[11px] text-[#91a494]">Update your personal information</p></div><button class="grid size-8 place-items-center rounded-lg border border-[#425543] bg-[#273a2a] text-xl text-[#a5b1a5] hover:text-white" type="button" [disabled]="isSubmitting" (click)="requestClose()" aria-label="Close edit profile">×</button></header>
-  <div class="mb-6 flex items-center gap-3 rounded-xl border border-[#3c5740] bg-[#203725] p-4"><span class="grid size-11 place-items-center rounded-xl border border-[#3b8050] bg-[#31553a] text-sm font-bold text-[#43d36c]">{{ profile.initials }}</span><div><strong class="block text-xs">{{ profile.username }}</strong><span class="text-[9px] text-[#88998b]">{{ profile.staffId }}</span></div></div>
-  <form class="grid gap-5" [formGroup]="form" (ngSubmit)="submit()" novalidate>
-    <div class="field"><label for="edit-full-name">Full Name</label><input id="edit-full-name" class="control" formControlName="fullName" autocomplete="name" />@if (form.controls.fullName.touched && form.controls.fullName.invalid) { <p class="error">Enter a name between 3 and 100 characters.</p> }</div>
-    <div class="field"><label for="edit-contact">Contact Number</label><input id="edit-contact" class="control" type="tel" formControlName="contactNumber" autocomplete="tel" />@if (form.controls.contactNumber.touched && form.controls.contactNumber.invalid) { <p class="error">Enter a valid contact number.</p> }</div>
-    <div class="field"><label>Email Address</label><input class="control opacity-65" [value]="profile.email" disabled /><p class="hint">Contact an administrator to change your verified email address.</p></div>
-    <div class="grid grid-cols-2 gap-3"><div class="field"><label>Username</label><input class="control opacity-65" [value]="profile.username" disabled /></div><div class="field"><label>Staff ID</label><input class="control opacity-65" [value]="profile.staffId" disabled /></div></div>
-    <div class="rounded-lg border border-[#5e633b] bg-[#45451f]/35 px-3 py-3 text-[9px] leading-4 text-[#b8b889]">Your role, status and operational assignments can only be changed by an authorized administrator.</div>
-    @if (errorMessage) { <p class="m-0 rounded-lg border border-[#a84736]/50 bg-[#592820]/50 px-3 py-2 text-[10px] text-[#ffaaa2]" role="alert">{{ errorMessage }}</p> }
-    <footer class="mt-2 grid grid-cols-2 gap-3"><button class="h-10 rounded-lg border border-[#38513b] bg-[#203824] text-xs font-semibold text-[#d6ddd4]" type="button" [disabled]="isSubmitting" (click)="requestClose()">Cancel</button><button class="h-10 rounded-lg bg-[#43d36c] text-xs font-bold text-[#071c0d] disabled:opacity-60" type="submit" [disabled]="isSubmitting || form.pristine">{{ isSubmitting ? 'Saving…' : 'Save Changes' }}</button></footer>
+<div class="drawer-backdrop fixed inset-0 z-50 bg-[#07130a]/80 backdrop-blur-xs" [class.closing]="isClosing" (click)="!isSubmitting && requestClose()" aria-hidden="true"></div>
+<aside class="edit-drawer fixed inset-y-0 right-0 z-50 w-full max-w-[440px] overflow-y-auto border-l border-[#38513b] bg-[#14291a] p-6 shadow-2xl" [class.closing]="isClosing" role="dialog" aria-modal="true" aria-labelledby="edit-profile-title">
+  <header class="mb-6 flex items-start justify-between border-b border-[#304735] pb-4">
+    <div>
+      <h2 id="edit-profile-title" class="m-0 text-[15px] font-bold text-[#eef5ed]">Edit Profile</h2>
+      <p class="mt-0.5 text-[9px] text-[#8fa08c]">Update your personal information</p>
+    </div>
+    <button class="grid size-7 place-items-center rounded-lg border border-[#405943] bg-[#1a3020] text-lg text-[#8fa08c] hover:text-white" type="button" [disabled]="isSubmitting" (click)="requestClose()" aria-label="Close edit profile">×</button>
+  </header>
+
+  <div class="mb-5 flex items-center gap-3 rounded-xl border border-[#304735] bg-[#112316] p-4">
+    <span class="grid size-10 place-items-center rounded-full border border-[#2d6b3a] bg-[#164326] text-sm font-bold text-[#50e974]">{{ profile.initials }}</span>
+    <div>
+      <strong class="block text-[10px] text-[#edf4e9]">&#64;{{ profile.username }}</strong>
+      <span class="text-[8px] text-[#8fa08c]">{{ profile.staffId }}</span>
+    </div>
+  </div>
+
+  <form class="grid gap-4" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <div class="grid gap-1.5">
+      <label for="edit-full-name" class="text-[7.5px] font-semibold uppercase tracking-wider text-[#81917f]">Full Name</label>
+      <input id="edit-full-name" class="form-input" formControlName="fullName" autocomplete="name" />
+      @if (form.controls.fullName.touched && form.controls.fullName.invalid) {
+        <p class="m-0 text-[8px] text-[#ff756e]">Enter a name between 3 and 100 characters.</p>
+      }
+    </div>
+
+    <div class="grid gap-1.5">
+      <label for="edit-contact" class="text-[7.5px] font-semibold uppercase tracking-wider text-[#81917f]">Contact Number</label>
+      <input id="edit-contact" class="form-input" type="tel" formControlName="contactNumber" autocomplete="tel" />
+      @if (form.controls.contactNumber.touched && form.controls.contactNumber.invalid) {
+        <p class="m-0 text-[8px] text-[#ff756e]">Enter a valid contact number.</p>
+      }
+    </div>
+
+    <div class="grid gap-1.5">
+      <label class="text-[7.5px] font-semibold uppercase tracking-wider text-[#81917f]">Email Address</label>
+      <input class="form-input" [value]="profile.email" disabled />
+      <p class="m-0 text-[7.5px] text-[#71836f]">Contact an administrator to change your verified email address.</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div class="grid gap-1.5">
+        <label class="text-[7.5px] font-semibold uppercase tracking-wider text-[#81917f]">Username</label>
+        <input class="form-input" [value]="profile.username" disabled />
+      </div>
+      <div class="grid gap-1.5">
+        <label class="text-[7.5px] font-semibold uppercase tracking-wider text-[#81917f]">Staff ID</label>
+        <input class="form-input" [value]="profile.staffId" disabled />
+      </div>
+    </div>
+
+    <div class="rounded-xl border border-[#304735] bg-[#112316] p-3 text-[8px] leading-4 text-[#8fa08c]">
+      Your role, status and operational assignments are managed by system administrators.
+    </div>
+
+    @if (errorMessage) {
+      <p class="m-0 rounded-xl border border-[#6b2d2d] bg-[#391515] p-3 text-[8.5px] text-[#ff756e]" role="alert">{{ errorMessage }}</p>
+    }
+
+    <footer class="mt-2 flex justify-end gap-2 border-t border-[#304735] pt-4">
+      <button class="cursor-pointer rounded-xl border border-[#405943] px-4 py-2.5 text-[9px] text-[#edf4e9] hover:bg-[#1f3827]" type="button" [disabled]="isSubmitting" (click)="requestClose()">Cancel</button>
+      <button class="cursor-pointer rounded-xl border border-[#4ee672] bg-[#45d869] px-5 py-2.5 text-[9px] font-semibold text-[#0c2512] hover:bg-[#52e777] disabled:opacity-50" type="submit" [disabled]="isSubmitting || form.pristine">
+        {{ isSubmitting ? 'Saving…' : 'Save Changes' }}
+      </button>
+    </footer>
   </form>
 </aside>

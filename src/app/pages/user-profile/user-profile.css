@@ -1,0 +1,135 @@
+@reference "../../../styles.css";
+
+:host {
+  @apply block min-h-full;
+}
+
+.profile-page-container {
+  @apply mx-auto max-w-[1500px] p-6 text-[#edf4e9];
+}
+
+.heading {
+  @apply mb-6 flex items-end justify-between gap-4;
+}
+
+.heading > div > span {
+  @apply text-[8px] font-bold uppercase tracking-[.18em] text-[#4ee672];
+}
+
+.heading h1 {
+  @apply my-1 text-[22px] font-extrabold text-[#eef5ed];
+}
+
+.heading p {
+  @apply m-0 text-[9px] text-[#8fa08c];
+}
+
+.primary-btn {
+  @apply cursor-pointer rounded-xl border border-[#4ee672]! bg-[#45d869]! px-5 py-2.5 text-[9px] font-semibold text-[#0c2512]! transition-all hover:bg-[#52e777]!;
+}
+
+.status-notice {
+  @apply mb-5 flex items-center justify-between gap-3 rounded-xl border border-[#2d6b3a] bg-[#15391d] px-4 py-3 text-[9px] text-[#55e777];
+}
+
+.card-base {
+  @apply overflow-hidden rounded-2xl border border-[#38513b] bg-[#172a1c] shadow-lg;
+}
+
+.card-header {
+  @apply flex items-start justify-between border-b border-[#304735] p-5;
+}
+
+.card-header h2 {
+  @apply mt-0 mb-1 text-[13px] font-bold text-[#eef5ed];
+}
+
+.card-header p {
+  @apply m-0 text-[9px] text-[#8fa08c];
+}
+
+.badge-verified {
+  @apply rounded-full border border-[#2d6b3a] bg-[#15391d] px-3 py-1 text-[7px] font-semibold text-[#55e777];
+}
+
+.badge-tag {
+  @apply inline-flex items-center gap-1.5 rounded-md border border-[#397347] bg-[#1d4528] px-2.5 py-1 text-[8px] font-medium text-[#51e474];
+}
+
+.badge-tag-muted {
+  @apply inline-flex items-center rounded-md border border-[#38513b] bg-[#112316] px-2.5 py-1 text-[8px] text-[#9bb098];
+}
+
+/* Identity Card Styles */
+.cover-gradient {
+  @apply h-24 bg-[linear-gradient(135deg,#24522f,#183c23_55%,#245b33)];
+}
+
+.identity-body {
+  @apply px-5 pb-5 text-center;
+}
+
+.avatar-circle {
+  @apply mx-auto -mt-10 grid size-20 place-items-center rounded-full border-4 border-[#172a1c] bg-[#164326] text-xl font-bold text-[#50e974];
+  box-shadow: 0 0 0 1px #2d7b41;
+}
+
+.role-badge {
+  @apply mt-3 inline-flex rounded-md bg-[#183e22] px-3 py-1.5 text-[7px] font-semibold uppercase tracking-wide text-[#4be572];
+}
+
+.account-active-state {
+  @apply mt-4 flex items-center gap-3 border-t border-[#304735] pt-4 text-left;
+}
+
+.account-active-state > i {
+  @apply size-2 shrink-0 rounded-full bg-[#4ee672] shadow-[0_0_8px_#4ee672];
+}
+
+/* Detail list styling */
+.detail-grid {
+  @apply grid grid-cols-1 gap-x-8 gap-y-1 p-5 sm:grid-cols-2;
+}
+
+.detail-grid > div {
+  @apply border-b border-[#304735] py-3;
+}
+
+.detail-label {
+  @apply text-[7px] font-semibold uppercase tracking-wider text-[#81917f];
+}
+
+.detail-value {
+  @apply mt-1 ml-0 text-[9px] font-medium text-[#edf4e9];
+}
+
+/* Toggle controls */
+.toggle-item {
+  @apply flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-[#304735] bg-[#112316] p-4 transition-colors hover:border-[#426146];
+}
+
+.toggle-item input[type='checkbox'] {
+  @apply size-4 accent-[#45d869] cursor-pointer;
+}
+
+/* Custom inputs */
+.form-input {
+  @apply w-full h-10 rounded-xl border border-[#405943] bg-[#102318] px-4 text-[9px] text-[#edf4e9] outline-none transition-colors focus:border-[#4ee672];
+}
+
+.form-input:disabled {
+  @apply opacity-60 cursor-not-allowed;
+}
+
+/* Drawer Backdrops */
+.drawer-overlay {
+  @apply fixed inset-0 z-50 bg-[#07130a]/80 backdrop-blur-xs;
+}
+
+.drawer-panel {
+  @apply fixed inset-y-0 right-0 z-50 w-full max-w-[440px] overflow-y-auto border-l border-[#38513b] bg-[#14291a] p-6 shadow-2xl;
+}
+
+.modal-panel {
+  @apply fixed top-1/2 left-1/2 z-50 max-h-[calc(100vh-40px)] w-[calc(100%-32px)] max-w-[440px] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl border border-[#38513b] bg-[#14291a] p-6 shadow-2xl;
+}

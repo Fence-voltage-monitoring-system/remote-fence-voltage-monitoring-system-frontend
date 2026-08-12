@@ -8,9 +8,21 @@
         <div class="heading-actions"><button class="export" type="button" (click)="openAssignment()"><i data-lucide="radio"></i> Assign device</button><button class="add" type="button" (click)="openAdd()"><i data-lucide="plus"></i> Register device</button></div>
       </section>
 
+      @if (isLoading) {
+        <div class="mb-4 h-1 overflow-hidden rounded-full bg-[#1b3421]"><div class="h-full w-1/3 animate-pulse rounded-full bg-[#4ee672]"></div></div>
+      }
+      @if (notice) {
+        <div class="mb-4 flex items-center justify-between gap-3 rounded-xl border border-[#2d6b3a] bg-[#15391d] px-4 py-3 text-[9px] text-[#55e777]" role="status">
+          <span>{{ notice }}</span>
+          @if (usingPreview) {
+            <button class="rounded-md border border-[#2d6b3a] bg-[#1d4826] px-3 py-1 text-[8px] font-semibold text-[#55e777] hover:bg-[#255c30]" type="button" (click)="loadDevices()">Retry</button>
+          }
+        </div>
+      }
+
       <section class="stats" aria-label="Device statistics">
         <article><div class="stat-icon"><i data-lucide="cpu"></i></div><div><span>Total devices</span><b>{{devices.length}}</b><small>Across {{fences.length}} fences</small></div></article>
-        <article class="online"><div class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.6a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 20h.01M2 9a14 14 0 0 1 20 0"/></svg></div><div><span>Online</span><b>{{count('online')}}</b><small>{{(count('online') / devices.length * 100).toFixed(0)}}% availability</small></div></article>
+        <article class="online"><div class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.6a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0M12 20h.01M2 9a14 14 0 0 1 20 0"/></svg></div><div><span>Online</span><b>{{count('online')}}</b><small>{{onlinePercentage}}% availability</small></div></article>
         <article class="warning"><div class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg></div><div><span>Needs attention</span><b>{{count('warning')}}</b><small>Low voltage or signal</small></div></article>
         <article class="offline"><div class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.48M7.76 16.24a6 6 0 0 1 0-8.48M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14"/></svg></div><div><span>Offline</span><b>{{count('offline')}}</b><small>Communication lost</small></div></article>
         <article class="unassigned"><div class="stat-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg></div><div><span>Unassigned</span><b>{{unassignedDevices.length}}</b><small>Available inventory</small></div></article>

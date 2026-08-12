@@ -1,81 +1,123 @@
-<div class="app-shell"><app-sidebar />
-  <div class="page"><app-header />
+<div class="app-shell">
+  <app-sidebar />
+  <div class="page">
+    <app-header />
     <main>
+      @if (isLoading) {
+        <div class="mb-4 h-1 overflow-hidden rounded-full bg-[#1b3421]">
+          <div class="h-full w-1/3 animate-pulse rounded-full bg-[#4ee672]"></div>
+        </div>
+      }
+
       <section class="hero">
         <span>SUPPORT CENTRE</span>
         <h1>How can we help?</h1>
         <p>Find guidance for monitoring fences, managing devices, and resolving common issues.</p>
-        <label class="search"><i>⌕</i><input type="search" [(ngModel)]="query"
-            placeholder="Search help articles and questions..." aria-label="Search help"><small>{{ filteredFaqs.length
-            }} results</small></label>
+        <label class="search">
+          <i>⌕</i>
+          <input type="search" [(ngModel)]="query" placeholder="Search help articles and questions..." aria-label="Search help"/>
+          <small>{{ filteredFaqs.length }} results</small>
+        </label>
       </section>
 
       <section class="quick-grid">
-        <article><i>▤</i>
+        <article>
+          <i>▤</i>
           <div>
             <h2>User guide</h2>
             <p>Learn the monitoring system basics and daily workflows.</p>
-          </div><button type="button">Browse guide <b>→</b></button>
+          </div>
+          <button type="button">Browse guide <b>→</b></button>
         </article>
-        <article><i>⚡</i>
+
+        <article>
+          <i>⚡</i>
           <div>
             <h2>Troubleshooting</h2>
             <p>Diagnose voltage, device, gateway, and connection issues.</p>
-          </div><button type="button">View solutions <b>→</b></button>
+          </div>
+          <button type="button">View solutions <b>→</b></button>
         </article>
-        <article><i>◉</i>
+
+        <article>
+          <i>◉</i>
           <div>
             <h2>System status</h2>
             <p>All monitoring services are currently operational.</p>
-          </div><span class="operational"><b></b> All systems operational</span>
+          </div>
+          <span class="operational"><b></b> All systems operational</span>
         </article>
       </section>
 
-  <div class="content-grid">
-    <section class="faq-card">
-      <header>
-        <div><span>KNOWLEDGE BASE</span>
-          <h2>Frequently asked questions</h2>
-        </div><small>{{ filteredFaqs.length }} articles</small>
-      </header>
-      <div class="faq-list">
-        @for (faq of filteredFaqs; track faq.question) {
-        <article [class.open]="expandedQuestion === faq.question"><button type="button" (click)="toggle(faq.question)"
-            [attr.aria-expanded]="expandedQuestion === faq.question"><span><small>{{ faq.category }}</small><strong>{{
-                faq.question }}</strong></span><i>⌄</i></button>@if(expandedQuestion === faq.question){<p>{{ faq.answer }}
-          </p>}</article>
-        } @empty { <div class="empty"><b>⌕</b><strong>No help articles found</strong><span>Try a different search
-            phrase.</span></div> }
-      </div>
-    </section>
+      <div class="content-grid">
+        <section class="faq-card">
+          <header>
+            <div>
+              <span>KNOWLEDGE BASE</span>
+              <h2>Frequently asked questions</h2>
+            </div>
+            <small>{{ filteredFaqs.length }} articles</small>
+          </header>
 
-    <aside class="support-column">
-      <article class="contact-card"><span>NEED MORE HELP?</span>
-        <h2>Contact technical support</h2>
-        <p>Our operations support team can help with system access, field devices, and monitoring incidents.</p>
-        <dl>
-          <div>
-            <dt>Support hours</dt>
-            <dd>Monday–Friday, 08:30–17:00</dd>
+          <div class="faq-list">
+            @for (faq of filteredFaqs; track faq.question) {
+              <article [class.open]="expandedQuestion === faq.question">
+                <button type="button" (click)="toggle(faq.question)" [attr.aria-expanded]="expandedQuestion === faq.question">
+                  <span>
+                    <small>{{ faq.category }}</small>
+                    <strong>{{ faq.question }}</strong>
+                  </span>
+                  <i>⌄</i>
+                </button>
+                @if (expandedQuestion === faq.question) {
+                  <p>{{ faq.answer }}</p>
+                }
+              </article>
+            } @empty {
+              <div class="empty">
+                <b>⌕</b>
+                <strong>No help articles found</strong>
+                <span>Try a different search phrase.</span>
+              </div>
+            }
           </div>
-          <div>
-            <dt>Emergency line</dt>
-            <dd>Available 24/7 for critical incidents</dd>
-          </div>
-        </dl><a href="mailto:support@dwc.gov.lk">Email support</a><button type="button" (click)="copyEmail()">{{ copied ?
-          '✓ Email copied' : 'Copy email address' }}</button>
-      </article>
-      <article class="system-card">
-        <header>
-          <h3>System information</h3><span>ONLINE</span>
-        </header>
-        <div><span>Application</span><b>Remote Fence Monitoring</b></div>
-        <div><span>Version</span><b>1.0.0</b></div>
-        <div><span>Environment</span><b>Production</b></div>
-        <div><span>Last updated</span><b>28 July 2026</b></div>
-      </article>
-    </aside>
+        </section>
+
+        <aside class="support-column">
+          <article class="contact-card">
+            <span>NEED MORE HELP?</span>
+            <h2>Contact technical support</h2>
+            <p>Our operations support team can help with system access, field devices, and monitoring incidents.</p>
+
+            <dl>
+              <div>
+                <dt>Support hours</dt>
+                <dd>Monday–Friday, 08:30–17:00</dd>
+              </div>
+              <div>
+                <dt>Emergency line</dt>
+                <dd>Available 24/7 for critical incidents</dd>
+              </div>
+            </dl>
+
+            <a href="mailto:support@dwc.gov.lk">Email support</a>
+            <button type="button" (click)="copyEmail()">
+              {{ copied ? '✓ Email copied' : 'Copy email address' }}
+            </button>
+          </article>
+
+          <article class="system-card">
+            <header>
+              <h3>System information</h3>
+              <span>ONLINE</span>
+            </header>
+            <div><span>Application</span><b>Remote Fence Monitoring</b></div>
+            <div><span>Version</span><b>1.0.0</b></div>
+            <div><span>Environment</span><b>Production</b></div>
+            <div><span>Last updated</span><b>28 July 2026</b></div>
+          </article>
+        </aside>
+      </div>
+    </main>
   </div>
-  </main>
-  </div>
-  </div>
+</div>

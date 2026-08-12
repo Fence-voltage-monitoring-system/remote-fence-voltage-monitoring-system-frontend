@@ -1,1 +1,24 @@
-<section class="relative overflow-hidden rounded-2xl border border-[#446047] bg-[#18331f] p-6 shadow-xl"><div class="absolute -top-20 -right-16 size-56 rounded-full bg-[#43d36c]/7 blur-3xl"></div><div class="relative flex flex-col items-center gap-5 sm:flex-row"><div class="grid size-20 shrink-0 place-items-center rounded-2xl border-2 border-[#3e9a59] bg-[#234d2d] text-2xl font-extrabold text-[#53df79] shadow-[0_0_24px_rgba(67,211,108,.12)]">{{ profile.initials }}</div><div class="min-w-0 text-center sm:text-left"><p class="mb-1 text-[9px] font-bold tracking-[.14em] text-[#43d36c] uppercase">{{ profile.staffId }}</p><h1 class="m-0 text-2xl font-extrabold">{{ profile.fullName }}</h1><p class="mt-1 text-xs text-[#9bab9d]">{{ roleLabels[profile.role] }} · {{ profile.department }}</p><div class="mt-3 flex flex-wrap justify-center gap-2 sm:justify-start"><span class="rounded-md border border-[#337d49] bg-[#245a34]/55 px-2 py-1 text-[9px] text-[#53df79]">● {{ profile.status === 'ACTIVE' ? 'Active' : 'Inactive' }}</span><span class="rounded-md border border-[#4a5f4c] bg-[#263c2b] px-2 py-1 text-[9px] text-[#a8b4a8]">@{{ profile.username }}</span></div></div></div></section>
+<article class="card-base">
+  <div class="cover-gradient"></div>
+  <div class="identity-body">
+    <div class="avatar-circle">
+      <span>{{ profile.initials }}</span>
+    </div>
+
+    <h2 class="mt-4 mb-1 text-[18px] font-bold text-[#eef5ed]">{{ profile.fullName }}</h2>
+    <p class="m-0 text-[9px] text-[#8ea08b]">{{ profile.email }}</p>
+    
+    <div class="mt-2 flex items-center justify-center gap-2">
+      <span class="role-badge">{{ roleLabels[profile.role] || profile.role }}</span>
+      <span class="badge-tag-muted">{{ profile.staffId }}</span>
+    </div>
+
+    <div class="account-active-state">
+      <i></i>
+      <div>
+        <b class="text-[9px] text-[#eef5ed]">Account active &middot; {{ profile.department }}</b>
+        <small class="mt-0.5 block text-[7.5px] text-[#7f8f7c]">Last sign-in: {{ profile.lastLoginAt }}</small>
+      </div>
+    </div>
+  </div>
+</article>
