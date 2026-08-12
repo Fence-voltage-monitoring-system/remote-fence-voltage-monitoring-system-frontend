@@ -1,8 +1,4 @@
-<div class="app-shell">
-  <app-sidebar />
-  <div class="page">
-    <app-header />
-    <main>
+<main>
       @if (error) {
         <section class="api-error" role="alert"><span>{{ error }}</span><button type="button" (click)="loadDashboard()">Retry</button></section>
       }
@@ -27,6 +23,4 @@
       <section class="dashboard-map" aria-label="Fence map overview">
         <app-fence-map-workspace />
       </section>
-    </main>
-  </div>
-</div>
+</main>

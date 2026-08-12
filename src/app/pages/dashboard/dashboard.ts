@@ -3,8 +3,6 @@ import { Subject, finalize, takeUntil } from 'rxjs';
 import { AlertCounts, DashboardAlert, VoltageReading } from '../../core/models/dashboard-api';
 import { DeviceMonitoringContext } from '../../core/models/device-monitoring';
 import { DashboardApiService } from '../../core/services/dashboard-api';
-import { HeaderComponent } from '../../shared/components/header/header';
-import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 import { AlertSummaryComponent } from './components/alert-summary/alert-summary';
 import { AlertListComponent } from './components/alert-list/alert-list';
 import { FenceMonitorComponent } from './components/fence-monitor/fence-monitor';
@@ -14,7 +12,7 @@ import { VoltageChartComponent } from './components/voltage-chart/voltage-chart'
 
 @Component({
   selector: 'app-dashboard',
-  imports: [HeaderComponent, SidebarComponent, AlertSummaryComponent, FenceMonitorComponent, FenceMapWorkspaceComponent, AlertListComponent, VoltageCardComponent, VoltageChartComponent],
+  imports: [AlertSummaryComponent, FenceMonitorComponent, FenceMapWorkspaceComponent, AlertListComponent, VoltageCardComponent, VoltageChartComponent],
   templateUrl: './dashboard.html', styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit, OnDestroy {

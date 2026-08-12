@@ -23,14 +23,6 @@ export const routes: Routes = [
     title: 'Login | Remote Fence Monitoring',
   },
   {
-    path: 'dashboard',
-    loadComponent: () =>
-      import('./pages/dashboard/dashboard').then(
-        page => page.Dashboard
-      ),
-    title: 'Live Dashboard | Remote Fence Monitoring',
-  },
-  {
     path: 'virtual-fence',
     loadComponent: () =>
       import('./pages/virtual-fence/virtual-fence').then(
@@ -120,6 +112,7 @@ export const routes: Routes = [
     path: '',
     component: AuthenticatedLayout,
     children: [
+      { path: 'dashboard', loadComponent: () => import('./pages/dashboard/dashboard').then(page => page.Dashboard), title: 'Live Dashboard | Remote Fence Monitoring' },
       { path: 'historical-analysis', component: HistoricalAnalysis, title: 'Historical Analysis | Remote Fence Monitoring' },
       { path: 'alerts', component: Alerts, title: 'Alerts | Remote Fence Monitoring' },
       { path: 'notifications', component: Notifications, title: 'Notifications | Remote Fence Monitoring' },
