@@ -17,6 +17,7 @@ interface Section {
 @Component({ selector: 'app-fence-monitor', standalone: true, imports: [FormsModule], templateUrl: './fence-monitor.html', styleUrl: './fence-monitor.css' })
 export class FenceMonitorComponent implements OnInit, OnDestroy {
   @ViewChild('scroller') scroller!: ElementRef<HTMLElement>;
+  @ViewChild('cardsDeck') cardsDeck?: ElementRef<HTMLElement>;
   @Output() readonly deviceChange = new EventEmitter<DeviceMonitoringContext>();
   @Output() readonly fenceChange = new EventEmitter<FenceSelection>();
   @Output() readonly fenceRouteChange = new EventEmitter<FenceRouteData>();
@@ -152,10 +153,6 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
     return `DEV-EFE-${fenceNumber}${section.id.slice(-3)}`;
   }
 
-  scroll(amount: number): void {
-    this.scroller.nativeElement.scrollBy({ left: amount, behavior: 'smooth' });
-  }
-
   private buildSections(fence: Fence): Section[] {
     return Array.from({ length: fence.sectionCount }, (_, index) => {
       const states: FenceState[] = ['healthy', 'healthy', 'warning', 'critical', 'healthy', 'offline', 'healthy', 'warning'];
@@ -224,6 +221,22 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
     const seconds = Math.max(0, Math.ceil(remainingMs / 1000));
     const minutes = Math.floor(seconds / 60);
     return `${String(minutes).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+  }
+
+  scroll(offset: number): void {
+    if (this.scroller?.nativeElement) {
+      this.scroller.nativeElement.scrollBy({ left: offset, behavior: 'smooth' });
+    }
+    if (this.cardsDeck?.nativeElement) {
+      this.cardsDeck.nativeElement.scrollBy({ left: offset, behavior: 'smooth' });
+    }
+  }
+
+  onScrollerScroll(event: Event): void {
+    const target = event.target as HTMLElement;
+    if (this.cardsDeck?.nativeElement && target) {
+      this.cardsDeck.nativeElement.scrollLeft = target.scrollLeft;
+    }
   }
 
   private emitDevice(): void {

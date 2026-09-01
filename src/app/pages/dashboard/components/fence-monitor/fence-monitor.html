@@ -1,6 +1,6 @@
 <section class="panel">
   <header>
-    <div class="fence-title"><h2>Electric Fence Monitor</h2><p>{{selectedFence.district}} &middot; {{selectedFence.zone}}</p></div>
+    <div class="fence-title"><h2>Electric Fence Monitor</h2><p>{{selectedFence.name}} &middot; {{selectedFence.district}} &middot; {{selectedFence.zone}}</p></div>
     <div class="timing"><span>Device updated <b>{{lastUpdatedLabel}}</b></span><span>Next in <strong>{{nextUpdateLabel}}</strong></span><small>Every 15 min</small></div>
     @if (showFenceSelector) {
       <div class="location-filters">
@@ -13,10 +13,72 @@
   </header>
 
   <div class="workspace">
-    <div class="fence-wrap"><button class="arrow left" (click)="scroll(-460)" aria-label="Scroll fence left"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6 L9 12 L15 18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="scroller" #scroller><div class="fence-track"><span class="fence-leading-space" aria-hidden="true"></span>
-      @for (section of sections; track section.id) {<button class="fence-section" [class]="section.state" (click)="selectSection(section)"><span class="wire wire-1"></span><span class="wire wire-2"></span><span class="wire wire-3"></span><span class="wire wire-4"></span><i class="post"></i>@if ($last) {<i class="post end-post" aria-hidden="true"></i>}@if (section.state === 'critical') {<b class="fault"></b>}<div class="reading"><small>{{section.id}}</small><strong>{{section.voltage}}</strong><em>kV</em><span>&bull; {{section.state}}</span></div></button>}
-      <span class="fence-trailing-space" aria-hidden="true"></span>
-    </div></div><button class="arrow right" (click)="scroll(460)" aria-label="Scroll fence right"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6 L15 12 L9 18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="scroll-hint">&larr; scroll to inspect all {{sections.length}} registered sections &rarr;</div></div>
+    <div class="fence-wrap">
+      <button class="arrow left" type="button" (click)="scroll(-460)" aria-label="Scroll fence left"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6 L9 12 L15 18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+
+      <div class="scroller" #scroller (scroll)="onScrollerScroll($event)">
+        <div class="fence-track">
+          <span class="fence-leading-space" aria-hidden="true"></span>
+          @for (section of sections; track section.id; let idx = $index) {
+            <button 
+              type="button" 
+              class="fence-section-clean" 
+              [class]="section.state" 
+              [class.is-selected]="selected.id === section.id" 
+              (click)="selectSection(section)"
+            >
+              <!-- Section Header Tag -->
+              <span class="section-tag" [class]="section.state">{{section.id}}</span>
+
+              <!-- Steel Fence Post -->
+              <img class="post-img" src="/assets/images/galvanized_post_3d.png?v=12" alt="Steel Fence Post" />
+
+              <!-- Continuous Electric Fence Wires -->
+              <div class="fence-wire-assembly">
+                <div class="wire-row w1"><span class="electric-wire" [class]="section.state"></span></div>
+                <div class="wire-row w2"><span class="electric-wire" [class]="section.state"></span></div>
+                <div class="wire-row w3"><span class="electric-wire" [class]="section.state"></span></div>
+                <div class="wire-row w4"><span class="electric-wire" [class]="section.state"></span></div>
+              </div>
+
+              @if (section.state === 'critical') {<b class="fault"><i class="spark"></i></b>}
+            </button>
+          }
+          <span class="fence-trailing-space" aria-hidden="true"></span>
+        </div>
+      </div>
+
+      <button class="arrow right" type="button" (click)="scroll(460)" aria-label="Scroll fence right"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6 L15 12 L9 18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+
+      <!-- Telemetry Details Cards Outside Background Image -->
+      <div class="cards-deck-wrap" #cardsDeck>
+        <div class="cards-deck-track">
+          <span class="fence-leading-space" aria-hidden="true"></span>
+          @for (section of sections; track section.id) {
+            <div 
+              class="reading-card-outside" 
+              [class]="section.state" 
+              [class.is-selected]="selected.id === section.id"
+              (click)="selectSection(section)"
+            >
+              <div class="card-header font-mono">
+                <strong>{{section.id}}</strong>
+                <small>Sec {{section.id.slice(-2)}}</small>
+              </div>
+              <div class="card-val font-mono">
+                <strong>{{section.voltage}}</strong><em>kV</em>
+              </div>
+              <div class="card-status">
+                <span class="state-pill" [class]="section.state">&bull; {{section.state}}</span>
+              </div>
+            </div>
+          }
+          <span class="fence-trailing-space" aria-hidden="true"></span>
+        </div>
+      </div>
+
+      <div class="scroll-hint">&larr; scroll to inspect all {{sections.length}} registered sections &rarr;</div>
+    </div>
     <aside class="detail"><h3>Section detail</h3><div class="section-heading"><b>{{selected.id}}</b><span [class]="selected.state">&bull; {{selected.state}}</span></div><dl><div><dt>Voltage</dt><dd class="voltage">{{selected.voltage}} kV</dd></div><div><dt>Battery</dt><dd>{{selected.battery}}%</dd></div><div><dt>Voltage drop</dt><dd>{{selected.voltageDrop}} kV</dd></div><div><dt>Solar charging</dt><dd>{{selected.solarCharging}}%</dd></div><div><dt>Signal strength</dt><dd>{{selected.signalStrength}} dBm</dd></div><div><dt>Gateway</dt><dd>{{selected.gateway}}</dd></div><div class="gps"><dt>GPS</dt><dd>{{selected.latitude}}<br>{{selected.longitude}}</dd></div><div><dt>Last updated</dt><dd>{{selected.updated}}</dd></div></dl><div class="battery-level"><div><span>Battery level</span><b>{{selected.battery}}%</b></div><i><em [style.width.%]="selected.battery"></em></i></div></aside>
   </div>
 
