@@ -19,7 +19,7 @@
       <div class="scroller" #scroller (scroll)="onScrollerScroll($event)">
         <div class="fence-track">
           <span class="fence-leading-space" aria-hidden="true"></span>
-          @for (section of sections; track section.id; let idx = $index) {
+          @for (section of sections; track section.id; let idx = $index; let last = $last) {
             <button 
               type="button" 
               class="fence-section-clean" 
@@ -30,8 +30,13 @@
               <!-- Section Header Tag -->
               <span class="section-tag" [class]="section.state">{{section.id}}</span>
 
-              <!-- Steel Fence Post -->
+              <!-- Steel Fence Post (Left) -->
               <img class="post-img" src="/assets/images/galvanized_post_3d.png?v=12" alt="Steel Fence Post" />
+
+              <!-- Steel Fence Post (Right - Final Terminating Post for Last Section) -->
+              @if (last) {
+                <img class="post-img post-img-end" src="/assets/images/galvanized_post_3d.png?v=12" alt="Terminal Steel Fence Post" />
+              }
 
               <!-- Continuous Electric Fence Wires -->
               <div class="fence-wire-assembly">
