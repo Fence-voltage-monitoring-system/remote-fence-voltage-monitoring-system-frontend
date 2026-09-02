@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { AuthService } from '../../core/services/auth.service';
@@ -14,9 +15,11 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class Login {
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly loginForm = new FormGroup({
-    username: new FormControl('', {
+    email: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required, Validators.email],
     }),
@@ -32,8 +35,8 @@ export class Login {
   errorMessage = '';
   successMessage = '';
 
-  get usernameControl(): FormControl<string> {
-    return this.loginForm.controls.username;
+  get emailControl(): FormControl<string> {
+    return this.loginForm.controls.email;
   }
 
   get passwordControl(): FormControl<string> {
@@ -56,13 +59,22 @@ export class Login {
     this.isSubmitting = true;
 
     this.authService.login(this.loginForm.getRawValue())
-      .pipe(finalize(() => { this.isSubmitting = false; }))
+      .pipe(finalize(() => {
+        this.isSubmitting = false;
+        this.cdr.markForCheck();
+      }))
       .subscribe({
         next: (response) => {
-          this.successMessage = `Welcome, ${response.user.name}.`;
+          const userName = response.user.fullName || response.user.name || 'User';
+          this.successMessage = `Welcome, ${userName}.`;
+          this.cdr.markForCheck();
+          setTimeout(() => {
+            this.router.navigate(['/dashboard']);
+          }, 500);
         },
         error: (error: HttpErrorResponse) => {
           this.errorMessage = this.getLoginErrorMessage(error);
+          this.cdr.markForCheck();
         },
       });
   }
@@ -73,7 +85,7 @@ export class Login {
     }
 
     if (error.status === 401) {
-      return 'The username or password is incorrect.';
+      return 'The email address or password is incorrect.';
     }
 
     if (error.status === 429) {

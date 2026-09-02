@@ -197,7 +197,11 @@
         <div class="note"><i data-lucide="check"></i><span><strong>Fence relationships are managed
               separately</strong><small>Assign fences to this gateway from Fence Management. Sections inherit the
               gateway through their parent fence.</small></span></div>
-      </div>@if (submitted && (!form.name.trim() || !form.serial.trim() || !form.imei.trim())) {<p class="form-error">
+      </div>
+      @if (errorMessage) {
+        <p class="form-error" style="color: #ff9a91; background: rgba(239, 106, 96, 0.15); border: 1px solid rgba(239, 106, 96, 0.3); padding: 8px 12px; border-radius: 8px; font-size: 11px; margin-top: 10px;">{{ errorMessage }}</p>
+      }
+      @if (submitted && (!form.name.trim() || !form.serial.trim() || !form.imei.trim())) {<p class="form-error">
         Enter the gateway name, serial number, and IMEI.</p>}
     </div>
     <footer><button type="button" (click)="drawerOpen = false">Cancel</button><button class="primary" type="submit"><i

@@ -47,21 +47,21 @@
 
       <form class="grid gap-[17px]" [formGroup]="loginForm" (ngSubmit)="submitLogin()" aria-label="Secure system login" novalidate>
         <div class="grid gap-2">
-          <label class="text-[9px] font-semibold tracking-[.12em] text-[#86ad8f] uppercase" for="username">Username or email</label>
+          <label class="text-[9px] font-semibold tracking-[.12em] text-[#86ad8f] uppercase" for="email">Email address</label>
           <input
             class="h-[35px] w-full rounded-[9px] border border-[#3d5742] bg-[#203725] px-3 text-[11px] text-[#e4ebe5] outline-none transition placeholder:text-[#8ba08f] focus:border-[#43d36c] focus:shadow-[0_0_0_3px_rgba(67,211,108,.12)]"
-            id="username"
-            formControlName="username"
+            id="email"
+            formControlName="email"
             type="email"
-            placeholder="user@dwc.gov.lk"
-            autocomplete="username"
-            [attr.aria-invalid]="usernameControl.invalid && usernameControl.touched"
-            aria-describedby="username-error"
+            placeholder="admin@nerdc.lk"
+            autocomplete="email"
+            [attr.aria-invalid]="emailControl.invalid && emailControl.touched"
+            aria-describedby="email-error"
           />
-          @if (usernameControl.touched && usernameControl.hasError('required')) {
-            <p id="username-error" class="m-0 text-[9px] text-[#ff9a91]" role="alert">Username or email is required.</p>
-          } @else if (usernameControl.touched && usernameControl.hasError('email')) {
-            <p id="username-error" class="m-0 text-[9px] text-[#ff9a91]" role="alert">Enter a valid email address.</p>
+          @if (emailControl.touched && emailControl.hasError('required')) {
+            <p id="email-error" class="m-0 text-[9px] text-[#ff9a91]" role="alert">Email address is required.</p>
+          } @else if (emailControl.touched && emailControl.hasError('email')) {
+            <p id="email-error" class="m-0 text-[9px] text-[#ff9a91]" role="alert">Enter a valid email address.</p>
           }
         </div>
 

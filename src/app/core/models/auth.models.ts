@@ -1,5 +1,5 @@
 export interface LoginRequest {
-  username: string;
+  email: string;
   password: string;
   rememberMe: boolean;
 }
@@ -7,7 +7,8 @@ export interface LoginRequest {
 export interface LoginResponse {
   user: {
     id: string;
-    name: string;
+    fullName?: string;
+    name?: string;
     email: string;
     role: string;
     provinces?: string[];

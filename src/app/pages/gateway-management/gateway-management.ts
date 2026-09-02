@@ -1,4 +1,5 @@
-import { AfterViewChecked, Component, inject, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AfterViewChecked, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { Check, ChevronDown, createIcons, MoreHorizontal, Pencil, Plus, RadioTower, Search, Signal, Trash2, Wifi, X } from 'lucide';
@@ -16,6 +17,7 @@ import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 })
 export class GatewayManagementPage implements OnInit, AfterViewChecked {
   private readonly gatewayService = inject(GatewayService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly fences = ['Monaragala Elephant Protection Fence', 'Wilpattu North Buffer Fence', 'Mihintale Wildlife Buffer Fence', 'Gal Oya East Protection Fence'];
   gateways: Gateway[] = [];
@@ -44,22 +46,21 @@ export class GatewayManagementPage implements OnInit, AfterViewChecked {
   loadGateways(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    this.gatewayService.getGateways().pipe(finalize(() => { this.isLoading = false; })).subscribe({
+    this.gatewayService.getGateways().pipe(finalize(() => {
+      this.isLoading = false;
+      this.cdr.markForCheck();
+    })).subscribe({
       next: (gateways) => {
-        if (gateways && gateways.length > 0) {
-          this.gateways = gateways;
-          this.usingPreview = false;
-          this.notice = '';
-        } else {
-          this.gateways = this.gatewayService.previewGateways;
-          this.usingPreview = true;
-          this.notice = 'Gateway API returned empty list. Displaying preview dataset.';
-        }
+        this.gateways = gateways || [];
+        this.usingPreview = false;
+        this.notice = '';
+        this.cdr.markForCheck();
       },
       error: () => {
-        this.gateways = this.gatewayService.previewGateways;
-        this.usingPreview = true;
-        this.notice = 'Gateway API unavailable. Displaying preview dataset.';
+        this.gateways = [];
+        this.usingPreview = false;
+        this.errorMessage = 'Unable to connect to Gateway API.';
+        this.cdr.markForCheck();
       },
     });
   }
@@ -91,24 +92,30 @@ export class GatewayManagementPage implements OnInit, AfterViewChecked {
     const nextState = !gateway.enabled;
     gateway.enabled = nextState;
     this.gatewayService.toggleEnabled(gateway.id, nextState).subscribe({
-      error: () => {
-        this.notice = 'Gateway status updated locally.';
+      next: () => { this.cdr.markForCheck(); },
+      error: (err: HttpErrorResponse) => {
+        gateway.enabled = !nextState; // revert toggle on error
+        this.errorMessage = err.error?.message || 'Failed to toggle gateway status.';
+        this.cdr.markForCheck();
       },
     });
   }
 
   openAdd(): void {
     this.editing = undefined; this.form = this.blankGateway(); this.submitted = false;
+    this.errorMessage = '';
     this.drawerOpen = true; this.selected = undefined; this.iconsReady = false;
   }
 
   openEdit(gateway: Gateway): void {
     this.editing = gateway; this.form = { ...gateway, fences: [...gateway.fences] }; this.submitted = false;
+    this.errorMessage = '';
     this.drawerOpen = true; this.selected = undefined; this.menuGateway = undefined; this.iconsReady = false;
   }
 
   save(): void {
     this.submitted = true;
+    this.errorMessage = '';
     if (!this.form.name.trim() || !this.form.serial.trim() || !this.form.imei.trim()) return;
     this.isSubmitting = true;
 
@@ -121,17 +128,19 @@ export class GatewayManagementPage implements OnInit, AfterViewChecked {
         firmware: this.form.firmware,
       };
 
-      this.gatewayService.updateGateway(this.editing.id, payload).pipe(finalize(() => { this.isSubmitting = false; })).subscribe({
+      this.gatewayService.updateGateway(this.editing.id, payload).pipe(finalize(() => {
+        this.isSubmitting = false;
+        this.cdr.markForCheck();
+      })).subscribe({
         next: (updated) => {
           Object.assign(this.editing!, updated);
           this.drawerOpen = false;
           this.submitted = false;
+          this.cdr.markForCheck();
         },
-        error: () => {
-          Object.assign(this.editing!, this.form);
-          this.drawerOpen = false;
-          this.submitted = false;
-          this.notice = 'Gateway update saved locally.';
+        error: (err: HttpErrorResponse) => {
+          this.errorMessage = this.extractErrorMessage(err);
+          this.cdr.markForCheck();
         },
       });
     } else {
@@ -143,27 +152,19 @@ export class GatewayManagementPage implements OnInit, AfterViewChecked {
         firmware: this.form.firmware,
       };
 
-      this.gatewayService.createGateway(payload).pipe(finalize(() => { this.isSubmitting = false; })).subscribe({
+      this.gatewayService.createGateway(payload).pipe(finalize(() => {
+        this.isSubmitting = false;
+        this.cdr.markForCheck();
+      })).subscribe({
         next: (created) => {
           this.gateways = [created, ...this.gateways];
           this.drawerOpen = false;
           this.submitted = false;
+          this.cdr.markForCheck();
         },
-        error: () => {
-          const newGateway: Gateway = {
-            ...this.form,
-            id: `GTW-${String(1001 + this.gateways.length).padStart(4, '0')}`,
-            status: this.form.fences.length > 0 ? 'online' : 'offline',
-            signal: this.form.fences.length > 0 ? 100 : 0,
-            power: 100,
-            devices: 0,
-            lastSeen: 'Just now',
-            enabled: true,
-          };
-          this.gateways = [newGateway, ...this.gateways];
-          this.drawerOpen = false;
-          this.submitted = false;
-          this.notice = 'New gateway registered locally.';
+        error: (err: HttpErrorResponse) => {
+          this.errorMessage = this.extractErrorMessage(err);
+          this.cdr.markForCheck();
         },
       });
     }
@@ -176,14 +177,28 @@ export class GatewayManagementPage implements OnInit, AfterViewChecked {
         this.gateways = this.gateways.filter(item => item !== gateway);
         if (this.selected === gateway) this.selected = undefined;
         this.menuGateway = undefined;
+        this.iconsReady = false;
+        this.cdr.markForCheck();
       },
-      error: () => {
+      error: (err: HttpErrorResponse) => {
         this.gateways = this.gateways.filter(item => item !== gateway);
         if (this.selected === gateway) this.selected = undefined;
         this.menuGateway = undefined;
-        this.notice = 'Gateway removed locally.';
+        this.notice = this.extractErrorMessage(err);
+        this.iconsReady = false;
+        this.cdr.markForCheck();
       },
     });
+  }
+
+  private extractErrorMessage(err: HttpErrorResponse): string {
+    if (!err) return 'An unexpected error occurred.';
+    if (typeof err.error === 'string' && err.error.trim()) return err.error;
+    if (err.error?.message) return err.error.message;
+    if (err.error?.detail) return err.error.detail;
+    if (err.error?.errors?.[0]?.defaultMessage) return err.error.errors[0].defaultMessage;
+    if (err.error?.error) return `${err.status}: ${err.error.error}`;
+    return err.message || 'Operation failed. Please try again.';
   }
 
   private blankGateway(): Gateway {
