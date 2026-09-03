@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { Login } from './pages/login/login';
+import { authGuard } from './core/guards/auth.guard';
 import { managementGuard } from './core/guards/management.guard';
 import { superAdminGuard } from './core/guards/super-admin.guard';
 import { ApplicationLayout } from './shared/layouts/application-layout/application-layout';
@@ -13,11 +14,13 @@ export const routes: Routes = [
     path: 'dashboard',
     loadComponent: () =>
       import('./pages/dashboard/dashboard').then((page) => page.Dashboard),
+    canActivate: [authGuard],
     title: 'Live Dashboard | Remote Fence Monitoring'
   },
   {
     path: '',
     component: ApplicationLayout,
+    canActivate: [authGuard],
     children: [
       { path: 'users', loadComponent: () => import('./pages/user-management/user-management').then(m => m.UserManagement), title: 'User Management | Remote Fence Monitoring' },
       { path: 'fences', loadComponent: () => import('./pages/fence-management/fence-management').then(m => m.FenceManagement), canActivate: [managementGuard], title: 'Fence Management | Remote Fence Monitoring' },
@@ -39,18 +42,21 @@ export const routes: Routes = [
     path: 'virtual-fence',
     loadComponent: () =>
       import('./pages/virtual-fence/virtual-fence').then((page) => page.VirtualFencePage),
+    canActivate: [authGuard],
     title: 'Live View | Remote Fence Monitoring',
   },
   {
     path: 'map',
     loadComponent: () =>
       import('./pages/map/map-page').then((page) => page.MapPage),
+    canActivate: [authGuard],
     title: 'Fence Map | Remote Fence Monitoring',
   },
   {
     path: 'devices',
     loadComponent: () =>
       import('./pages/device-management/device-management').then((page) => page.DeviceManagementPage),
+    canActivate: [authGuard],
     title: 'Device Management | Remote Fence Monitoring',
   },
   { path: 'device-management', redirectTo: 'devices', pathMatch: 'full' },
@@ -58,12 +64,13 @@ export const routes: Routes = [
     path: 'gateways',
     loadComponent: () =>
       import('./pages/gateway-management/gateway-management').then((page) => page.GatewayManagementPage),
+    canActivate: [authGuard],
     title: 'Gateway Management | Remote Fence Monitoring',
   },
   { path: 'gateway-management', redirectTo: 'gateways', pathMatch: 'full' },
-  { path: 'audit-logs', loadComponent: () => import('./pages/audit-logs/audit-logs').then(page => page.AuditLogsPage), title: 'Audit Logs | Remote Fence Monitoring' },
-  { path: 'security', loadComponent: () => import('./pages/security/security').then(page => page.SecurityPage), title: 'Security Settings | Remote Fence Monitoring' },
-  { path: 'appearance', loadComponent: () => import('./pages/appearance/appearance').then(page => page.AppearancePage), title: 'Theme & Appearance | Remote Fence Monitoring' },
-  { path: 'help-support', loadComponent: () => import('./pages/help-support/help-support').then(page => page.HelpSupportPage), title: 'Help & Support | Remote Fence Monitoring' },
+  { path: 'audit-logs', loadComponent: () => import('./pages/audit-logs/audit-logs').then(page => page.AuditLogsPage), canActivate: [authGuard], title: 'Audit Logs | Remote Fence Monitoring' },
+  { path: 'security', loadComponent: () => import('./pages/security/security').then(page => page.SecurityPage), canActivate: [authGuard], title: 'Security Settings | Remote Fence Monitoring' },
+  { path: 'appearance', loadComponent: () => import('./pages/appearance/appearance').then(page => page.AppearancePage), canActivate: [authGuard], title: 'Theme & Appearance | Remote Fence Monitoring' },
+  { path: 'help-support', loadComponent: () => import('./pages/help-support/help-support').then(page => page.HelpSupportPage), canActivate: [authGuard], title: 'Help & Support | Remote Fence Monitoring' },
   { path: '**', redirectTo: '' },
 ];

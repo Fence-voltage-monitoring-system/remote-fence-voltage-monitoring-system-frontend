@@ -1,13 +1,15 @@
-import { AfterViewInit, Component, HostListener, OnDestroy, signal } from '@angular/core';
+import { AfterViewInit, Component, HostListener, inject, OnDestroy, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { Bell, createIcons } from 'lucide';
 import { filter, Subscription } from 'rxjs';
 import { UserMenuComponent } from '../user-menu/user-menu';
 import { NotificationService } from '../../../core/services/notification.service';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({ selector: 'app-header', standalone: true, imports: [RouterLink, UserMenuComponent], templateUrl: './header.html', styleUrl: './header.css' })
 export class HeaderComponent implements AfterViewInit, OnDestroy {
+  private readonly authService = inject(AuthService);
   readonly currentTime = signal('');
   readonly currentDate = signal('');
   readonly pageName = signal('Live Dashboard');
@@ -29,6 +31,13 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     this.notifications.stats$.subscribe({ next: (s) => this.unread.set(s.unread), error: () => {/* ignore */} });
     // subscribe to live notifications and update unread count when new unread items arrive
     this.liveSub = this.notifications.connectLive().subscribe({ next: (item) => { if (!item.read) this.unread.update(n => n + 1); }, error: () => {/* ignore */} });
+  }
+
+  onSignOut(): void {
+    this.authService.logout().subscribe({
+      next: () => { void this.router.navigateByUrl('/'); },
+      error: () => { void this.router.navigateByUrl('/'); },
+    });
   }
 
   @HostListener('document:fullscreenchange')

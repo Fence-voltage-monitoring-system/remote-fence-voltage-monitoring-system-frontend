@@ -53,7 +53,7 @@ export class Dashboard implements OnInit, OnDestroy {
   }
 
   private loadDeviceAnalytics(deviceId: string): void {
-    if (!deviceId) return;
+    if (!deviceId || deviceId === 'null') return;
     this.analyticsLoading = true;
     this.api.getDeviceAnalytics(deviceId).pipe(takeUntil(this.destroyed$), finalize(() => this.analyticsLoading = false)).subscribe({
       next: ({ device, voltageHistory, alerts, alertCounts }) => { this.selectedDevice = device; this.voltageHistory = voltageHistory; this.alerts = alerts; this.alertCounts = alertCounts; },

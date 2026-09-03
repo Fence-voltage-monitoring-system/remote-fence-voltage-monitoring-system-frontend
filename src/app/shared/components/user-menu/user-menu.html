@@ -5,14 +5,14 @@
   [attr.aria-expanded]="open"
   (click)="toggle()"
 >
-  <span class="avatar">SA</span>
-  <span class="identity"><strong>Suresh Ambegoda</strong><small>Super Administrator</small></span>
+  <span class="avatar">{{ userInitials }}</span>
+  <span class="identity"><strong>{{ userName }}</strong><small>{{ userRole }}</small></span>
 </button>
 
 <div class="dropdown" [class.open]="open" role="menu" aria-label="User account">
   <div class="account">
-    <span class="avatar large">SA</span>
-    <div><strong>Suresh Ambegoda</strong><span>suresh.ambegoda&#64;dwc.gov.lk</span><small>Super Administrator</small></div>
+    <span class="avatar large">{{ userInitials }}</span>
+    <div><strong>{{ userName }}</strong><span>{{ userEmail }}</span><small>{{ userRole }}</small></div>
   </div>
 
   <div class="menu-section">
