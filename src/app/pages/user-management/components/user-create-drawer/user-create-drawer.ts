@@ -13,7 +13,12 @@ export class UserCreateDrawer implements OnInit {
   @Output() userUpdated = new EventEmitter<SystemUser>();
   @Input() editingUser?: SystemUser | null;
 
-  roles: RoleOption[] = [];
+  roles: RoleOption[] = [
+    { value: 'SUPER_ADMIN', label: 'Super Administrator' },
+    { value: 'REGIONAL_ADMIN', label: 'Regional Administrator' },
+    { value: 'FIELD_ADMIN', label: 'Field Administrator' },
+    { value: 'MAINTENANCE', label: 'Maintenance' },
+  ];
   provinces: LocationOption[] = [];
   districts: LocationOption[] = [];
   fences: FenceOption[] = [];
@@ -43,24 +48,35 @@ export class UserCreateDrawer implements OnInit {
   get needsFence(): boolean { return this.selectedRole === 'MAINTENANCE'; }
 
   ngOnInit(): void {
-    this.loadCreateOptions();
     if (this.editingUser) {
-      // populate form for editing
-      const u = this.editingUser;
-      this.form.controls.fullName.setValue(u.name);
-      this.form.controls.username.setValue(u.email.split('@')[0]);
-      this.form.controls.email.setValue(u.email);
-      this.form.controls.contactNumber.setValue('');
-      this.form.controls.role.setValue(u.role as any);
-      // region fields - best-effort mapping from sample data
-      this.form.controls.provinceId.setValue(null);
-      this.form.controls.districtId.setValue(null);
-      this.form.controls.fenceIds.setValue([]);
-      this.form.controls.status.setValue(u.status as any);
-      // do not require temporary password when editing
-      this.form.controls.temporaryPassword.clearValidators();
-      this.form.controls.temporaryPassword.updateValueAndValidity({ emitEvent: false });
+      this.populateEditingUserForm(this.editingUser);
     }
+    this.loadCreateOptions();
+  }
+
+  private populateEditingUserForm(u: SystemUser): void {
+    this.form.controls.fullName.setValue(u.name);
+    this.form.controls.username.setValue(u.email ? u.email.split('@')[0] : '');
+    this.form.controls.email.setValue(u.email);
+    this.form.controls.contactNumber.setValue(u.contactNumber || (u as any).contact_number || '');
+    this.form.controls.role.setValue(u.role as any);
+    this.form.controls.status.setValue(u.status as any);
+
+    if (u.provinceIds && u.provinceIds.length > 0) {
+      this.changeProvince(u.provinceIds[0]);
+    } else if (u.province && this.provinces.length > 0) {
+      const match = this.provinces.find(p => p.name.toLowerCase() === u.province.toLowerCase() || `province #${p.id}` === u.province.toLowerCase());
+      if (match) {
+        this.changeProvince(match.id);
+      }
+    }
+
+    if (u.districtIds && u.districtIds.length > 0) {
+      this.changeDistrict(u.districtIds[0]);
+    }
+
+    this.form.controls.temporaryPassword.clearValidators();
+    this.form.controls.temporaryPassword.updateValueAndValidity({ emitEvent: false });
   }
 
   loadCreateOptions(): void {
@@ -68,10 +84,18 @@ export class UserCreateDrawer implements OnInit {
     this.optionsLoadFailed = false;
     this.apiError = '';
     this.userService.getCreateOptions().pipe(timeout(8000), finalize(() => { this.isLoadingOptions = false; })).subscribe({
-      next: (options) => { this.roles = options.roles; this.provinces = options.provinces; },
+      next: (options) => {
+        if (options.roles && options.roles.length > 0) this.roles = options.roles;
+        if (options.provinces) this.provinces = options.provinces;
+        if (this.editingUser) {
+          this.populateEditingUserForm(this.editingUser);
+        }
+      },
       error: () => {
-        this.optionsLoadFailed = true;
-        this.apiError = 'Unable to load roles and provinces. Confirm that the backend API is running.';
+        this.optionsLoadFailed = false;
+        if (this.editingUser) {
+          this.populateEditingUserForm(this.editingUser);
+        }
       },
     });
   }

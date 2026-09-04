@@ -93,13 +93,10 @@ export class SecurityPage implements OnInit {
         this.confirmPassword = '';
         this.notify('Password updated successfully.');
       },
-      error: () => {
-        this.passwordOpen = false;
-        this.submitted = false;
-        this.currentPassword = '';
-        this.newPassword = '';
-        this.confirmPassword = '';
-        this.notify('Password change request submitted.');
+      error: (err) => {
+        const errorMsg = typeof err.error === 'string' ? err.error : (err.error?.message || err.error?.error || 'Unable to update password. Verify your current password.');
+        this.errorMessage = errorMsg;
+        this.notify(errorMsg);
       },
     });
   }

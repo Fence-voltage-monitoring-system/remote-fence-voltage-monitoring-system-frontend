@@ -16,11 +16,23 @@ import { CurrentUserProfile, UserNotificationPreferences } from './user-profile.
 export class UserProfilePage implements OnInit {
   private readonly userService = inject(UserService);
   private readonly authService = inject(AuthService);
-  profile: CurrentUserProfile = {
-    id: 3, staffId: 'DWC-1042', initials: 'ND', fullName: 'Nimal Dissanayake', username: 'ndissanayake', email: 'ndissanayake@dwc.gov.lk', contactNumber: '+94 77 345 6789', department: 'Wildlife Conservation', role: 'FIELD_ADMIN', status: 'ACTIVE', mustChangePassword: false,
-    provinces: [{ id: 5, name: 'North Central' }], districts: [{ id: 12, name: 'Anuradhapura' }, { id: 13, name: 'Polonnaruwa' }], fences: [], createdAt: '10 May 2023', lastLoginAt: '23 Jul 2026, 08:30', passwordChangedAt: '12 Jul 2026',
-    recentActivity: [{ id: 1, action: 'Logged in successfully', occurredAt: '23 Jul 2026, 08:30', category: 'SECURITY' }, { id: 2, action: 'Acknowledged alert ALT-2844', occurredAt: '22 Jul 2026, 16:20', category: 'ALERT' }, { id: 3, action: 'Updated fence inspection report', occurredAt: '22 Jul 2026, 14:05', category: 'FENCE' }, { id: 4, action: 'Updated contact information', occurredAt: '18 Jul 2026, 09:42', category: 'ACCOUNT' }],
-  };
+  get initialProfile(): CurrentUserProfile {
+    const user = this.authService.currentUser();
+    const fullName = user?.fullName || 'System Administrator';
+    const email = user?.email || 'admin@nerdc.lk';
+    const contactNumber = user?.contactNumber || '';
+    const role = (user?.role as any) || 'SUPER_ADMIN';
+    const parts = fullName.trim().split(' ');
+    const initials = parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : fullName.substring(0, 2).toUpperCase();
+
+    return {
+      id: 1, staffId: 'NERDC-ADMIN-01', initials, fullName, username: email.split('@')[0], email, contactNumber, department: 'Department of Wildlife Conservation / NERDC', role, status: 'ACTIVE', mustChangePassword: false,
+      provinces: [], districts: [], fences: [], createdAt: '01 Jan 2026', lastLoginAt: 'Just now', passwordChangedAt: 'Not set',
+      recentActivity: [{ id: 1, action: 'Logged in successfully', occurredAt: 'Just now', category: 'SECURITY' }],
+    };
+  }
+
+  profile: CurrentUserProfile = this.initialProfile;
   notice = '';
   isEditProfileOpen = false;
   isChangePasswordOpen = false;
@@ -48,7 +60,16 @@ export class UserProfilePage implements OnInit {
     this.isLoadingProfile = true;
     this.profileLoadFailed = false;
     this.userService.getCurrentProfile().pipe(finalize(() => { this.isLoadingProfile = false; })).subscribe({
-      next: (profile) => { this.profile = profile; this.notice = ''; },
+      next: (profile) => {
+        this.profile = profile;
+        this.notice = '';
+        const current = this.authService.currentUser();
+        if (current && profile.contactNumber) {
+          const updated = { ...current, fullName: profile.fullName, contactNumber: profile.contactNumber };
+          this.authService.currentUser.set(updated);
+          sessionStorage.setItem('auth_user_session', JSON.stringify(updated));
+        }
+      },
       error: () => { this.profileLoadFailed = true; this.notice = 'Profile API unavailable. Displaying preview data.'; },
     });
   }
@@ -58,6 +79,12 @@ export class UserProfilePage implements OnInit {
     this.profile = profile;
     this.isEditProfileOpen = false;
     this.notice = 'Your profile was updated successfully.';
+    const current = this.authService.currentUser();
+    if (current) {
+      const updated = { ...current, fullName: profile.fullName, contactNumber: profile.contactNumber };
+      this.authService.currentUser.set(updated);
+      sessionStorage.setItem('auth_user_session', JSON.stringify(updated));
+    }
   }
 
   completePasswordChange(message: string): void {

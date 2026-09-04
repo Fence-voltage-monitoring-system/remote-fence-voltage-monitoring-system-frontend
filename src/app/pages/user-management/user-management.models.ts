@@ -9,13 +9,16 @@ export const ROLE_LABELS: Record<UserRole, string> = {
 };
 
 export interface SystemUser {
-  id: number;
+  id: number | string;
   initials: string;
   name: string;
   email: string;
+  contactNumber?: string;
   role: UserRole;
   province: string;
+  provinceIds?: number[];
   district: string;
+  districtIds?: number[];
   status: UserStatus;
   lastLogin: string;
   created: string;

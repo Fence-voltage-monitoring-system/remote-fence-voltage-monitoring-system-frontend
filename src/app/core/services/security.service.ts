@@ -23,7 +23,7 @@ export class SecurityService {
   ];
 
   changePassword(payload: ChangePasswordPayload): Observable<void> {
-    return this.http.post<void>(`${this.endpoint}/change-password`, payload, this.options);
+    return this.http.post<void>('/api/auth/change-password', payload, this.options);
   }
 
   getSessions(): Observable<SecuritySession[]> {

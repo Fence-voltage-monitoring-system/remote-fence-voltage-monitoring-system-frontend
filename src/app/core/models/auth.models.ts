@@ -5,12 +5,16 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
+  accessToken?: string;
+  refreshToken?: string;
+  tokenType?: string;
   user: {
     id: string;
     fullName?: string;
     name?: string;
     email: string;
     role: string;
+    contactNumber?: string;
     provinces?: string[];
     districts?: string[];
     fences?: string[];
