@@ -125,35 +125,42 @@ export class FenceManagement implements OnInit, OnDestroy {
   }
   get accessibleFences() {
     return this.fences.filter((f) =>
-      this.access.canView(f.province, f.district, f.code),
+      this.access.canManage
+        ? this.access.canManageScope(f.province, f.district, f.code)
+        : this.access.canView(f.province, f.district, f.code),
     );
   }
   get editableLocations() {
+    if (!this.access.canManage) return [];
     return this.locations
-      .filter(
-        (p) =>
-          this.access.scope().role === "SUPER_ADMIN" ||
-          this.access.scope().provinces.includes(p.name),
-      )
       .map((p) => ({
         ...p,
         districts: p.districts.filter((d) =>
           this.access.canManageScope(p.name, d.name),
         ),
-      }));
+      }))
+      .filter(p => p.districts.length > 0);
+  }
+  get canRegisterFence() {
+    return this.access.canManage && this.editableLocations.length > 0;
+  }
+  get authorityDescription() {
+    switch (this.access.scope().role) {
+      case "SUPER_ADMIN": return "You can register and edit fences in any province and district.";
+      case "REGIONAL_ADMIN": return "You can register and edit fences within your assigned provinces.";
+      case "FIELD_ADMIN": return "You can register and edit fences within your assigned districts.";
+      default: return "Fence registration and editing require an administrator account.";
+    }
   }
   get provinces() {
-    return this.access.provinces(this.locations.map((p) => p.name));
+    return this.editableLocations.map(p => p.name);
   }
   get districts() {
-    return this.access.districts(
-      this.filters.province,
-      this.locations
+    return this.editableLocations
         .filter(
           (p) => !this.filters.province || p.name === this.filters.province,
         )
-        .flatMap((p) => p.districts.map((d) => d.name)),
-    );
+        .flatMap((p) => p.districts.map((d) => d.name));
   }
   get gateways() {
     return [
@@ -189,12 +196,14 @@ export class FenceManagement implements OnInit, OnDestroy {
     );
   }
   openRegistration() {
-    if (
-      !this.isLoading &&
-      !this.isSaving &&
-      this.access.canManage &&
-      this.editableLocations.length
-    ) {
+    if (this.isLoading || this.isSaving) return;
+    if (!this.canRegisterFence) {
+      this.error = this.access.canManage
+        ? "No locations are assigned to your authority. Ask a Super Admin to assign your province or district."
+        : "Your role does not allow fence registration.";
+      return;
+    }
+    {
       this.error = "";
       this.maintenanceUsers = [];
       this.isRegistrationOpen = true;
@@ -255,6 +264,11 @@ export class FenceManagement implements OnInit, OnDestroy {
     draft = false,
   ) {
     if (this.isSaving) return;
+    const province = this.editableLocations.find(p => p.id === value.provinceId);
+    if (!province?.districts.some(d => d.id === value.districtId)) {
+      this.error = "Choose a location within your assigned authority.";
+      return;
+    }
     this.isSaving = true;
     this.error = "";
     this.notice = "";

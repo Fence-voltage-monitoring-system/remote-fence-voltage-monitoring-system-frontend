@@ -10,6 +10,7 @@ import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
+  FormsModule,
   Validators,
 } from "@angular/forms";
 import {
@@ -41,7 +42,7 @@ export interface FenceEditValue {
 @Component({
   selector: "app-fence-edit-drawer",
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FormsModule],
   templateUrl: "./fence-edit-drawer.html",
   styleUrls: ["./fence-edit-drawer.css", "./fence-edit-modal.css"],
 })
@@ -55,6 +56,7 @@ export class FenceEditDrawer implements OnInit {
   isClosing = false;
   isDeleteConfirming = false;
   @Input() locations: LocationProvince[] = [];
+  @Input() authorityDescription = "";
   @Input() saving = false;
   @Input() error = "";
   @Output() locationChanged = new EventEmitter<{
@@ -171,12 +173,14 @@ export class FenceEditDrawer implements OnInit {
   }
 
   changeProvince(province: string): void {
+    if (this.saving || !this.provinces.includes(province)) return;
     this.form.controls.province.setValue(province);
     const districts = this.districts;
     this.changeDistrict(districts[0] ?? "");
   }
 
   changeDistrict(district: string): void {
+    if (this.saving || !this.districts.includes(district)) return;
     this.form.controls.district.setValue(district);
     this.clearMaintenanceTeam();
     const province = this.locations.find(
@@ -242,7 +246,7 @@ export class FenceEditDrawer implements OnInit {
 
   submit(): void {
     if (this.saving) return;
-    if (this.form.invalid) {
+    if (this.form.invalid || !this.provinces.includes(this.form.controls.province.value) || !this.districts.includes(this.form.controls.district.value)) {
       this.form.markAllAsTouched();
       return;
     }

@@ -4,14 +4,14 @@
     <app-fence-summary [summary]="summary" />
     @if (notice) { <div class="mt-3 rounded-lg border border-[#3c7448] bg-[#1d4328] px-3 py-2 text-xs text-[#74df90]">{{ notice }} <button class="float-right" aria-label="Dismiss message" (click)="notice=''">×</button></div> }
     @if(error){<p role="alert" class="mt-3 text-sm text-red-300">{{error}} <button type="button" [disabled]="isSaving" (click)="loadFences()">Retry</button></p>}<section class="mt-4 overflow-hidden rounded-xl border border-[#38513b] bg-[#172a1c] shadow-xl shadow-black/10">
-      <app-fence-toolbar [filters]="filters" [provinces]="provinces" [districts]="districts" [gateways]="gateways" [provinceLocked]="access.scope().role !== 'SUPER_ADMIN'" [districtLocked]="access.scope().role === 'FIELD_ADMIN'" (filtersChange)="filters=$event" (registerFence)="openRegistration()" />
+      <app-fence-toolbar [filters]="filters" [provinces]="provinces" [districts]="districts" [gateways]="gateways" [provinceLocked]="provinces.length <= 1" [districtLocked]="districts.length <= 1" (filtersChange)="filters=$event" (registerFence)="openRegistration()" />
       @if (isLoading) {
         <div class="py-16 text-center text-sm font-semibold tracking-wider text-[#43d36c] animate-pulse">Loading electric fence infrastructure...</div>
       } @else {
-        <app-fence-table [fences]="filteredFences" (fenceSelected)="selectFence($event)" />
+        <app-fence-table [fences]="filteredFences" [saving]="isSaving" (fenceSelected)="selectFence($event)" />
       }
     </section>
   </div>
 </main>
-@if (isRegistrationOpen) { <app-fence-registration-drawer [maintenanceUsers]="maintenanceUsers" [locations]="editableLocations" [saving]="isSaving" [error]="error" (locationChanged)="locationChanged($event)" (closed)="closeRegistration()" (draftSaved)="saveDraft($event)" (registered)="registerFence($event)" /> }
-@if (selectedFence) { <app-fence-edit-drawer [fence]="selectedFence" [maintenanceUsers]="maintenanceUsers" [locations]="editableLocations" [saving]="isSaving" [error]="error" (locationChanged)="locationChanged($event)" (closed)="closeEdit()" (saved)="saveFence($event)" (deleted)="deleteFence($event)" /> }
+@if (isRegistrationOpen) { <app-fence-registration-drawer [maintenanceUsers]="maintenanceUsers" [locations]="editableLocations" [authorityDescription]="authorityDescription" [saving]="isSaving" [error]="error" (locationChanged)="locationChanged($event)" (closed)="closeRegistration()" (draftSaved)="saveDraft($event)" (registered)="registerFence($event)" /> }
+@if (selectedFence) { <app-fence-edit-drawer [fence]="selectedFence" [maintenanceUsers]="maintenanceUsers" [locations]="editableLocations" [authorityDescription]="authorityDescription" [saving]="isSaving" [error]="error" (locationChanged)="locationChanged($event)" (closed)="closeEdit()" (saved)="saveFence($event)" (deleted)="deleteFence($event)" /> }

@@ -39,11 +39,12 @@ describe("FenceManagement API integration", () => {
     fixture.detectChanges();
   });
   afterEach(() => http.verify());
-  it("opens the registration form with real location options", () => {
+  it("opens the registration form with real location options", async () => {
     fixture.componentInstance.openRegistration();
     fixture.detectChanges();
     http.expectOne('/api/fences/maintenance-candidates?provinceId=90&districtId=901').flush([]);
     fixture.detectChanges();
+    await fixture.whenStable();
     expect(fixture.nativeElement.querySelector('#fence-province').value).toBe('Uva');
     expect(fixture.nativeElement.querySelector('#fence-district').value).toBe('Monaragala');
   });

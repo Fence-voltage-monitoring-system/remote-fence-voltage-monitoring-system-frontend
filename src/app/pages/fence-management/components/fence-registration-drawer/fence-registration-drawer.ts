@@ -9,6 +9,7 @@ import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
+  FormsModule,
   Validators,
 } from "@angular/forms";
 import {
@@ -36,7 +37,7 @@ export interface FenceRegistrationValue {
 @Component({
   selector: "app-fence-registration-drawer",
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FormsModule],
   templateUrl: "./fence-registration-drawer.html",
   styleUrl: "./fence-registration-drawer.css",
 })
@@ -47,6 +48,7 @@ export class FenceRegistrationDrawer {
   @Output() registered = new EventEmitter<FenceRegistrationValue>();
 
   @Input() locations: LocationProvince[] = [];
+  @Input() authorityDescription = "";
   @Input() saving = false;
   @Input() error = "";
   @Output() locationChanged = new EventEmitter<{
@@ -150,12 +152,14 @@ export class FenceRegistrationDrawer {
   }
 
   changeProvince(province: string): void {
+    if (this.saving || !this.provinces.includes(province)) return;
     this.form.controls.province.setValue(province);
     const districts = this.districts;
     this.changeDistrict(districts[0] ?? "");
   }
 
   changeDistrict(district: string): void {
+    if (this.saving || !this.districts.includes(district)) return;
     this.form.controls.district.setValue(district);
     this.clearMaintenanceTeam();
     const province = this.locations.find(
@@ -204,7 +208,7 @@ export class FenceRegistrationDrawer {
 
   saveDraft(): void {
     if (this.saving) return;
-    if (this.form.invalid) {
+    if (this.form.invalid || !this.provinces.includes(this.form.controls.province.value) || !this.districts.includes(this.form.controls.district.value)) {
       this.form.markAllAsTouched();
       return;
     }
@@ -214,7 +218,7 @@ export class FenceRegistrationDrawer {
 
   submit(): void {
     if (this.saving) return;
-    if (this.form.invalid) {
+    if (this.form.invalid || !this.provinces.includes(this.form.controls.province.value) || !this.districts.includes(this.form.controls.district.value)) {
       this.form.markAllAsTouched();
       return;
     }
