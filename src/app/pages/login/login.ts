@@ -21,7 +21,15 @@ export class Login {
   readonly loginForm = new FormGroup({
     email: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.email],
+      validators: [
+        Validators.required,
+        (control) => {
+          const val = control.value?.trim().toLowerCase();
+          if (!val) return null;
+          if (val === 'admin') return null;
+          return Validators.email(control);
+        },
+      ],
     }),
     password: new FormControl('', {
       nonNullable: true,
@@ -58,7 +66,15 @@ export class Login {
 
     this.isSubmitting = true;
 
-    this.authService.login(this.loginForm.getRawValue())
+    const raw = this.loginForm.getRawValue();
+    const email = raw.email.trim().toLowerCase() === 'admin' ? 'admin@nerdc.lk' : raw.email.trim();
+    const payload = {
+      email,
+      password: raw.password,
+      rememberMe: raw.rememberMe,
+    };
+
+    this.authService.login(payload)
       .pipe(finalize(() => {
         this.isSubmitting = false;
         this.cdr.markForCheck();

@@ -13,6 +13,7 @@ export interface AuthUser {
 }
 
 const SESSION_KEY = 'auth_user_session';
+const TOKEN_KEY = 'auth_access_token';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -25,7 +26,11 @@ export class AuthService {
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(this.loginEndpoint, credentials, {
       withCredentials: true,
-    }).pipe(tap(({ user }) => {
+    }).pipe(tap((response) => {
+      const { user, accessToken } = response;
+      if (accessToken) {
+        sessionStorage.setItem(TOKEN_KEY, accessToken);
+      }
       const authUser: AuthUser = {
         id: user.id,
         fullName: user.fullName || user.name || 'System User',
@@ -59,6 +64,11 @@ export class AuthService {
   clearSessionLocally(): void {
     this.currentUser.set(null);
     sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
+  }
+
+  getAccessToken(): string | null {
+    return sessionStorage.getItem(TOKEN_KEY);
   }
 
   isAuthenticated(): boolean {
