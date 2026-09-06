@@ -14,6 +14,7 @@ export interface LoginResponse {
     name?: string;
     email: string;
     role: string;
+    contactNumber?: string;
     provinces?: string[];
     districts?: string[];
     fences?: string[];
