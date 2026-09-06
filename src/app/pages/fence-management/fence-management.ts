@@ -1,288 +1,341 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { ManagementAccessService } from '../../core/services/management-access.service';
-import { FenceSummary } from './components/fence-summary/fence-summary';
-import { FenceTable } from './components/fence-table/fence-table';
-import { FenceToolbar } from './components/fence-toolbar/fence-toolbar';
-import { FenceRegistrationDrawer, FenceRegistrationValue } from './components/fence-registration-drawer/fence-registration-drawer';
 import {
-  FenceCreatePayload,
+  Component,
+  inject,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+} from "@angular/core";
+import { forkJoin, Observable, Subscription } from "rxjs";
+import { HttpErrorResponse } from "@angular/common/http";
+import { ManagementAccessService } from "../../core/services/management-access.service";
+import { FenceSummary } from "./components/fence-summary/fence-summary";
+import { FenceTable } from "./components/fence-table/fence-table";
+import { FenceToolbar } from "./components/fence-toolbar/fence-toolbar";
+import {
+  FenceRegistrationDrawer,
+  FenceRegistrationValue,
+} from "./components/fence-registration-drawer/fence-registration-drawer";
+import {
   FenceFilters,
   FenceRecord,
   FenceSummaryData,
-  FenceUpdatePayload,
   MaintenanceUserOption,
-  SRI_LANKA_PROVINCES,
-} from './fence-management.models';
-import { FenceEditDrawer, FenceEditValue } from './components/fence-edit-drawer/fence-edit-drawer';
-import { FenceService } from '../../core/services/fence.service';
-
+  LocationProvince,
+} from "./fence-management.models";
+import {
+  FenceEditDrawer,
+  FenceEditValue,
+} from "./components/fence-edit-drawer/fence-edit-drawer";
+import { FenceService } from "../../core/services/fence.service";
 @Component({
-  selector: 'app-fence-management',
+  selector: "app-fence-management",
   standalone: true,
-  imports: [FenceSummary, FenceToolbar, FenceTable, FenceRegistrationDrawer, FenceEditDrawer],
-  templateUrl: './fence-management.html',
-  styleUrl: './fence-management.css',
+  imports: [
+    FenceSummary,
+    FenceTable,
+    FenceToolbar,
+    FenceRegistrationDrawer,
+    FenceEditDrawer,
+  ],
+  templateUrl: "./fence-management.html",
+  styleUrl: "./fence-management.css",
 })
-export class FenceManagement implements OnInit {
+export class FenceManagement implements OnInit, OnDestroy {
   readonly access = inject(ManagementAccessService);
   private readonly fenceService = inject(FenceService);
-
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly subscriptions = new Subscription();
+  private candidatesRequest?: Subscription;
   maintenanceUsers: MaintenanceUserOption[] = [];
   fences: FenceRecord[] = [];
+  locations: LocationProvince[] = [];
   isLoading = false;
-
-  filters: FenceFilters = {
-    search: '',
-    province: this.access.lockedProvince,
-    district: this.access.lockedDistrict,
-    gateway: '',
-    health: '',
-  };
-  notice = '';
+  isSaving = false;
+  notice = "";
+  error = "";
   isRegistrationOpen = false;
   selectedFence: FenceRecord | null = null;
-
-  ngOnInit(): void {
+  filters: FenceFilters = {
+    search: "",
+    province: this.access.lockedProvince,
+    district: this.access.lockedDistrict,
+    gateway: "",
+    health: "",
+  };
+  ngOnInit() {
     this.loadFences();
   }
-
-  loadFences(): void {
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+    this.candidatesRequest?.unsubscribe();
+  }
+  loadFences() {
     this.isLoading = true;
-    this.fenceService.getFences().subscribe({
-      next: (data) => {
-        this.fences = data || [];
-        this.isLoading = false;
-      },
-      error: () => {
-        this.isLoading = false;
-        this.notice = 'Failed to load fences from the backend service.';
-      },
-    });
+    this.error = "";
+    this.subscriptions.add(
+      forkJoin({
+        fences: this.fenceService.getFences(),
+        provinces: this.fenceService.getProvinces(),
+        districts: this.fenceService.getDistricts(),
+      }).subscribe({
+        next: ({ fences, provinces, districts }) => {
+          this.fences = fences;
+          this.locations = provinces.map((p) => ({
+            ...p,
+            districts: districts
+              .filter((d) => d.provinceId === p.id)
+              .map((d) => ({ id: d.id, name: d.name })),
+          }));
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+        error: (error) => {
+          this.error = this.errorMessage(error);
+          this.isLoading = false;
+          this.cdr.markForCheck();
+        },
+      }),
+    );
   }
-
-  loadMaintenanceUsers(provinceId?: number, districtId?: number, fenceId?: number): void {
-    if (!provinceId && !districtId && !fenceId) {
-      this.maintenanceUsers = [];
-      return;
-    }
-    this.fenceService.getMaintenanceCandidates(provinceId, districtId, fenceId).subscribe({
-      next: (candidates) => {
-        this.maintenanceUsers = candidates || [];
-      },
-      error: () => {
-        this.maintenanceUsers = [];
-      },
-    });
+  loadMaintenanceUsers(
+    provinceId?: number,
+    districtId?: number,
+    fenceId?: number,
+  ) {
+    this.candidatesRequest?.unsubscribe();
+    this.maintenanceUsers = [];
+    if (!provinceId && !districtId && !fenceId) return;
+    this.candidatesRequest = this.fenceService
+      .getMaintenanceCandidates(provinceId, districtId, fenceId)
+      .subscribe({
+        next: (users) => {
+          this.maintenanceUsers = users;
+          this.cdr.markForCheck();
+        },
+        error: () => {
+          this.error =
+            "Unable to load maintenance candidates. Try selecting the location again.";
+          this.cdr.markForCheck();
+        },
+      });
   }
-
-  get accessibleFences(): FenceRecord[] {
-    return this.fences.filter((f) => this.access.canView(f.province, f.district));
+  locationChanged(value: { provinceId: number; districtId: number }) {
+    this.error = "";
+    this.loadMaintenanceUsers(value.provinceId, value.districtId);
   }
-
-  get provinces(): string[] {
-    const list = [...new Set(this.fences.map((f) => f.province).filter((p): p is string => Boolean(p)))];
-    return this.access.provinces(list.length ? list : SRI_LANKA_PROVINCES.map((p) => p.name));
+  get accessibleFences() {
+    return this.fences.filter((f) =>
+      this.access.canView(f.province, f.district, f.code),
+    );
   }
-
-  get districts(): string[] {
-    const all = [
+  get editableLocations() {
+    return this.locations
+      .filter(
+        (p) =>
+          this.access.scope().role === "SUPER_ADMIN" ||
+          this.access.scope().provinces.includes(p.name),
+      )
+      .map((p) => ({
+        ...p,
+        districts: p.districts.filter((d) =>
+          this.access.canManageScope(p.name, d.name),
+        ),
+      }));
+  }
+  get provinces() {
+    return this.access.provinces(this.locations.map((p) => p.name));
+  }
+  get districts() {
+    return this.access.districts(
+      this.filters.province,
+      this.locations
+        .filter(
+          (p) => !this.filters.province || p.name === this.filters.province,
+        )
+        .flatMap((p) => p.districts.map((d) => d.name)),
+    );
+  }
+  get gateways() {
+    return [
       ...new Set(
         this.accessibleFences
-          .filter((f) => !this.filters.province || f.province === this.filters.province)
-          .map((f) => f.district)
-          .filter((d): d is string => Boolean(d))
+          .map((f) => f.gateway)
+          .filter((g): g is string => Boolean(g)),
       ),
     ];
-    return this.access.districts(this.filters.province, all);
   }
-
-  get gateways(): string[] {
-    const list = [...new Set(this.accessibleFences.map((f) => f.gateway).filter((g): g is string => Boolean(g)))];
-    return list.length ? list : ['GTW-MNR-01', 'GTW-COL-01'];
-  }
-
   get summary(): FenceSummaryData {
     const fences = this.accessibleFences;
     return {
       total: fences.length,
-      operational: fences.filter((f) => f.health === 'HEALTHY').length,
-      warning: fences.filter((f) => f.health === 'WARNING').length,
-      critical: fences.filter((f) => f.health === 'CRITICAL').length,
-      monitoredLengthKm: fences.reduce((sum, f) => sum + (f.lengthKm || 0), 0),
+      operational: fences.filter((f) => f.health === "HEALTHY").length,
+      warning: fences.filter((f) => f.health === "WARNING").length,
+      critical: fences.filter((f) => f.health === "CRITICAL").length,
+      monitoredLengthKm: fences.reduce((sum, f) => sum + f.lengthKm, 0),
     };
   }
-
-  get filteredFences(): FenceRecord[] {
+  get filteredFences() {
     const q = this.filters.search.trim().toLowerCase();
     return this.accessibleFences.filter(
       (f) =>
-        (!q || `${f.code} ${f.name} ${f.province} ${f.district} ${f.gateway}`.toLowerCase().includes(q)) &&
+        (!q ||
+          `${f.code} ${f.name} ${f.province} ${f.district} ${f.gateway ?? ""}`
+            .toLowerCase()
+            .includes(q)) &&
         (!this.filters.province || f.province === this.filters.province) &&
         (!this.filters.district || f.district === this.filters.district) &&
         (!this.filters.gateway || f.gateway === this.filters.gateway) &&
-        (!this.filters.health || f.health === this.filters.health)
+        (!this.filters.health || f.health === this.filters.health),
     );
   }
-
-  openRegistration(): void {
-    this.isRegistrationOpen = true;
-    this.loadMaintenanceUsers(3, 9); // default to Western / Colombo IDs
+  openRegistration() {
+    if (
+      !this.isLoading &&
+      !this.isSaving &&
+      this.access.canManage &&
+      this.editableLocations.length
+    ) {
+      this.error = "";
+      this.maintenanceUsers = [];
+      this.isRegistrationOpen = true;
+    }
   }
-
-  closeRegistration(): void {
-    this.isRegistrationOpen = false;
+  closeRegistration() {
+    if (!this.isSaving) this.isRegistrationOpen = false;
   }
-
-  saveDraft(fence: FenceRegistrationValue): void {
-    this.closeRegistration();
-    const payload: FenceCreatePayload = {
-      code: fence.code,
-      name: fence.name,
-      provinceId: fence.provinceId,
-      districtId: fence.districtId,
-      lengthKm: fence.lengthKm,
-      health: 'OFFLINE',
-    };
-    this.fenceService.saveDraft(payload).subscribe({
-      next: () => (this.notice = `Draft saved for ${fence.name}.`),
-      error: () => (this.notice = `Fence draft API unavailable. ${fence.name} draft retained in preview only.`),
-    });
-  }
-
-  registerFence(fence: FenceRegistrationValue): void {
-    this.closeRegistration();
-    this.isLoading = true;
-    const payload: FenceCreatePayload = {
-      code: fence.code,
-      name: fence.name,
-      provinceId: fence.provinceId,
-      districtId: fence.districtId,
-      lengthKm: fence.lengthKm,
-      health: 'OFFLINE',
-    };
-
-    this.fenceService.createFence(payload).subscribe({
-      next: (created) => {
-        if (fence.primaryMaintenanceUserId || (fence.backupMaintenanceUserIds && fence.backupMaintenanceUserIds.length > 0)) {
-          this.fenceService
-            .updateMaintenanceTeam(created.id, {
-              primaryMaintenanceUserId: fence.primaryMaintenanceUserId,
-              backupMaintenanceUserIds: fence.backupMaintenanceUserIds,
-            })
-            .subscribe({
-              next: (withTeam) => {
-                this.fences = [withTeam, ...this.fences];
-                this.notice = `${fence.name} was successfully registered with maintenance team.`;
-                this.isLoading = false;
-              },
-              error: () => {
-                this.fences = [created, ...this.fences];
-                this.notice = `${fence.name} was registered, but team assignment could not be saved.`;
-                this.isLoading = false;
-              },
-            });
-        } else {
-          this.fences = [created, ...this.fences];
-          this.notice = `${fence.name} was successfully registered!`;
-          this.isLoading = false;
-        }
-      },
-      error: (err) => {
-        this.isLoading = false;
-        const msg = err?.error?.message || err?.error || err?.message || 'Failed to register fence';
-        this.notice = `Error: ${msg}`;
-      },
-    });
-  }
-
-  selectFence(fence: FenceRecord): void {
+  selectFence(fence: FenceRecord) {
+    if (
+      this.isSaving ||
+      !this.access.canManage ||
+      !this.access.canManageScope(fence.province, fence.district, fence.code)
+    )
+      return;
+    this.error = "";
     this.selectedFence = fence;
-    if (fence.provinceId || fence.districtId || fence.id) {
-      this.loadMaintenanceUsers(fence.provinceId, fence.districtId, fence.id);
-    }
+    this.loadMaintenanceUsers(fence.provinceId, fence.districtId, fence.id);
   }
-
-  closeEdit(): void {
-    this.selectedFence = null;
+  closeEdit() {
+    if (!this.isSaving) this.selectedFence = null;
   }
-
-  saveFence(fence: FenceEditValue): void {
-    this.closeEdit();
-    this.isLoading = true;
-    const payload: FenceUpdatePayload = {
-      code: fence.code,
-      name: fence.name,
-      provinceId: fence.provinceId,
-      districtId: fence.districtId,
-      lengthKm: fence.lengthKm,
-      health: fence.health,
+  saveDraft(value: FenceRegistrationValue) {
+    this.saveDetails(
+      this.fenceService.saveDraft(this.createPayload(value)),
+      value,
+      true,
+    );
+  }
+  registerFence(value: FenceRegistrationValue) {
+    this.saveDetails(
+      this.fenceService.createFence(this.createPayload(value)),
+      value,
+    );
+  }
+  saveFence(value: FenceEditValue) {
+    this.saveDetails(
+      this.fenceService.updateFence(value.id, {
+        ...this.createPayload(value),
+        health: value.health,
+      }),
+      value,
+    );
+  }
+  private createPayload(value: FenceRegistrationValue | FenceEditValue) {
+    return {
+      code: value.code.trim(),
+      name: value.name.trim(),
+      provinceId: value.provinceId,
+      districtId: value.districtId,
+      lengthKm: value.lengthKm,
+      health: "OFFLINE" as const,
     };
-
-    this.fenceService.updateFence(fence.id, payload).subscribe({
-      next: (updated) => {
-        if (fence.primaryMaintenanceUserId || (fence.backupMaintenanceUserIds && fence.backupMaintenanceUserIds.length > 0)) {
-          this.fenceService
-            .updateMaintenanceTeam(fence.id, {
-              primaryMaintenanceUserId: fence.primaryMaintenanceUserId,
-              backupMaintenanceUserIds: fence.backupMaintenanceUserIds,
-            })
-            .subscribe({
-              next: (withTeam) => {
-                this.applyFenceUpdate(withTeam);
-                this.notice = `${fence.name} and maintenance team were saved.`;
-                this.isLoading = false;
-              },
-              error: () => {
-                this.applyFenceUpdate(updated);
-                this.notice = `${fence.name} details were saved, but team assignment failed.`;
-                this.isLoading = false;
-              },
-            });
-        } else {
-          this.applyFenceUpdate(updated);
-          this.notice = `${fence.name} was saved successfully.`;
-          this.isLoading = false;
-        }
-      },
-      error: (err) => {
-        this.isLoading = false;
-        const msg = err?.error?.message || err?.error || err?.message || 'Failed to update fence';
-        this.notice = `Error: ${msg}`;
-      },
-    });
   }
-
-  deleteFence(fence: FenceRecord): void {
-    this.closeEdit();
-    this.isLoading = true;
-    this.fenceService.deleteFence(fence.id).subscribe({
-      next: () => {
-        this.removeFence(fence);
-        this.notice = `${fence.name} was deleted successfully.`;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.isLoading = false;
-        const msg = err?.error?.message || err?.error || err?.message || 'Cannot delete fence';
-        this.notice = `Failed to delete fence: ${msg}`;
-      },
-    });
+  private saveDetails(
+    request: Observable<FenceRecord>,
+    value: FenceRegistrationValue | FenceEditValue,
+    draft = false,
+  ) {
+    if (this.isSaving) return;
+    this.isSaving = true;
+    this.error = "";
+    this.notice = "";
+    this.subscriptions.add(
+      request.subscribe({
+        next: (record) => {
+          this.applyFenceUpdate(record);
+          // Editing must also submit an empty team so existing assignments can be cleared.
+          if (
+            !draft &&
+            ("id" in value ||
+              value.primaryMaintenanceUserId ||
+              value.backupMaintenanceUserIds.length)
+          ) {
+            this.subscriptions.add(
+              this.fenceService
+                .updateMaintenanceTeam(record.id, {
+                  primaryMaintenanceUserId: value.primaryMaintenanceUserId,
+                  backupMaintenanceUserIds: value.backupMaintenanceUserIds,
+                })
+                .subscribe({
+                  next: (updated) => {
+                    this.applyFenceUpdate(updated);
+                    this.finishSave(`${value.name} saved.`);
+                  },
+                  error: () => {
+                    this.finishSave(`${value.name} details saved.`);
+                    this.error =
+                      "Maintenance team was not saved. Reopen the fence to retry the team assignment.";
+                    this.cdr.markForCheck();
+                  },
+                }),
+            );
+          } else
+            this.finishSave(
+              draft ? `Draft saved for ${value.name}.` : `${value.name} saved.`,
+            );
+        },
+        error: (error) => {
+          this.isSaving = false;
+          this.error = this.errorMessage(error);
+          this.cdr.markForCheck();
+        },
+      }),
+    );
   }
-
-  private applyFenceUpdate(fence: Partial<FenceRecord> & { id: number }): void {
-    const existingIndex = this.fences.findIndex((item) => item.id === fence.id);
-    if (existingIndex >= 0) {
-      this.fences[existingIndex] = { ...this.fences[existingIndex], ...fence };
-      this.fences = [...this.fences];
-    }
+  deleteFence(fence: FenceRecord) {
+    if (this.isSaving) return;
+    this.isSaving = true;
+    this.error = "";
+    this.subscriptions.add(
+      this.fenceService.deleteFence(fence.id).subscribe({
+        next: () => {
+          this.fences = this.fences.filter((f) => f.id !== fence.id);
+          this.finishSave(`${fence.name} deleted.`);
+        },
+        error: (error) => {
+          this.isSaving = false;
+          this.error = this.errorMessage(error);
+          this.cdr.markForCheck();
+        },
+      }),
+    );
   }
-
-  private removeFence(fence: FenceRecord): void {
-    const index = this.fences.findIndex((item) => item.id === fence.id);
-    if (index >= 0) {
-      this.fences.splice(index, 1);
-      this.fences = [...this.fences];
-    }
+  private applyFenceUpdate(fence: FenceRecord) {
+    this.fences = this.fences.some((f) => f.id === fence.id)
+      ? this.fences.map((f) => (f.id === fence.id ? fence : f))
+      : [fence, ...this.fences];
+  }
+  private finishSave(message: string) {
+    this.isSaving = false;
+    this.isRegistrationOpen = false;
+    this.selectedFence = null;
+    this.notice = message;
+    this.cdr.markForCheck();
+  }
+  private errorMessage(error: HttpErrorResponse) {
+    return error.status === 0
+      ? "Cannot reach the backend. Check the connection and retry."
+      : typeof error.error?.message === "string"
+        ? error.error.message
+        : "The request failed. Please retry.";
   }
 }
-

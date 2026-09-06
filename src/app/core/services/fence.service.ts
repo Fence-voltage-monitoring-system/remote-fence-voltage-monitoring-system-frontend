@@ -115,14 +115,14 @@ export class FenceService {
   private normalizeFence(fence: any): FenceRecord {
     return {
       ...fence,
-      province: fence.province || fence.provinceName || 'Western',
-      district: fence.district || fence.districtName || 'Colombo',
+      province: fence.province || fence.provinceName || '',
+      district: fence.district || fence.districtName || '',
       lengthKm: Number(fence.lengthKm) || 0,
       sections: fence.sections ?? 0,
-      gateway: fence.gateway || 'GTW-UNASSIGNED',
+      gateway: fence.gateway || '',
       averageVoltageKv: fence.averageVoltageKv != null ? Number(fence.averageVoltageKv) : null,
       health: fence.health || 'OFFLINE',
-      lastUpdated: fence.updatedAt ? new Date(fence.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now',
+      lastUpdated: fence.updatedAt ? new Date(fence.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Unavailable',
     };
   }
 }

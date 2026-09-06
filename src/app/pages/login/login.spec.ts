@@ -49,7 +49,7 @@ describe("Login", () => {
     component.submitLogin();
 
     expect(component.loginForm.invalid).toBe(true);
-    expect(component.usernameControl.touched).toBe(true);
+    expect(component.emailControl.touched).toBe(true);
     expect(component.passwordControl.touched).toBe(true);
   });
 

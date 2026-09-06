@@ -1,13 +1,23 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnInit,
+  Output,
+} from "@angular/core";
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from "@angular/forms";
 import {
   FenceHealth,
   FenceRecord,
-  findDistrictId,
-  findProvinceId,
   MaintenanceUserOption,
-  SRI_LANKA_PROVINCES,
-} from '../../fence-management.models';
+  LocationProvince,
+} from "../../fence-management.models";
 
 export interface FenceEditValue {
   id: number;
@@ -29,11 +39,11 @@ export interface FenceEditValue {
 }
 
 @Component({
-  selector: 'app-fence-edit-drawer',
+  selector: "app-fence-edit-drawer",
   standalone: true,
   imports: [ReactiveFormsModule],
-  templateUrl: './fence-edit-drawer.html',
-  styleUrls: ['./fence-edit-drawer.css', './fence-edit-modal.css'],
+  templateUrl: "./fence-edit-drawer.html",
+  styleUrls: ["./fence-edit-drawer.css", "./fence-edit-modal.css"],
 })
 export class FenceEditDrawer implements OnInit {
   @Input({ required: true }) fence!: FenceRecord;
@@ -44,44 +54,101 @@ export class FenceEditDrawer implements OnInit {
 
   isClosing = false;
   isDeleteConfirming = false;
-  readonly provinces = SRI_LANKA_PROVINCES.map(p => p.name);
-  readonly gateways = ['GTW-MNR-01', 'GTW-ANR-02', 'GTW-PLN-03', 'GTW-AMP-04', 'GTW-HMB-05', 'GTW-COL-01'];
+  @Input() locations: LocationProvince[] = [];
+  @Input() saving = false;
+  @Input() error = "";
+  @Output() locationChanged = new EventEmitter<{
+    provinceId: number;
+    districtId: number;
+  }>();
+  get provinces() {
+    return this.locations.map((p) => p.name);
+  }
   readonly coordinatePattern = /-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?/;
 
   readonly form = new FormGroup({
-    name: new FormControl('', { nonNullable: true, validators: Validators.required }),
-    code: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9-]+$/)] }),
-    province: new FormControl('', { nonNullable: true, validators: Validators.required }),
-    district: new FormControl('', { nonNullable: true, validators: Validators.required }),
-    lengthKm: new FormControl<number | null>(null, [Validators.required, Validators.min(0.1)]),
-    health: new FormControl<FenceHealth>('HEALTHY', { nonNullable: true }),
-    installationDate: new FormControl('', { nonNullable: true, validators: Validators.required }),
-    gateway: new FormControl('', { nonNullable: true, validators: Validators.required }),
-    startGps: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.pattern(this.coordinatePattern)] }),
-    endGps: new FormControl('', { nonNullable: true, validators: [Validators.required, Validators.pattern(this.coordinatePattern)] }),
-    description: new FormControl('', { nonNullable: true }),
+    name: new FormControl("", {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
+    code: new FormControl("", {
+      nonNullable: true,
+      validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9-]+$/)],
+    }),
+    province: new FormControl("", {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
+    district: new FormControl("", {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
+    lengthKm: new FormControl<number | null>(null, [
+      Validators.required,
+      Validators.min(0.1),
+    ]),
+    health: new FormControl<FenceHealth>("HEALTHY", { nonNullable: true }),
+    installationDate: new FormControl("", {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
+    gateway: new FormControl("", {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
+    startGps: new FormControl("", {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.pattern(this.coordinatePattern),
+      ],
+    }),
+    endGps: new FormControl("", {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.pattern(this.coordinatePattern),
+      ],
+    }),
+    description: new FormControl("", { nonNullable: true }),
     primaryMaintenanceUserId: new FormControl<string | null>(null),
-    backupMaintenanceUserIds: new FormControl<string[]>([], { nonNullable: true }),
+    backupMaintenanceUserIds: new FormControl<string[]>([], {
+      nonNullable: true,
+    }),
   });
 
   get districts(): string[] {
-    const prov = SRI_LANKA_PROVINCES.find(p => p.name === this.form.controls.province.value);
-    return prov ? prov.districts.map(d => d.name) : [];
+    const prov = this.locations.find(
+      (p) => p.name === this.form.controls.province.value,
+    );
+    return prov ? prov.districts.map((d) => d.name) : [];
   }
 
   get eligibleMaintenanceUsers(): MaintenanceUserOption[] {
     const v = this.form.getRawValue();
     return this.maintenanceUsers.filter(
-      user => (!user.province || user.province === v.province) && (!user.district || user.district === v.district)
+      (user) =>
+        (!user.province || user.province === v.province) &&
+        (!user.district || user.district === v.district),
     );
   }
 
   get backupCandidates(): MaintenanceUserOption[] {
     const currentPrimary = this.form.controls.primaryMaintenanceUserId.value;
-    return this.eligibleMaintenanceUsers.filter(user => String(user.id) !== currentPrimary);
+    return this.eligibleMaintenanceUsers.filter(
+      (user) => String(user.id) !== currentPrimary,
+    );
   }
 
   ngOnInit(): void {
+    for (const key of [
+      "installationDate",
+      "gateway",
+      "startGps",
+      "endGps",
+      "description",
+    ] as const)
+      this.form.controls[key].disable();
     this.form.reset({
       name: this.fence.name,
       code: this.fence.code,
@@ -89,25 +156,40 @@ export class FenceEditDrawer implements OnInit {
       district: this.fence.district,
       lengthKm: this.fence.lengthKm,
       health: this.fence.health,
-      installationDate: '2024-01-15',
-      gateway: this.fence.gateway || 'GTW-COL-01',
-      startGps: '6.9271, 79.8612',
-      endGps: '6.9502, 79.9110',
-      description: '',
-      primaryMaintenanceUserId: this.fence.primaryMaintenanceUserId ? String(this.fence.primaryMaintenanceUserId) : null,
-      backupMaintenanceUserIds: (this.fence.backupMaintenanceUserIds || []).map(id => String(id)),
+      installationDate: "2024-01-15",
+      gateway: this.fence.gateway || "GTW-COL-01",
+      startGps: "6.9271, 79.8612",
+      endGps: "6.9502, 79.9110",
+      description: "",
+      primaryMaintenanceUserId: this.fence.primaryMaintenanceUserId
+        ? String(this.fence.primaryMaintenanceUserId)
+        : null,
+      backupMaintenanceUserIds: (this.fence.backupMaintenanceUserIds || []).map(
+        (id) => String(id),
+      ),
     });
   }
 
   changeProvince(province: string): void {
     this.form.controls.province.setValue(province);
     const districts = this.districts;
-    this.changeDistrict(districts[0] ?? '');
+    this.changeDistrict(districts[0] ?? "");
   }
 
   changeDistrict(district: string): void {
     this.form.controls.district.setValue(district);
     this.clearMaintenanceTeam();
+    const province = this.locations.find(
+      (p) => p.name === this.form.controls.province.value,
+    );
+    const selectedDistrict = province?.districts.find(
+      (d) => d.name === district,
+    );
+    if (province && selectedDistrict)
+      this.locationChanged.emit({
+        provinceId: province.id,
+        districtId: selectedDistrict.id,
+      });
   }
 
   changePrimary(userId: string): void {
@@ -115,7 +197,9 @@ export class FenceEditDrawer implements OnInit {
     this.form.controls.primaryMaintenanceUserId.setValue(id);
     if (id) {
       this.form.controls.backupMaintenanceUserIds.setValue(
-        this.form.controls.backupMaintenanceUserIds.value.filter(item => item !== id)
+        this.form.controls.backupMaintenanceUserIds.value.filter(
+          (item) => item !== id,
+        ),
       );
     }
   }
@@ -124,28 +208,32 @@ export class FenceEditDrawer implements OnInit {
     const strId = String(userId);
     const selected = this.form.controls.backupMaintenanceUserIds.value;
     this.form.controls.backupMaintenanceUserIds.setValue(
-      checked ? [...selected, strId] : selected.filter(id => id !== strId)
+      checked ? [...selected, strId] : selected.filter((id) => id !== strId),
     );
   }
 
   isBackupSelected(userId: string | number): boolean {
-    return this.form.controls.backupMaintenanceUserIds.value.includes(String(userId));
+    return this.form.controls.backupMaintenanceUserIds.value.includes(
+      String(userId),
+    );
   }
 
-  @HostListener('document:keydown.escape') escape(): void {
+  @HostListener("document:keydown.escape") escape(): void {
     this.close();
   }
 
   close(): void {
+    if (this.saving) return;
     this.leave(() => this.closed.emit());
   }
 
   requestDelete(): void {
+    if (this.saving) return;
     if (!this.isDeleteConfirming) {
       this.isDeleteConfirming = true;
       return;
     }
-    this.leave(() => this.deleted.emit(this.fence));
+    this.deleted.emit(this.fence);
   }
 
   cancelDelete(): void {
@@ -153,33 +241,36 @@ export class FenceEditDrawer implements OnInit {
   }
 
   submit(): void {
+    if (this.saving) return;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
     const v = this.form.getRawValue();
-    const provinceId = findProvinceId(v.province);
-    const districtId = findDistrictId(v.district, provinceId);
-    this.leave(() =>
-      this.saved.emit({
-        id: this.fence.id,
-        name: v.name,
-        code: v.code,
-        province: v.province,
-        district: v.district,
-        provinceId,
-        districtId,
-        lengthKm: v.lengthKm!,
-        health: v.health,
-        installationDate: v.installationDate,
-        gateway: v.gateway,
-        startGps: v.startGps,
-        endGps: v.endGps,
-        description: v.description,
-        primaryMaintenanceUserId: v.primaryMaintenanceUserId || null,
-        backupMaintenanceUserIds: v.backupMaintenanceUserIds,
-      })
-    );
+    const provinceId =
+      this.locations.find((p) => p.name === v.province)?.id ?? 0;
+    const districtId =
+      this.locations
+        .find((p) => p.id === provinceId)
+        ?.districts.find((d) => d.name === v.district)?.id ?? 0;
+    this.saved.emit({
+      id: this.fence.id,
+      name: v.name,
+      code: v.code,
+      province: v.province,
+      district: v.district,
+      provinceId,
+      districtId,
+      lengthKm: v.lengthKm!,
+      health: v.health,
+      installationDate: v.installationDate,
+      gateway: v.gateway,
+      startGps: v.startGps,
+      endGps: v.endGps,
+      description: v.description,
+      primaryMaintenanceUserId: v.primaryMaintenanceUserId || null,
+      backupMaintenanceUserIds: v.backupMaintenanceUserIds,
+    });
   }
 
   private clearMaintenanceTeam(): void {
@@ -193,4 +284,3 @@ export class FenceEditDrawer implements OnInit {
     window.setTimeout(done, 280);
   }
 }
-

@@ -1,11 +1,20 @@
-import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
-  findDistrictId,
-  findProvinceId,
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  Output,
+} from "@angular/core";
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from "@angular/forms";
+import {
   MaintenanceUserOption,
-  SRI_LANKA_PROVINCES,
-} from '../../fence-management.models';
+  LocationProvince,
+} from "../../fence-management.models";
 
 export interface FenceRegistrationValue {
   name: string;
@@ -25,11 +34,11 @@ export interface FenceRegistrationValue {
 }
 
 @Component({
-  selector: 'app-fence-registration-drawer',
+  selector: "app-fence-registration-drawer",
   standalone: true,
   imports: [ReactiveFormsModule],
-  templateUrl: './fence-registration-drawer.html',
-  styleUrl: './fence-registration-drawer.css',
+  templateUrl: "./fence-registration-drawer.html",
+  styleUrl: "./fence-registration-drawer.css",
 })
 export class FenceRegistrationDrawer {
   @Input() maintenanceUsers: MaintenanceUserOption[] = [];
@@ -37,55 +46,129 @@ export class FenceRegistrationDrawer {
   @Output() draftSaved = new EventEmitter<FenceRegistrationValue>();
   @Output() registered = new EventEmitter<FenceRegistrationValue>();
 
-  readonly provinces = SRI_LANKA_PROVINCES.map(p => p.name);
-  readonly gateways = ['GTW-MNR-01', 'GTW-ANR-02', 'GTW-PLN-03', 'GTW-AMP-04', 'GTW-HMB-05', 'GTW-COL-01'];
+  @Input() locations: LocationProvince[] = [];
+  @Input() saving = false;
+  @Input() error = "";
+  @Output() locationChanged = new EventEmitter<{
+    provinceId: number;
+    districtId: number;
+  }>();
+  get provinces() {
+    return this.locations.map((p) => p.name);
+  }
   isClosing = false;
 
   readonly form = new FormGroup({
-    name: new FormControl('Western Colombo Fence', { nonNullable: true, validators: Validators.required }),
-    code: new FormControl('EPF-COL-A', { nonNullable: true, validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9-]+$/)] }),
-    province: new FormControl('Western', { nonNullable: true, validators: Validators.required }),
-    district: new FormControl('Colombo', { nonNullable: true, validators: Validators.required }),
-    lengthKm: new FormControl<number | null>(12.5, [Validators.required, Validators.min(0.1)]),
-    installationDate: new FormControl(new Date().toISOString().split('T')[0], { nonNullable: true, validators: Validators.required }),
-    gateway: new FormControl('GTW-COL-01', { nonNullable: true, validators: Validators.required }),
-    startGps: new FormControl('6.9271, 79.8612', { nonNullable: true, validators: [Validators.required, Validators.pattern(/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/)] }),
-    endGps: new FormControl('6.9502, 79.9110', { nonNullable: true, validators: [Validators.required, Validators.pattern(/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/)] }),
-    description: new FormControl('', { nonNullable: true }),
+    name: new FormControl("Western Colombo Fence", {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
+    code: new FormControl("EPF-COL-A", {
+      nonNullable: true,
+      validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9-]+$/)],
+    }),
+    province: new FormControl("Western", {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
+    district: new FormControl("Colombo", {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
+    lengthKm: new FormControl<number | null>(12.5, [
+      Validators.required,
+      Validators.min(0.1),
+    ]),
+    installationDate: new FormControl(new Date().toISOString().split("T")[0], {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
+    gateway: new FormControl("GTW-COL-01", {
+      nonNullable: true,
+      validators: Validators.required,
+    }),
+    startGps: new FormControl("6.9271, 79.8612", {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.pattern(/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/),
+      ],
+    }),
+    endGps: new FormControl("6.9502, 79.9110", {
+      nonNullable: true,
+      validators: [
+        Validators.required,
+        Validators.pattern(/^-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?$/),
+      ],
+    }),
+    description: new FormControl("", { nonNullable: true }),
     primaryMaintenanceUserId: new FormControl<string | null>(null),
-    backupMaintenanceUserIds: new FormControl<string[]>([], { nonNullable: true }),
+    backupMaintenanceUserIds: new FormControl<string[]>([], {
+      nonNullable: true,
+    }),
   });
 
+  ngOnInit() {
+    for (const key of [
+      "installationDate",
+      "gateway",
+      "startGps",
+      "endGps",
+      "description",
+    ] as const)
+      this.form.controls[key].disable();
+    this.form.controls.name.setValue("");
+    this.form.controls.code.setValue("");
+    this.form.controls.lengthKm.setValue(null);
+    this.changeProvince(this.provinces[0] ?? "");
+  }
   get districts(): string[] {
-    const prov = SRI_LANKA_PROVINCES.find(p => p.name === this.form.controls.province.value);
-    return prov ? prov.districts.map(d => d.name) : [];
+    const prov = this.locations.find(
+      (p) => p.name === this.form.controls.province.value,
+    );
+    return prov ? prov.districts.map((d) => d.name) : [];
   }
 
   get eligibleMaintenanceUsers(): MaintenanceUserOption[] {
     const v = this.form.getRawValue();
     return this.maintenanceUsers.filter(
-      user => (!user.province || user.province === v.province) && (!user.district || user.district === v.district)
+      (user) =>
+        (!user.province || user.province === v.province) &&
+        (!user.district || user.district === v.district),
     );
   }
 
   get backupCandidates(): MaintenanceUserOption[] {
     const currentPrimary = this.form.controls.primaryMaintenanceUserId.value;
-    return this.eligibleMaintenanceUsers.filter(user => String(user.id) !== currentPrimary);
+    return this.eligibleMaintenanceUsers.filter(
+      (user) => String(user.id) !== currentPrimary,
+    );
   }
 
-  @HostListener('document:keydown.escape') closeOnEscape(): void {
+  @HostListener("document:keydown.escape") closeOnEscape(): void {
     this.close();
   }
 
   changeProvince(province: string): void {
     this.form.controls.province.setValue(province);
     const districts = this.districts;
-    this.changeDistrict(districts[0] ?? '');
+    this.changeDistrict(districts[0] ?? "");
   }
 
   changeDistrict(district: string): void {
     this.form.controls.district.setValue(district);
     this.clearMaintenanceTeam();
+    const province = this.locations.find(
+      (p) => p.name === this.form.controls.province.value,
+    );
+    const selectedDistrict = province?.districts.find(
+      (d) => d.name === district,
+    );
+    if (province && selectedDistrict)
+      this.locationChanged.emit({
+        provinceId: province.id,
+        districtId: selectedDistrict.id,
+      });
   }
 
   changePrimary(userId: string): void {
@@ -93,7 +176,9 @@ export class FenceRegistrationDrawer {
     this.form.controls.primaryMaintenanceUserId.setValue(id);
     if (id) {
       this.form.controls.backupMaintenanceUserIds.setValue(
-        this.form.controls.backupMaintenanceUserIds.value.filter(item => item !== id)
+        this.form.controls.backupMaintenanceUserIds.value.filter(
+          (item) => item !== id,
+        ),
       );
     }
   }
@@ -102,30 +187,39 @@ export class FenceRegistrationDrawer {
     const strId = String(userId);
     const selected = this.form.controls.backupMaintenanceUserIds.value;
     this.form.controls.backupMaintenanceUserIds.setValue(
-      checked ? [...selected, strId] : selected.filter(id => id !== strId)
+      checked ? [...selected, strId] : selected.filter((id) => id !== strId),
     );
   }
 
   isBackupSelected(userId: string | number): boolean {
-    return this.form.controls.backupMaintenanceUserIds.value.includes(String(userId));
+    return this.form.controls.backupMaintenanceUserIds.value.includes(
+      String(userId),
+    );
   }
 
   close(): void {
+    if (this.saving) return;
     this.leave(() => this.closed.emit());
   }
 
   saveDraft(): void {
-    const value = this.value();
-    this.leave(() => this.draftSaved.emit(value));
-  }
-
-  submit(): void {
+    if (this.saving) return;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
     const value = this.value();
-    this.leave(() => this.registered.emit(value));
+    this.draftSaved.emit(value);
+  }
+
+  submit(): void {
+    if (this.saving) return;
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const value = this.value();
+    this.registered.emit(value);
   }
 
   private leave(done: () => void): void {
@@ -141,8 +235,12 @@ export class FenceRegistrationDrawer {
 
   private value(): FenceRegistrationValue {
     const v = this.form.getRawValue();
-    const provinceId = findProvinceId(v.province);
-    const districtId = findDistrictId(v.district, provinceId);
+    const provinceId =
+      this.locations.find((p) => p.name === v.province)?.id ?? 0;
+    const districtId =
+      this.locations
+        .find((p) => p.id === provinceId)
+        ?.districts.find((d) => d.name === v.district)?.id ?? 0;
     return {
       name: v.name,
       code: v.code,
@@ -161,4 +259,3 @@ export class FenceRegistrationDrawer {
     };
   }
 }
-

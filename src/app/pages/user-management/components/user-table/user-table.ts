@@ -4,7 +4,7 @@ import { ROLE_LABELS, SystemUser, UserRole } from '../../user-management.models'
 @Component({ selector: 'app-user-table', standalone: true, templateUrl: './user-table.html' })
 export class UserTable {
   @Input() users: SystemUser[] = [];
-  @Input() selectedUserId: number | null = null;
+  @Input() selectedUserId: SystemUser['id'] | null = null;
   @Input() currentPage = 1;
   @Input() pageSize = 20;
   @Input() totalUsers = 0;
