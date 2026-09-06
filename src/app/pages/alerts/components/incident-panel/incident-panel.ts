@@ -6,7 +6,7 @@ import { AlertRecord, CompleteWorkRequest, MaintenanceStaffOption, ReassignAlert
 export class IncidentPanel implements OnChanges {
   @Input() pending=false;
   @Input() successVersion=0;
-  ngOnChanges(changes:SimpleChanges){if(changes['successVersion']||changes['alert']?.previousValue?.id!==this.alert.id&&changes['alert']){this.resetMode();}}
+  ngOnChanges(changes:SimpleChanges){if(changes['successVersion']||changes['alert']?.previousValue?.id!==this.alert.id&&changes['alert']){this.resetMode();this.comment='';}}
   allowed(action:string){return this.alert.allowedActions?.includes(action)??false;}
   @Input({required:true}) alert!:AlertRecord;
   @Input() canAdminister=true;
@@ -24,12 +24,14 @@ export class IncidentPanel implements OnChanges {
   comment='';reason='';selectedStaffId:string|null=null;cause='';actions='';workSummary='';mode:'NONE'|'REASSIGN'|'DECLINE'|'COMPLETE'|'RESOLVE'='NONE';
 
   get eligible():MaintenanceStaffOption[]{return this.alert.eligibleMaintenanceStaff??[];}
-  addComment(){const value=this.comment.trim();if(!value)return;this.commentAdded.emit({alert:this.alert,comment:value});this.comment='';}
+  addComment(){const value=this.comment.trim();if(!value)return;this.commentAdded.emit({alert:this.alert,comment:value});}
   submitReassign(){if(!this.selectedStaffId||!this.reason.trim())return;this.reassigned.emit({alert:this.alert,request:{staffId:this.selectedStaffId,reason:this.reason.trim()}});}
   submitDecline(){if(!this.reason.trim())return;this.declined.emit({alert:this.alert,reason:this.reason.trim()});}
   submitComplete(){if(!this.cause.trim()||!this.actions.trim()||!this.workSummary.trim())return;this.workCompleted.emit({alert:this.alert,request:{cause:this.cause.trim(),actions:this.actions.trim(),summary:this.workSummary.trim()}});}
   submitResolve(){if(!this.reason.trim())return;this.resolved.emit({alert:this.alert,reason:this.reason.trim()});}
   resetMode(){this.mode='NONE';this.reason='';this.selectedStaffId=null;this.cause='';this.actions='';this.workSummary='';}
 }
+
+
 
 
