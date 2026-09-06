@@ -1,49 +1,99 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { finalize, forkJoin, Observable, Subscription } from 'rxjs';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { finalize, forkJoin, Observable, Subscription, timer } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { AlertService } from '../../core/services/alert.service';
+import { SectionService, SectionResponse } from '../../core/services/section.service';
 import { ManagementAccessService } from '../../core/services/management-access.service';
 import { AlertList } from './components/alert-list/alert-list';
 import { AlertSummary } from './components/alert-summary/alert-summary';
 import { IncidentPanel } from './components/incident-panel/incident-panel';
-import { AlertEventType, AlertFilters, AlertRecord, AlertStats, CompleteWorkRequest, ReassignAlertRequest } from './alerts.models';
+import { AlertFilters, AlertRecord, AlertStats, AlertOptions, CreateAlertRequest, CompleteWorkRequest, ReassignAlertRequest } from './alerts.models';
 
-@Component({selector:'app-alerts',standalone:true,imports:[AlertSummary,AlertList,IncidentPanel],templateUrl:'./alerts.html',styleUrls:['./alerts.css','./alerts-api.css']})
+@Component({selector:'app-alerts',standalone:true,imports:[FormsModule,AlertSummary,AlertList,IncidentPanel],templateUrl:'./alerts.html',styleUrls:['./alerts.css','./alerts-api.css']})
 export class Alerts implements OnInit,OnDestroy {
-  private readonly service=inject(AlertService);private readonly route=inject(ActivatedRoute);readonly access=inject(ManagementAccessService);private liveSubscription?:Subscription;private requestedAlertCode='';
-  filters:AlertFilters={severity:'',province:'',fence:'',type:'',status:'',date:''};selected:AlertRecord|null=null;notice='';error='';isLoading=false;isActionPending=false;usingPreview=false;page=1;readonly pageSize=20;totalPages=1;alerts:AlertRecord[]=[];stats:AlertStats={activeCritical:0,activeWarnings:0,unacknowledged:0,underMaintenance:0,resolvedToday:0};
-  private readonly staff=[{id:101,name:'Malini Rajapaksa',email:'mrajapaksa@dwc.gov.lk',responsibility:'PRIMARY' as const,available:true},{id:102,name:'Ruwan Silva',email:'rsilva@dwc.gov.lk',responsibility:'BACKUP' as const,available:true}];
-  private readonly preview:AlertRecord[]=[
-    {id:1,code:'ALT-2847',title:'Wire Break Detected',type:'WIRE_BREAK',severity:'CRITICAL',province:'Uva',district:'Monaragala',fence:'EPF-MNR-A',section:'SEC-004',value:'0.0 kV',threshold:'3.0 kV',detected:'09:32:14',status:'UNACKNOWLEDGED',assignee:'Malini Rajapaksa',assigneeId:101,assignmentStatus:'AWAITING_ACCEPTANCE',assignmentSource:'AUTO_PRIMARY',assignedAt:'09:32:15',acceptanceDeadline:'09:47:15',device:'DEV-EFE-0050',comments:[],healthyReadingsReceived:0,healthyReadingsRequired:2,eligibleMaintenanceStaff:this.staff,backupUsers:[this.staff[1]],timeline:[{id:1,type:'ALERT_CREATED',label:'Alert detected',timestamp:'09:32:14'},{id:2,type:'AUTO_ASSIGNED',label:'Auto-assigned to Malini Rajapaksa',timestamp:'09:32:15'},{id:3,type:'NOTIFICATION_SENT',label:'Notification delivered',timestamp:'09:32:16',details:'In-app, WebSocket and SMS'}]},
-    {id:2,code:'ALT-2846',title:'Device Offline',type:'DEVICE_OFFLINE',severity:'CRITICAL',province:'Uva',district:'Monaragala',fence:'EPF-MNR-A',section:'SEC-006',value:'No signal',threshold:'5m timeout',detected:'09:10:22',status:'ACKNOWLEDGED',assignee:'Ruwan Silva',assigneeId:102,assignmentStatus:'ACCEPTED',assignmentSource:'ADMIN_ASSIGNMENT',device:'DEV-EFE-0052',comments:[],eligibleMaintenanceStaff:this.staff},
-    {id:3,code:'ALT-2845',title:'Low Battery Warning',type:'LOW_BATTERY',severity:'WARNING',province:'Uva',district:'Monaragala',fence:'EPF-MNR-A',section:'SEC-003',value:'45%',threshold:'50%',detected:'08:45:10',status:'UNDER_MAINTENANCE',assignee:'Malini Rajapaksa',assigneeId:101,assignmentStatus:'ACCEPTED',assignmentSource:'AUTO_PRIMARY',device:'DEV-EFE-0049',comments:[]},
-    {id:4,code:'ALT-2844',title:'Voltage Drop Critical',type:'VOLTAGE_DROP',severity:'CRITICAL',province:'North Central',district:'Polonnaruwa',fence:'EPF-PLN-C',section:'SEC-002',value:'1.8 kV',threshold:'3.0 kV',detected:'08:22:05',status:'IN_PROGRESS',assignee:'Nimal Dissanayake',assignmentStatus:'ACCEPTED',device:'DEV-EFE-0042',comments:[]},
-    {id:5,code:'ALT-2843',title:'Low Voltage Warning',type:'LOW_VOLTAGE',severity:'WARNING',province:'North Central',district:'Anuradhapura',fence:'EPF-ANR-B',section:'SEC-005',value:'4.2 kV',threshold:'5.0 kV',detected:'07:55:18',status:'RESOLVED',assignee:'Kasun Perera',assignmentStatus:'COMPLETED',resolutionType:'AUTO_RECOVERY',device:'DEV-EFE-0035',comments:[]},
-    {id:6,code:'ALT-2842',title:'Solar Charging Failure',type:'SOLAR_FAILURE',severity:'WARNING',province:'Southern',district:'Hambantota',fence:'EPF-HMB-E',section:'SEC-008',value:'0%',threshold:'10%',detected:'07:30:44',status:'UNACKNOWLEDGED',assignee:'Unassigned',assignmentStatus:'UNASSIGNED',assignmentSource:'NONE',device:'DEV-EFE-0063',comments:[],eligibleMaintenanceStaff:[]}
-  ];
-
-  ngOnInit(){this.requestedAlertCode=this.route.snapshot.queryParamMap.get('alert')??'';this.load();this.connectLive();} ngOnDestroy(){this.liveSubscription?.unsubscribe();}
-  get visible(){const scoped=this.alerts.filter(a=>this.access.canView(a.province,a.district));return this.usingPreview?this.applyPreviewFilters(scoped):scoped;}
-  get critical(){return this.stats.activeCritical}get warnings(){return this.stats.activeWarnings}get unacknowledged(){return this.stats.unacknowledged}get maintenance(){return this.stats.underMaintenance}get resolved(){return this.stats.resolvedToday}
-  get provinces(){return[...new Set(this.preview.filter(a=>this.access.canView(a.province,a.district)).map(a=>a.province))]}get fences(){return[...new Set(this.preview.filter(a=>this.access.canView(a.province,a.district)&&(!this.filters.province||a.province===this.filters.province)).map(a=>a.fence))]}get types(){return[...new Set(this.preview.map(a=>a.type))]}
-  load(){this.isLoading=true;this.error='';forkJoin({page:this.service.getAlerts(this.filters,this.page,this.pageSize),stats:this.service.getStats()}).pipe(finalize(()=>this.isLoading=false)).subscribe({next:({page,stats})=>{this.usingPreview=false;this.alerts=page.items;this.totalPages=page.totalPages;this.stats=stats;this.selectRequestedAlert();},error:()=>this.usePreview()});}
-  updateFilters(filters:AlertFilters){if(filters.province!==this.filters.province)filters={...filters,fence:''};this.filters=filters;this.page=1;this.selected=null;if(!this.usingPreview)this.loadAlerts();} retry(){this.load();}
-  acknowledge(alert:AlertRecord){this.perform(alert,()=>this.service.acknowledge(alert.id),()=>{alert.status='ACKNOWLEDGED';alert.acknowledgedBy='Suresh Ambegoda';this.addEvent(alert,'ACKNOWLEDGED','Alert acknowledged','Suresh Ambegoda');},`${alert.code} acknowledged.`);}
-  accept(alert:AlertRecord){this.perform(alert,()=>this.service.acceptAssignment(alert.id),()=>{alert.assignmentStatus='ACCEPTED';alert.status=alert.status==='UNACKNOWLEDGED'?'ACKNOWLEDGED':alert.status;this.addEvent(alert,'ASSIGNMENT_ACCEPTED','Incident assignment accepted',alert.assignee);},`${alert.code} assignment accepted.`);}
-  decline(event:{alert:AlertRecord;reason:string}){this.perform(event.alert,()=>this.service.declineAssignment(event.alert.id,{reason:event.reason}),()=>{event.alert.assignmentStatus='DECLINED';this.addEvent(event.alert,'ASSIGNMENT_DECLINED','Assignment declined',event.alert.assignee,event.reason);},`${event.alert.code} assignment declined.`);}
-  reassign(event:{alert:AlertRecord;request:ReassignAlertRequest}){const staff=event.alert.eligibleMaintenanceStaff?.find(item=>item.id===event.request.staffId);this.perform(event.alert,()=>this.service.reassignMaintenance(event.alert.id,event.request),()=>{const previous=event.alert.assignee;event.alert.assignee=staff?.name??'Assigned user';event.alert.assigneeId=event.request.staffId;event.alert.assignmentStatus='AWAITING_ACCEPTANCE';event.alert.assignmentSource='ADMIN_ASSIGNMENT';this.addEvent(event.alert,'REASSIGNED',`Reassigned from ${previous} to ${event.alert.assignee}`,'Suresh Ambegoda',event.request.reason);},`${event.alert.code} reassigned.`);}
-  escalate(alert:AlertRecord){const backup=alert.backupUsers?.find(item=>item.available);this.perform(alert,()=>this.service.escalateAssignment(alert.id),()=>{alert.assignmentStatus='ESCALATED';this.addEvent(alert,'ESCALATED',backup?`Escalated to backup ${backup.name}`:'Escalated to responsible administrator','System');},`${alert.code} escalation started.`);}
-  startWork(alert:AlertRecord){this.perform(alert,()=>this.service.startWork(alert.id),()=>{alert.status='IN_PROGRESS';this.addEvent(alert,'WORK_STARTED','Maintenance work started',alert.assignee);},`${alert.code} work started.`);}
-  completeWork(event:{alert:AlertRecord;request:CompleteWorkRequest}){this.perform(event.alert,()=>this.service.completeWork(event.alert.id,event.request),()=>{event.alert.status='UNDER_MAINTENANCE';event.alert.assignmentStatus='COMPLETED';this.addEvent(event.alert,'WORK_COMPLETED','Maintenance work completed',event.alert.assignee,`${event.request.cause} · ${event.request.actions}`);},'Work completed. Waiting for healthy telemetry confirmation.');}
-  resolve(event:{alert:AlertRecord;reason:string}){this.perform(event.alert,()=>this.service.resolveManually(event.alert.id,event.reason),()=>{event.alert.status='RESOLVED';event.alert.resolutionType='MANUAL';this.addEvent(event.alert,'MANUALLY_RESOLVED','Alert manually resolved','Suresh Ambegoda',event.reason);},`${event.alert.code} resolved.`);}
-  addComment(event:{alert:AlertRecord;comment:string}){this.perform(event.alert,()=>this.service.addComment(event.alert.id,event.comment),()=>{event.alert.comments.push(event.comment);this.addEvent(event.alert,'COMMENT_ADDED','Investigation comment added','Current user',event.comment);},'Investigation comment added.');}
-  private perform(alert:AlertRecord,request:()=>Observable<AlertRecord>,preview:()=>void,message:string){if(this.isActionPending)return;if(this.usingPreview){preview();this.notice=message;this.refreshPreviewStats();return;}this.isActionPending=true;request().pipe(finalize(()=>this.isActionPending=false)).subscribe({next:updated=>{Object.assign(alert,updated);this.notice=message;this.reloadStats();},error:()=>this.error='The incident action could not be completed.'});}
-  private addEvent(alert:AlertRecord,type:AlertEventType,label:string,actor?:string,details?:string){alert.timeline=[...(alert.timeline??[]),{id:Date.now(),type,label,timestamp:new Date().toLocaleTimeString(),actor,details}];}
-  private loadAlerts(){this.isLoading=true;this.service.getAlerts(this.filters,this.page,this.pageSize).pipe(finalize(()=>this.isLoading=false)).subscribe({next:page=>{this.alerts=page.items;this.totalPages=page.totalPages;},error:()=>this.error='Unable to reload alerts.'});}
-  private reloadStats(){this.service.getStats().subscribe({next:stats=>this.stats=stats});}
-  private connectLive(){this.liveSubscription=this.service.connectLive().subscribe({next:alert=>{if(!this.access.canView(alert.province,alert.district))return;const index=this.alerts.findIndex(item=>item.id===alert.id);if(index>=0)this.alerts[index]=alert;else this.alerts=[alert,...this.alerts];this.reloadStats();},error:()=>{}});}
-  private usePreview(){this.usingPreview=true;this.alerts=this.preview.map(a=>({...a,comments:[...a.comments],timeline:[...(a.timeline??[])],eligibleMaintenanceStaff:[...(a.eligibleMaintenanceStaff??[])],backupUsers:[...(a.backupUsers??[])]}));this.totalPages=1;this.error='The alert API is unavailable. Displaying local preview data.';this.refreshPreviewStats();this.selectRequestedAlert();}
-  private selectRequestedAlert(){if(!this.requestedAlertCode)return;this.selected=this.alerts.find(alert=>alert.code===this.requestedAlertCode)??null;if(!this.selected)this.error=`Related alert ${this.requestedAlertCode} is unavailable or outside your operational scope.`;}
-  private refreshPreviewStats(){const items=this.alerts.filter(a=>this.access.canView(a.province,a.district));this.stats={activeCritical:items.filter(a=>a.severity==='CRITICAL'&&a.status!=='RESOLVED').length,activeWarnings:items.filter(a=>a.severity==='WARNING'&&a.status!=='RESOLVED').length,unacknowledged:items.filter(a=>a.status==='UNACKNOWLEDGED').length,underMaintenance:items.filter(a=>['ASSIGNED','IN_PROGRESS','UNDER_MAINTENANCE'].includes(a.status)).length,resolvedToday:items.filter(a=>a.status==='RESOLVED').length};}
-  private applyPreviewFilters(items:AlertRecord[]){return items.filter(a=>(!this.filters.severity||a.severity===this.filters.severity)&&(!this.filters.province||a.province===this.filters.province)&&(!this.filters.fence||a.fence===this.filters.fence)&&(!this.filters.type||a.type===this.filters.type)&&(!this.filters.status||a.status===this.filters.status));}
+  private readonly service=inject(AlertService);
+  private readonly sectionsService=inject(SectionService);
+  private readonly route=inject(ActivatedRoute);
+  private readonly cdr=inject(ChangeDetectorRef);
+  readonly access=inject(ManagementAccessService);
+  private readonly subscriptions=new Subscription();
+  private loadRequest?:Subscription;
+  private sectionRequest?:Subscription;
+  filters:AlertFilters={severity:'',province:'',fence:'',type:'',status:'',date:''};
+  selected:AlertRecord|null=null;
+  notice='';error='';isLoading=false;isActionPending=false;page=1;readonly pageSize=20;totalPages=1;totalItems=0;successVersion=0;
+  alerts:AlertRecord[]=[];
+  stats:AlertStats={activeCritical:0,activeWarnings:0,unacknowledged:0,underMaintenance:0,resolvedToday:0};
+  options:AlertOptions={fences:[],types:[]};
+  showCreate=false;createError='';sections:SectionResponse[]=[];sectionsLoading=false;
+  draft:CreateAlertRequest=this.emptyDraft();
+  private emptyDraft():CreateAlertRequest{return {fenceId:null,sectionId:null,title:'',type:'OTHER',severity:'WARNING',description:'',detectedVoltageKv:null,thresholdVoltageKv:null};}
+  ngOnInit(){
+    this.load();
+    this.subscriptions.add(this.service.getOptions().subscribe({next:options=>{this.options=options;this.cdr.markForCheck();},error:()=>{this.error='Unable to load fence options. Retry to reconnect.';this.cdr.markForCheck();}}));
+    const key=this.route.snapshot.queryParamMap.get('alert');
+    if(key)this.subscriptions.add(this.service.getAlert(key).subscribe({next:a=>{this.selected=a;this.cdr.markForCheck();},error:e=>{this.error=this.message(e,'Related incident is unavailable or outside your authority.');this.cdr.markForCheck();}}));
+    this.subscriptions.add(this.service.connectLive().subscribe(()=>this.refreshInBackground()));
+    this.subscriptions.add(timer(30000,30000).subscribe(()=>this.refreshInBackground()));
+  }
+  ngOnDestroy(){this.subscriptions.unsubscribe();this.loadRequest?.unsubscribe();this.sectionRequest?.unsubscribe();}
+  get visible(){return this.alerts;}
+  get critical(){return this.stats.activeCritical;} get warnings(){return this.stats.activeWarnings;}
+  get unacknowledged(){return this.stats.unacknowledged;} get maintenance(){return this.stats.underMaintenance;} get resolved(){return this.stats.resolvedToday;}
+  get provinces(){return [...new Set([...this.options.fences.map(f=>f.province),...this.alerts.map(a=>a.province)])];}
+  get fences(){return [...new Set([...this.options.fences.filter(f=>!this.filters.province||f.province===this.filters.province).map(f=>f.code),...this.alerts.filter(a=>!this.filters.province||a.province===this.filters.province).map(a=>a.fence)])];}
+  get types(){return this.options.types;}
+  get canCreate(){return ['SUPER_ADMIN','REGIONAL_ADMIN','FIELD_ADMIN'].includes(this.access.scope().role);}
+  load(){
+    this.loadRequest?.unsubscribe();this.isLoading=true;this.error='';
+    this.loadRequest=forkJoin({page:this.service.getAlerts(this.filters,this.page,this.pageSize),stats:this.service.getStats()})
+      .pipe(finalize(()=>{this.isLoading=false;this.cdr.markForCheck();}))
+      .subscribe({next:({page,stats})=>{this.alerts=page.items;this.totalPages=Math.max(1,page.totalPages);this.totalItems=page.totalItems;this.stats=stats;if(this.page>this.totalPages){this.page=this.totalPages;this.load();}},error:e=>{this.error=this.message(e,'Unable to load alerts. Check your connection and retry.');}});
+  }
+  retry(){this.load();this.subscriptions.add(this.service.getOptions().subscribe({next:o=>{this.options=o;this.cdr.markForCheck();},error:()=>{}}));}
+  updateFilters(filters:AlertFilters){if(filters.province!==this.filters.province)filters={...filters,fence:''};this.filters=filters;this.page=1;this.load();}
+  changePage(page:number){if(page<1||page>this.totalPages||this.isLoading)return;this.page=page;this.load();}
+  select(alert:AlertRecord){if(!this.isActionPending)this.selected=alert;}
+  private refreshInBackground(){
+    if(this.isActionPending||this.isLoading)return;
+    this.load();
+    if(this.selected){const id=this.selected.id;this.subscriptions.add(this.service.getAlert(id).subscribe({next:a=>{if(this.selected?.id===id)this.selected=a;this.cdr.markForCheck();},error:e=>{if(e.status===403||e.status===404)this.selected=null;this.cdr.markForCheck();}}));}
+  }
+  acknowledge(a:AlertRecord){this.perform(this.service.acknowledge(a.id),'Incident acknowledged.');}
+  accept(a:AlertRecord){this.perform(this.service.acceptAssignment(a.id),'Assignment accepted.');}
+  decline(e:{alert:AlertRecord;reason:string}){this.perform(this.service.declineAssignment(e.alert.id,{reason:e.reason}),'Assignment declined and escalated.');}
+  reassign(e:{alert:AlertRecord;request:ReassignAlertRequest}){this.perform(this.service.reassignMaintenance(e.alert.id,e.request),'Maintenance assignment saved.');}
+  escalate(a:AlertRecord){this.perform(this.service.escalateAssignment(a.id),'Assignment escalated.');}
+  startWork(a:AlertRecord){this.perform(this.service.startWork(a.id),'Work started.');}
+  completeWork(e:{alert:AlertRecord;request:CompleteWorkRequest}){this.perform(this.service.completeWork(e.alert.id,e.request),'Work recorded. Awaiting recovery confirmation or administrator resolution.');}
+  resolve(e:{alert:AlertRecord;reason:string}){this.perform(this.service.resolveManually(e.alert.id,e.reason),'Incident resolved.');}
+  addComment(e:{alert:AlertRecord;comment:string}){this.perform(this.service.addComment(e.alert.id,e.comment),'Comment saved.');}
+  private perform(request:Observable<AlertRecord>,message:string){
+    if(this.isActionPending)return;this.isActionPending=true;this.error='';this.notice='';
+    this.subscriptions.add(request.pipe(finalize(()=>{this.isActionPending=false;this.cdr.markForCheck();})).subscribe({
+      next:a=>{this.selected=a;this.successVersion++;this.notice=message;this.load();},
+      error:e=>{this.error=this.message(e,'The action could not be completed. Your entered text has been kept.');}
+    }));
+  }
+  openCreate(){this.showCreate=true;this.createError='';}
+  loadSections(){
+    this.sectionRequest?.unsubscribe();this.sections=[];this.draft.sectionId=null;this.sectionsLoading=false;
+    if(!this.draft.fenceId)return;
+    this.sectionsLoading=true;
+    this.sectionRequest=this.sectionsService.getSectionsByFence(this.draft.fenceId).pipe(finalize(()=>{this.sectionsLoading=false;this.cdr.markForCheck();})).subscribe({
+      next:s=>{this.sections=s;this.createError='';},
+      error:()=>{this.createError='Unable to load sections for this fence. Select the fence again to retry.';}
+    });
+  }
+  create(){
+    if(this.isActionPending||!this.draft.fenceId||!this.draft.title.trim()||!this.draft.description.trim())return;
+    this.isActionPending=true;this.createError='';
+    this.subscriptions.add(this.service.create({...this.draft,title:this.draft.title.trim(),description:this.draft.description.trim()})
+      .pipe(finalize(()=>{this.isActionPending=false;this.cdr.markForCheck();}))
+      .subscribe({next:a=>{this.showCreate=false;this.draft=this.emptyDraft();this.sections=[];this.selected=a;this.notice='Incident registered.';this.page=1;this.load();},
+        error:e=>{this.createError=this.message(e,'Unable to register the incident.');}}));
+  }
+  private message(error:any,fallback:string){return typeof error?.error?.message==='string'?error.error.message:fallback;}
 }
+

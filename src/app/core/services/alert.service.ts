@@ -1,5 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { LiveUpdatesService } from './live-updates.service';
+import { AlertOptions, CreateAlertRequest } from '../../pages/alerts/alerts.models';
 import { Observable } from 'rxjs';
 import { AlertFilters, AlertPage, AlertRecord, AlertStats, CompleteWorkRequest, DeclineAssignmentRequest, MaintenanceStaffOption, ReassignAlertRequest } from '../../pages/alerts/alerts.models';
 
@@ -21,5 +23,11 @@ export class AlertService {
   completeWork(id:number,request:CompleteWorkRequest):Observable<AlertRecord>{return this.http.patch<AlertRecord>(`${this.endpoint}/${id}/work/complete`,request,this.options);}
   resolveManually(id:number,reason:string):Observable<AlertRecord>{return this.http.patch<AlertRecord>(`${this.endpoint}/${id}/resolve`,{reason},this.options);}
   addComment(id:number,comment:string):Observable<AlertRecord>{return this.http.post<AlertRecord>(`${this.endpoint}/${id}/comments`,{comment},this.options);}
-  connectLive():Observable<AlertRecord>{return new Observable(subscriber=>{const protocol=location.protocol==='https:'?'wss:':'ws:';const socket=new WebSocket(`${protocol}//${location.host}/api/alerts/ws`);socket.onmessage=event=>{try{subscriber.next(JSON.parse(event.data)as AlertRecord)}catch{subscriber.error(new Error('Invalid alert message.'))}};socket.onerror=()=>subscriber.error(new Error('Alert live connection failed.'));socket.onclose=()=>subscriber.complete();return()=>socket.close();});}
+  getAlert(key:string|number){return this.http.get<AlertRecord>(`${this.endpoint}/${encodeURIComponent(key)}`,this.options);}
+  getOptions(){return this.http.get<AlertOptions>(`${this.endpoint}/options`,this.options);}
+  create(request:CreateAlertRequest){return this.http.post<AlertRecord>(this.endpoint,request,this.options);}
+  private readonly live=inject(LiveUpdatesService);
+  connectLive():Observable<void>{return this.live.connect<void>('alerts');}
 }
+
+

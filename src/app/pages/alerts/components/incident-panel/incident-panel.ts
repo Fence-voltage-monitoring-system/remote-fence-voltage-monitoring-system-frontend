@@ -1,9 +1,13 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AlertRecord, CompleteWorkRequest, MaintenanceStaffOption, ReassignAlertRequest } from '../../alerts.models';
 
 @Component({selector:'app-incident-panel',standalone:true,imports:[FormsModule],templateUrl:'./incident-panel.html',styleUrl:'./incident-panel.css'})
-export class IncidentPanel {
+export class IncidentPanel implements OnChanges {
+  @Input() pending=false;
+  @Input() successVersion=0;
+  ngOnChanges(changes:SimpleChanges){if(changes['successVersion']||changes['alert']?.previousValue?.id!==this.alert.id&&changes['alert']){this.resetMode();}}
+  allowed(action:string){return this.alert.allowedActions?.includes(action)??false;}
   @Input({required:true}) alert!:AlertRecord;
   @Input() canAdminister=true;
   @Input() canMaintain=false;
@@ -17,13 +21,15 @@ export class IncidentPanel {
   @Output() workCompleted=new EventEmitter<{alert:AlertRecord;request:CompleteWorkRequest}>();
   @Output() resolved=new EventEmitter<{alert:AlertRecord;reason:string}>();
   @Output() commentAdded=new EventEmitter<{alert:AlertRecord;comment:string}>();
-  comment='';reason='';selectedStaffId:number|null=null;cause='';actions='';workSummary='';mode:'NONE'|'REASSIGN'|'DECLINE'|'COMPLETE'|'RESOLVE'='NONE';
+  comment='';reason='';selectedStaffId:string|null=null;cause='';actions='';workSummary='';mode:'NONE'|'REASSIGN'|'DECLINE'|'COMPLETE'|'RESOLVE'='NONE';
 
   get eligible():MaintenanceStaffOption[]{return this.alert.eligibleMaintenanceStaff??[];}
   addComment(){const value=this.comment.trim();if(!value)return;this.commentAdded.emit({alert:this.alert,comment:value});this.comment='';}
-  submitReassign(){if(!this.selectedStaffId||!this.reason.trim())return;this.reassigned.emit({alert:this.alert,request:{staffId:this.selectedStaffId,reason:this.reason.trim()}});this.resetMode();}
-  submitDecline(){if(!this.reason.trim())return;this.declined.emit({alert:this.alert,reason:this.reason.trim()});this.resetMode();}
-  submitComplete(){if(!this.cause.trim()||!this.actions.trim())return;this.workCompleted.emit({alert:this.alert,request:{cause:this.cause.trim(),actions:this.actions.trim(),summary:this.workSummary.trim()}});this.resetMode();}
-  submitResolve(){if(!this.reason.trim())return;this.resolved.emit({alert:this.alert,reason:this.reason.trim()});this.resetMode();}
+  submitReassign(){if(!this.selectedStaffId||!this.reason.trim())return;this.reassigned.emit({alert:this.alert,request:{staffId:this.selectedStaffId,reason:this.reason.trim()}});}
+  submitDecline(){if(!this.reason.trim())return;this.declined.emit({alert:this.alert,reason:this.reason.trim()});}
+  submitComplete(){if(!this.cause.trim()||!this.actions.trim()||!this.workSummary.trim())return;this.workCompleted.emit({alert:this.alert,request:{cause:this.cause.trim(),actions:this.actions.trim(),summary:this.workSummary.trim()}});}
+  submitResolve(){if(!this.reason.trim())return;this.resolved.emit({alert:this.alert,reason:this.reason.trim()});}
   resetMode(){this.mode='NONE';this.reason='';this.selectedStaffId=null;this.cause='';this.actions='';this.workSummary='';}
 }
+
+

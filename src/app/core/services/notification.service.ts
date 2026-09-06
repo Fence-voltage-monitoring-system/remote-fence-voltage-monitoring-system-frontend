@@ -1,5 +1,6 @@
 import{HttpClient,HttpParams}from'@angular/common/http';import{inject,Injectable}from'@angular/core';import{BehaviorSubject,Observable}from'rxjs';import{tap}from'rxjs/operators';import{NotificationPage,NotificationQuery,NotificationStats,SystemNotification}from'../../pages/notifications/notifications.models';
 
+import { LiveUpdatesService } from './live-updates.service';
 @Injectable({providedIn:'root'})
 export class NotificationService{
 	private readonly http=inject(HttpClient);
@@ -19,5 +20,8 @@ export class NotificationService{
 
 	clearRead():Observable<{deleted:number}>{return this.http.delete<{deleted:number}>(`${this.endpoint}/read`,{withCredentials:true});}
 
-	connectLive():Observable<SystemNotification>{return new Observable(subscriber=>{const protocol=location.protocol==='https:'?'wss:':'ws:';const socket=new WebSocket(`${protocol}//${location.host}/api/notifications/ws`);socket.onmessage=event=>{try{subscriber.next(JSON.parse(event.data)as SystemNotification)}catch{subscriber.error(new Error('Invalid notification message.'))}};socket.onerror=()=>subscriber.error(new Error('Live connection failed.'));socket.onclose=()=>subscriber.complete();return()=>socket.close();});}
+	private readonly live=inject(LiveUpdatesService);
+	connectLive():Observable<SystemNotification>{return this.live.connect<SystemNotification>('notifications');}
 }
+
+
