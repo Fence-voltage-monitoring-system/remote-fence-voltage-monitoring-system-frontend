@@ -7,18 +7,20 @@
       <app-user-table class="flex min-h-0 flex-1 flex-col overflow-hidden" [users]="paginatedUsers" [selectedUserId]="selectedUser?.id ?? null" [currentPage]="currentPage" [pageSize]="pageSize" [totalUsers]="filteredUsers.length" (userSelected)="selectUser($event)" (pageChange)="currentPage = $event" />
     </section>
     @if (selectedUser; as user) {
-      <app-user-profile class="min-h-0 overflow-hidden" [user]="user" (closeProfile)="selectedUser = null" (editUser)="openEditUser($event)" (resetPassword)="resetUserPassword($event)" (toggleStatus)="toggleUserStatus($event)" />
+      <app-user-profile class="min-h-0 overflow-hidden" [user]="user" [canManage]="canManageUser(user)" [canHardDelete]="currentUserProfile?.role === 'SUPER_ADMIN'" (closeProfile)="selectedUser = null" (editUser)="openEditUser($event)" (resetPassword)="resetUserPassword($event)" (toggleStatus)="toggleUserStatus($event)" (deleteUser)="deleteUserAccount($event)" />
     }
   </div>
 
   @if (isCreateDrawerOpen) {
     <app-user-create-drawer
+      [currentUserProfile]="currentUserProfile"
       (closed)="isCreateDrawerOpen = false"
       (userCreated)="createUser($event)"
     />
   }
   @if (isEditDrawerOpen && editingUser) {
     <app-user-create-drawer
+      [currentUserProfile]="currentUserProfile"
       [editingUser]="editingUser"
       (closed)="isEditDrawerOpen = false; editingUser = null"
       (userUpdated)="onUserUpdated($event)"

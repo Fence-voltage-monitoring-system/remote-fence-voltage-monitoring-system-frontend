@@ -25,6 +25,7 @@ export interface AuthUser {
 
 const SESSION_KEY = "auth_user_session";
 const TOKEN_KEY = "auth_access_token";
+const SCOPE_KEY = "auth_management_scope";
 
 @Injectable({ providedIn: "root" })
 export class AuthService {
@@ -36,7 +37,7 @@ export class AuthService {
 
   constructor() {
     const user = this.currentUser();
-    if (user)
+    if (user) {
       this.managementAccess.setScope({
         role: user.role as ManagementRole,
         provinces: user.provinces ?? [],
@@ -45,6 +46,7 @@ export class AuthService {
         userId: user.id,
         userName: user.fullName,
       });
+    }
   }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
@@ -62,6 +64,8 @@ export class AuthService {
               TOKEN_KEY,
               accessToken,
             );
+            sessionStorage.setItem("access_token", accessToken);
+            localStorage.setItem("access_token", accessToken);
           }
           const authUser: AuthUser = {
             id: user.id,
@@ -81,14 +85,17 @@ export class AuthService {
             JSON.stringify(authUser),
           );
 
-          this.managementAccess.setScope({
+          const scopeData = {
             role: user.role as ManagementRole,
             provinces: user.provinces ?? [],
             districts: user.districts ?? [],
             fences: user.fences ?? [],
             userId: user.id,
             userName: authUser.fullName,
-          });
+          };
+          this.managementAccess.setScope(scopeData);
+          sessionStorage.setItem(SCOPE_KEY, JSON.stringify(scopeData));
+          localStorage.setItem(SCOPE_KEY, JSON.stringify(scopeData));
         }),
       );
   }
@@ -109,14 +116,27 @@ export class AuthService {
     this.currentUser.set(null);
     sessionStorage.removeItem(SESSION_KEY);
     sessionStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(SCOPE_KEY);
+    sessionStorage.removeItem("access_token");
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(SESSION_KEY);
-    sessionStorage.removeItem("access_token");
+    localStorage.removeItem(SCOPE_KEY);
     localStorage.removeItem("access_token");
+    this.managementAccess.setScope({
+      role: "MAINTENANCE",
+      provinces: [],
+      districts: [],
+      fences: [],
+    });
   }
 
   getAccessToken(): string | null {
-    return sessionStorage.getItem(TOKEN_KEY) || localStorage.getItem(TOKEN_KEY);
+    return (
+      sessionStorage.getItem(TOKEN_KEY) ||
+      localStorage.getItem(TOKEN_KEY) ||
+      sessionStorage.getItem("access_token") ||
+      localStorage.getItem("access_token")
+    );
   }
 
   isAuthenticated(): boolean {
@@ -151,7 +171,28 @@ export class AuthService {
       const stored =
         sessionStorage.getItem(SESSION_KEY) ||
         localStorage.getItem(SESSION_KEY);
-      return stored ? (JSON.parse(stored) as AuthUser) : null;
+      if (stored) {
+        const authUser = JSON.parse(stored) as AuthUser;
+        const storedScope =
+          sessionStorage.getItem(SCOPE_KEY) ||
+          localStorage.getItem(SCOPE_KEY);
+        if (storedScope) {
+          try {
+            this.managementAccess.setScope(JSON.parse(storedScope));
+          } catch {}
+        } else if (authUser.role) {
+          this.managementAccess.setScope({
+            role: authUser.role as ManagementRole,
+            provinces: authUser.provinces ?? [],
+            districts: authUser.districts ?? [],
+            fences: authUser.fences ?? [],
+            userId: authUser.id,
+            userName: authUser.fullName,
+          });
+        }
+        return authUser;
+      }
+      return null;
     } catch {
       return null;
     }

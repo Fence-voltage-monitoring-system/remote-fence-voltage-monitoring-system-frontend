@@ -14,7 +14,7 @@ export interface ManagementScope {
 @Injectable({ providedIn: 'root' })
 export class ManagementAccessService {
   readonly scope = signal<ManagementScope>({
-    role: 'SUPER_ADMIN',
+    role: 'MAINTENANCE',
     provinces: [],
     districts: [],
     fences: [],
@@ -39,6 +39,12 @@ export class ManagementAccessService {
 
   // General management check (Admins vs Maintenance)
   get canManage(): boolean {
+    const role = this.scope().role;
+    return role === 'SUPER_ADMIN' || role === 'REGIONAL_ADMIN' || role === 'FIELD_ADMIN';
+  }
+
+  // Access check for User Management page
+  get canManageUsers(): boolean {
     const role = this.scope().role;
     return role === 'SUPER_ADMIN' || role === 'REGIONAL_ADMIN' || role === 'FIELD_ADMIN';
   }

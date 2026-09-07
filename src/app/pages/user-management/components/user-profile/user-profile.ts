@@ -5,8 +5,11 @@ import { ROLE_LABELS, SystemUser } from '../../user-management.models';
 export class UserProfile {
   readonly roleLabels = ROLE_LABELS;
   @Input({ required: true }) user!: SystemUser;
+  @Input() canManage = true;
+  @Input() canHardDelete = false;
   @Output() closeProfile = new EventEmitter<void>();
   @Output() editUser = new EventEmitter<SystemUser>();
   @Output() resetPassword = new EventEmitter<SystemUser>();
   @Output() toggleStatus = new EventEmitter<SystemUser>();
+  @Output() deleteUser = new EventEmitter<SystemUser>();
 }

@@ -2,7 +2,7 @@
   <div class="logo" role="img" aria-label="Remote fence monitoring"></div>
 
   <nav aria-label="Main navigation">
-    @for (item of items; track item.label) {
+    @for (item of visibleItems; track item.label) {
       <button
         type="button"
         [routerLink]="item.route ?? null"

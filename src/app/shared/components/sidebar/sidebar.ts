@@ -1,5 +1,6 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { ManagementAccessService } from '../../../core/services/management-access.service';
 import {
   ChartNoAxesCombined,
   Columns3,
@@ -32,6 +33,7 @@ interface NavigationItem {
   styleUrl: './sidebar.css',
 })
 export class SidebarComponent implements AfterViewInit {
+  private readonly accessService = inject(ManagementAccessService);
   activeItem = 'Dashboard';
 
   readonly items: NavigationItem[] = [
@@ -49,6 +51,21 @@ export class SidebarComponent implements AfterViewInit {
     { label: 'Audit Logs', icon: 'scroll-text', route: '/audit-logs' },
     { label: 'System Configuration', icon: 'settings', route: '/configuration' },
   ];
+
+  get visibleItems(): NavigationItem[] {
+    return this.items.filter((item) => {
+      if (item.route === '/configuration') {
+        return this.accessService.canConfigureSystem;
+      }
+      if (item.route === '/users') {
+        return this.accessService.canManageUsers;
+      }
+      if (item.route === '/fences' || item.route === '/sections' || item.route === '/reports') {
+        return this.accessService.canManage;
+      }
+      return true;
+    });
+  }
 
   ngAfterViewInit(): void {
     createIcons({
