@@ -38,15 +38,19 @@ export class Dashboard implements OnInit, OnDestroy {
     this.loading = true; this.error = '';
     this.api.getOverview().pipe(takeUntil(this.destroyed$), finalize(() => this.loading = false)).subscribe({
       next: ({ summary, selectedDevice }) => {
-        this.selectedDevice = selectedDevice;
+        if (selectedDevice) {
+          this.selectedDevice = selectedDevice;
+        }
         this.stats = [
-          { label: 'Total fences', value: String(summary.totalFences), unit: 'zones', icon: '⌁', foot: 'Registered fence zones', tone: 'green' },
-          { label: 'Total devices', value: String(summary.totalDevices), unit: 'units', icon: '◉', foot: 'Registered monitoring devices', tone: 'green' },
-          { label: 'Active devices', value: String(summary.activeDevices), unit: `of ${summary.totalDevices}`, icon: 'ϟ', foot: 'Currently reporting', tone: 'green' },
-          { label: 'Critical alerts', value: String(summary.criticalAlerts), unit: 'open', icon: '△', foot: 'Requires attention', tone: 'red' },
-          { label: 'Low voltage fences', value: String(summary.lowVoltageFences), unit: 'fences', icon: '!', foot: 'Below 4.5 kV threshold', tone: 'warning' },
+          { label: 'Total fences', value: String(summary?.totalFences ?? 0), unit: 'zones', icon: '⌁', foot: 'Registered fence zones', tone: 'green' },
+          { label: 'Total devices', value: String(summary?.totalDevices ?? 0), unit: 'units', icon: '◉', foot: 'Registered monitoring devices', tone: 'green' },
+          { label: 'Active devices', value: String(summary?.activeDevices ?? 0), unit: `of ${summary?.totalDevices ?? 0}`, icon: 'ϟ', foot: 'Currently reporting', tone: 'green' },
+          { label: 'Critical alerts', value: String(summary?.criticalAlerts ?? 0), unit: 'open', icon: '△', foot: 'Requires attention', tone: 'red' },
+          { label: 'Low voltage fences', value: String(summary?.lowVoltageFences ?? 0), unit: 'fences', icon: '!', foot: 'Below 4.5 kV threshold', tone: 'warning' },
         ];
-        this.loadDeviceAnalytics(selectedDevice.deviceId);
+        if (selectedDevice && selectedDevice.deviceId && selectedDevice.deviceId !== 'null') {
+          this.loadDeviceAnalytics(selectedDevice.deviceId);
+        }
       },
       error: () => this.error = 'Dashboard data could not be loaded. Check the backend connection and try again.',
     });
@@ -56,7 +60,12 @@ export class Dashboard implements OnInit, OnDestroy {
     if (!deviceId || deviceId === 'null') return;
     this.analyticsLoading = true;
     this.api.getDeviceAnalytics(deviceId).pipe(takeUntil(this.destroyed$), finalize(() => this.analyticsLoading = false)).subscribe({
-      next: ({ device, voltageHistory, alerts, alertCounts }) => { this.selectedDevice = device; this.voltageHistory = voltageHistory; this.alerts = alerts; this.alertCounts = alertCounts; },
+      next: ({ device, voltageHistory, alerts, alertCounts }) => { 
+        if (device) this.selectedDevice = device; 
+        this.voltageHistory = voltageHistory || []; 
+        this.alerts = alerts || []; 
+        this.alertCounts = alertCounts || { critical: 0, warning: 0, offline: 0, resolved: 0 }; 
+      },
       error: () => this.error = `Analytics for ${deviceId} could not be loaded.`,
     });
   }

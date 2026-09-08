@@ -57,27 +57,36 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
     this.loadDevices();
   }
 
+  private refreshIcons(): void {
+    this.iconsReady = false;
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      createIcons({
+        icons: { Activity, BatteryCharging, Check, ChevronDown, CirclePlus, Cpu, MoreHorizontal, Pencil, Plus, Radio, Search, Signal, SlidersHorizontal, Trash2, Wifi, X },
+        attrs: { 'stroke-width': 1.8, width: 16, height: 16 }
+      });
+      this.iconsReady = true;
+    }, 0);
+  }
+
   loadDevices(): void {
     this.isLoading = true;
     this.errorMessage = '';
     this.deviceService.getDevices().pipe(finalize(() => {
       this.isLoading = false;
-      this.iconsReady = false;
-      this.cdr.detectChanges();
+      this.refreshIcons();
     })).subscribe({
       next: (devices) => {
         this.devices = devices || [];
         this.usingPreview = false;
         this.notice = '';
-        this.iconsReady = false;
-        this.cdr.detectChanges();
+        this.refreshIcons();
       },
       error: (err) => {
         this.devices = [];
         this.usingPreview = false;
         this.notice = 'Unable to connect to Device API. Please check your backend connection or log in again.';
-        this.iconsReady = false;
-        this.cdr.detectChanges();
+        this.refreshIcons();
       },
     });
   }
@@ -108,8 +117,7 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked(): void {
     if (!this.iconsReady) {
-      createIcons({ icons: { Activity, BatteryCharging, Check, ChevronDown, CirclePlus, Cpu, MoreHorizontal, Pencil, Plus, Radio, Search, Signal, SlidersHorizontal, Trash2, Wifi, X }, attrs: { 'stroke-width': 1.8, width: 16, height: 16 } });
-      this.iconsReady = true;
+      this.refreshIcons();
     }
   }
 

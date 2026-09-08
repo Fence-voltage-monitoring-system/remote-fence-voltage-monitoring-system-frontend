@@ -43,24 +43,36 @@ export class GatewayManagementPage implements OnInit, AfterViewChecked {
     this.loadGateways();
   }
 
+  private refreshIcons(): void {
+    this.iconsReady = false;
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      createIcons({
+        icons: { Check, ChevronDown, MoreHorizontal, Pencil, Plus, RadioTower, Search, Signal, Trash2, Wifi, X },
+        attrs: { 'stroke-width': 1.8, width: 16, height: 16 }
+      });
+      this.iconsReady = true;
+    }, 0);
+  }
+
   loadGateways(): void {
     this.isLoading = true;
     this.errorMessage = '';
     this.gatewayService.getGateways().pipe(finalize(() => {
       this.isLoading = false;
-      this.cdr.markForCheck();
+      this.refreshIcons();
     })).subscribe({
       next: (gateways) => {
         this.gateways = gateways || [];
         this.usingPreview = false;
         this.notice = '';
-        this.cdr.markForCheck();
+        this.refreshIcons();
       },
       error: () => {
         this.gateways = [];
         this.usingPreview = false;
         this.errorMessage = 'Unable to connect to Gateway API.';
-        this.cdr.markForCheck();
+        this.refreshIcons();
       },
     });
   }
@@ -78,25 +90,24 @@ export class GatewayManagementPage implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked(): void {
     if (!this.iconsReady) {
-      createIcons({ icons: { Check, ChevronDown, MoreHorizontal, Pencil, Plus, RadioTower, Search, Signal, Trash2, Wifi, X }, attrs: { 'stroke-width': 1.8, width: 16, height: 16 } });
-      this.iconsReady = true;
+      this.refreshIcons();
     }
   }
 
   clearFilters(): void { this.search = ''; this.statusFilter = 'all'; this.assignmentFilter = 'all'; }
-  selectGateway(gateway: Gateway): void { this.selected = gateway; this.menuGateway = undefined; this.iconsReady = false; }
-  toggleMenu(gateway: Gateway, event: Event): void { event.stopPropagation(); this.menuGateway = this.menuGateway === gateway ? undefined : gateway; this.iconsReady = false; }
+  selectGateway(gateway: Gateway): void { this.selected = gateway; this.menuGateway = undefined; this.refreshIcons(); }
+  toggleMenu(gateway: Gateway, event: Event): void { event.stopPropagation(); this.menuGateway = this.menuGateway === gateway ? undefined : gateway; this.refreshIcons(); }
   
   toggleEnabled(gateway: Gateway, event: Event): void {
     event.stopPropagation();
     const nextState = !gateway.enabled;
     gateway.enabled = nextState;
     this.gatewayService.toggleEnabled(gateway.id, nextState).subscribe({
-      next: () => { this.cdr.markForCheck(); },
+      next: () => { this.refreshIcons(); },
       error: (err: HttpErrorResponse) => {
         gateway.enabled = !nextState; // revert toggle on error
         this.errorMessage = err.error?.message || 'Failed to toggle gateway status.';
-        this.cdr.markForCheck();
+        this.refreshIcons();
       },
     });
   }
@@ -104,13 +115,15 @@ export class GatewayManagementPage implements OnInit, AfterViewChecked {
   openAdd(): void {
     this.editing = undefined; this.form = this.blankGateway(); this.submitted = false;
     this.errorMessage = '';
-    this.drawerOpen = true; this.selected = undefined; this.iconsReady = false;
+    this.drawerOpen = true; this.selected = undefined;
+    this.refreshIcons();
   }
 
   openEdit(gateway: Gateway): void {
     this.editing = gateway; this.form = { ...gateway, fences: [...gateway.fences] }; this.submitted = false;
     this.errorMessage = '';
-    this.drawerOpen = true; this.selected = undefined; this.menuGateway = undefined; this.iconsReady = false;
+    this.drawerOpen = true; this.selected = undefined; this.menuGateway = undefined;
+    this.refreshIcons();
   }
 
   save(): void {
@@ -130,17 +143,17 @@ export class GatewayManagementPage implements OnInit, AfterViewChecked {
 
       this.gatewayService.updateGateway(this.editing.id, payload).pipe(finalize(() => {
         this.isSubmitting = false;
-        this.cdr.markForCheck();
+        this.refreshIcons();
       })).subscribe({
         next: (updated) => {
           Object.assign(this.editing!, updated);
           this.drawerOpen = false;
           this.submitted = false;
-          this.cdr.markForCheck();
+          this.refreshIcons();
         },
         error: (err: HttpErrorResponse) => {
           this.errorMessage = this.extractErrorMessage(err);
-          this.cdr.markForCheck();
+          this.refreshIcons();
         },
       });
     } else {
@@ -154,17 +167,17 @@ export class GatewayManagementPage implements OnInit, AfterViewChecked {
 
       this.gatewayService.createGateway(payload).pipe(finalize(() => {
         this.isSubmitting = false;
-        this.cdr.markForCheck();
+        this.refreshIcons();
       })).subscribe({
         next: (created) => {
           this.gateways = [created, ...this.gateways];
           this.drawerOpen = false;
           this.submitted = false;
-          this.cdr.markForCheck();
+          this.refreshIcons();
         },
         error: (err: HttpErrorResponse) => {
           this.errorMessage = this.extractErrorMessage(err);
-          this.cdr.markForCheck();
+          this.refreshIcons();
         },
       });
     }
@@ -177,16 +190,11 @@ export class GatewayManagementPage implements OnInit, AfterViewChecked {
         this.gateways = this.gateways.filter(item => item !== gateway);
         if (this.selected === gateway) this.selected = undefined;
         this.menuGateway = undefined;
-        this.iconsReady = false;
-        this.cdr.markForCheck();
+        this.refreshIcons();
       },
       error: (err: HttpErrorResponse) => {
-        this.gateways = this.gateways.filter(item => item !== gateway);
-        if (this.selected === gateway) this.selected = undefined;
-        this.menuGateway = undefined;
-        this.notice = this.extractErrorMessage(err);
-        this.iconsReady = false;
-        this.cdr.markForCheck();
+        this.errorMessage = this.extractErrorMessage(err);
+        this.refreshIcons();
       },
     });
   }
