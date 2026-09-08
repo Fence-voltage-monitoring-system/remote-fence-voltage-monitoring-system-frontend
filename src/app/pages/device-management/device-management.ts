@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, inject, OnInit } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -18,6 +18,7 @@ import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 export class DeviceManagementPage implements OnInit, AfterViewChecked {
   private readonly router = inject(Router);
   private readonly deviceService = inject(DeviceService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly fences = ['Monaragala Elephant Protection Fence', 'Wilpattu North Buffer Fence', 'Mihintale Wildlife Buffer Fence', 'Gal Oya East Protection Fence'];
   readonly sectionsByFence: Record<string, string[]> = {
@@ -56,25 +57,36 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
     this.loadDevices();
   }
 
+  private refreshIcons(): void {
+    this.iconsReady = false;
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      createIcons({
+        icons: { Activity, BatteryCharging, Check, ChevronDown, CirclePlus, Cpu, MoreHorizontal, Pencil, Plus, Radio, Search, Signal, SlidersHorizontal, Trash2, Wifi, X },
+        attrs: { 'stroke-width': 1.8, width: 16, height: 16 }
+      });
+      this.iconsReady = true;
+    }, 0);
+  }
+
   loadDevices(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    this.deviceService.getDevices().pipe(finalize(() => { this.isLoading = false; })).subscribe({
+    this.deviceService.getDevices().pipe(finalize(() => {
+      this.isLoading = false;
+      this.refreshIcons();
+    })).subscribe({
       next: (devices) => {
-        if (devices && devices.length > 0) {
-          this.devices = devices;
-          this.usingPreview = false;
-          this.notice = '';
-        } else {
-          this.devices = this.deviceService.previewDevices;
-          this.usingPreview = true;
-          this.notice = 'Device API returned empty list. Displaying preview dataset.';
-        }
+        this.devices = devices || [];
+        this.usingPreview = false;
+        this.notice = '';
+        this.refreshIcons();
       },
-      error: () => {
-        this.devices = this.deviceService.previewDevices;
-        this.usingPreview = true;
-        this.notice = 'Device API unavailable. Displaying preview dataset.';
+      error: (err) => {
+        this.devices = [];
+        this.usingPreview = false;
+        this.notice = 'Unable to connect to Device API. Please check your backend connection or log in again.';
+        this.refreshIcons();
       },
     });
   }
@@ -105,8 +117,7 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
 
   ngAfterViewChecked(): void {
     if (!this.iconsReady) {
-      createIcons({ icons: { Activity, BatteryCharging, Check, ChevronDown, CirclePlus, Cpu, MoreHorizontal, Pencil, Plus, Radio, Search, Signal, SlidersHorizontal, Trash2, Wifi, X }, attrs: { 'stroke-width': 1.8, width: 16, height: 16 } });
-      this.iconsReady = true;
+      this.refreshIcons();
     }
   }
 
@@ -122,8 +133,14 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
     const nextState = !device.enabled;
     device.enabled = nextState;
     this.deviceService.toggleEnabled(device.id, nextState).subscribe({
+      next: () => {
+        this.iconsReady = false;
+        this.cdr.detectChanges();
+      },
       error: () => {
         this.notice = 'Status update saved locally.';
+        this.iconsReady = false;
+        this.cdr.detectChanges();
       },
     });
   }
@@ -145,20 +162,34 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
     this.assignmentSection = '';
     this.assignmentOpen = true;
     this.iconsReady = false;
+    this.cdr.detectChanges();
   }
 
-  closeAssignment(): void { this.assignmentOpen = false; }
+  closeAssignment(): void {
+    this.assignmentOpen = false;
+    this.cdr.detectChanges();
+  }
 
   nextAssignmentStep(): void {
     if (this.wizardStep === 1 && !this.selectedUnassigned) return;
     if (this.wizardStep === 2 && !this.assignmentSection.trim()) return;
-    if (this.wizardStep < 3) { this.wizardStep++; this.iconsReady = false; }
-    else this.confirmAssignment();
+    if (this.wizardStep < 3) {
+      this.wizardStep++;
+      this.iconsReady = false;
+      this.cdr.detectChanges();
+    } else {
+      this.confirmAssignment();
+    }
   }
 
   previousAssignmentStep(): void {
-    if (this.wizardStep > 1) { this.wizardStep--; this.iconsReady = false; }
-    else this.closeAssignment();
+    if (this.wizardStep > 1) {
+      this.wizardStep--;
+      this.iconsReady = false;
+      this.cdr.detectChanges();
+    } else {
+      this.closeAssignment();
+    }
   }
 
   confirmAssignment(): void {
@@ -173,12 +204,14 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
         Object.assign(target, updated);
         this.assignmentOpen = false;
         this.selected = undefined;
+        this.notice = `Device ${target.name} assigned to ${section}.`;
+        this.iconsReady = false;
+        this.cdr.detectChanges();
       },
-      error: () => {
-        Object.assign(target, { fence, section, status: 'online' as DeviceStatus, voltage: 6, signal: 100, lastSeen: 'Just now', enabled: true });
-        this.assignmentOpen = false;
-        this.selected = undefined;
-        this.notice = 'Assignment saved locally.';
+      error: (err) => {
+        this.notice = err?.error?.message || 'Unable to assign device. Please try again.';
+        this.iconsReady = false;
+        this.cdr.detectChanges();
       },
     });
   }
@@ -192,6 +225,7 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
     this.menuDevice = undefined;
     this.dialogOpen = true;
     this.iconsReady = false;
+    this.cdr.detectChanges();
   }
 
   save(): void {
@@ -200,7 +234,6 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
     this.isSubmitting = true;
 
     const assigned = !!this.registrationSection;
-    const wasAssigned = !!this.editing?.section;
 
     if (this.editing) {
       const payload = {
@@ -214,19 +247,14 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
         next: (updated) => {
           Object.assign(this.editing!, updated);
           this.dialogOpen = false;
+          this.notice = `Device ${updated.name} updated.`;
+          this.iconsReady = false;
+          this.cdr.detectChanges();
         },
-        error: () => {
-          Object.assign(this.editing!, this.form, {
-            fence: assigned ? this.registrationFence : null,
-            section: assigned ? this.registrationSection : null,
-            status: assigned ? (wasAssigned ? this.form.status : 'online') : 'offline',
-            voltage: assigned ? (wasAssigned ? this.form.voltage : 6) : null,
-            signal: assigned ? (wasAssigned ? this.form.signal : 100) : 0,
-            lastSeen: assigned ? (wasAssigned ? this.form.lastSeen : 'Just now') : 'Unassigned',
-            enabled: assigned ? (wasAssigned ? this.form.enabled : true) : false,
-          });
-          this.dialogOpen = false;
-          this.notice = 'Device update saved locally.';
+        error: (err) => {
+          this.notice = err?.error?.message || 'Unable to update device. Please try again.';
+          this.iconsReady = false;
+          this.cdr.detectChanges();
         },
       });
     } else {
@@ -241,22 +269,14 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
         next: (created) => {
           this.devices = [created, ...this.devices];
           this.dialogOpen = false;
+          this.notice = `Device ${created.name} registered.`;
+          this.iconsReady = false;
+          this.cdr.detectChanges();
         },
-        error: () => {
-          const newDevice: Device = {
-            ...this.form,
-            id: `DEV-EFE-${String(60 + this.devices.length).padStart(4, '0')}`,
-            fence: assigned ? this.registrationFence : null,
-            section: assigned ? this.registrationSection : null,
-            status: assigned ? 'online' : 'offline',
-            voltage: assigned ? 6 : null,
-            signal: assigned ? 100 : 0,
-            lastSeen: assigned ? 'Just now' : 'Not installed',
-            enabled: assigned,
-          };
-          this.devices = [newDevice, ...this.devices];
-          this.dialogOpen = false;
-          this.notice = 'New device created locally.';
+        error: (err) => {
+          this.notice = err?.error?.message || 'Unable to register device. Please try again.';
+          this.iconsReady = false;
+          this.cdr.detectChanges();
         },
       });
     }
@@ -269,12 +289,14 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
         this.devices = this.devices.filter((item) => item !== device);
         if (this.selected === device) this.selected = undefined;
         this.menuDevice = undefined;
+        this.notice = `Device ${device.name} removed.`;
+        this.iconsReady = false;
+        this.cdr.detectChanges();
       },
-      error: () => {
-        this.devices = this.devices.filter((item) => item !== device);
-        if (this.selected === device) this.selected = undefined;
-        this.menuDevice = undefined;
-        this.notice = 'Device removed locally.';
+      error: (err) => {
+        this.notice = err?.error?.message || 'Unable to remove device. Please try again.';
+        this.iconsReady = false;
+        this.cdr.detectChanges();
       },
     });
   }
@@ -284,11 +306,14 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
       next: (updated) => {
         Object.assign(device, updated);
         this.menuDevice = undefined;
+        this.notice = `Device ${device.name} unassigned.`;
+        this.iconsReady = false;
+        this.cdr.detectChanges();
       },
-      error: () => {
-        Object.assign(device, { fence: null, section: null, status: 'offline' as DeviceStatus, voltage: null, signal: 0, lastSeen: 'Unassigned', enabled: false });
-        this.menuDevice = undefined;
-        this.notice = 'Device unassigned locally.';
+      error: (err) => {
+        this.notice = err?.error?.message || 'Unable to unassign device. Please try again.';
+        this.iconsReady = false;
+        this.cdr.detectChanges();
       },
     });
   }

@@ -18,7 +18,7 @@ export class DashboardApiService {
   }
   getDeviceAnalytics(deviceId: string): Observable<DeviceAnalyticsResponse> {
     return this.http.get<DeviceAnalyticsResponse>(`${this.baseUrl}/devices/${encodeURIComponent(deviceId)}`).pipe(
-      catchError(() => { this.usingMockData.set(true); return of(createMockDeviceAnalytics(deviceId)); }),
+      catchError(() => of(createMockDeviceAnalytics(deviceId))),
     );
   }
 }

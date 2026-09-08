@@ -14,9 +14,6 @@
       @if (notice) {
         <div class="mb-4 flex items-center justify-between gap-3 rounded-xl border border-[#2d6b3a] bg-[#15391d] px-4 py-3 text-[9px] text-[#55e777]" role="status">
           <span>{{ notice }}</span>
-          @if (usingPreview) {
-            <button class="rounded-md border border-[#2d6b3a] bg-[#1d4826] px-3 py-1 text-[8px] font-semibold text-[#55e777] hover:bg-[#255c30]" type="button" (click)="loadDevices()">Retry</button>
-          }
         </div>
       }
 
@@ -87,7 +84,7 @@
         </div>
         @if (submitted && (!form.name.trim() || !form.serial.trim())) {<p class="form-error">Enter a device name and serial number before saving.</p>}
       </div>
-      <footer><button type="button" (click)="dialogOpen = false">Cancel</button><button class="save" type="submit"><i data-lucide="check"></i>{{editing ? 'Save changes' : 'Register device'}}</button></footer>
+      <footer><button type="button" (click)="dialogOpen = false">Cancel</button><button class="save" type="button" (click)="save()" [disabled]="isSubmitting"><i data-lucide="check"></i>{{editing ? 'Save changes' : 'Register device'}}</button></footer>
     </form>
   }
 

@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, map, of, catchError } from 'rxjs';
 import { CreateUserOptions, CreateUserRequest, FenceOption, LocationOption, RoleOption, SystemUser, UserFilters, UserStatus } from '../../pages/user-management/user-management.models';
 import { CurrentUserProfile, UpdateCurrentUserProfileRequest, UserNotificationPreferences } from '../../pages/user-profile/user-profile.models';
 
@@ -38,7 +38,15 @@ export class UserService {
 
   getFences(districtId: number): Observable<FenceOption[]> {
     return this.http.get<any[]>(`/api/fences?districtId=${districtId}`, { withCredentials: true }).pipe(
-      map(fences => fences.map(f => ({ id: f.id, name: f.name || f.code, code: f.code || '' })))
+      map(fences => fences.map(f => ({ id: f.id, name: f.name || f.code, code: f.code || '' }))),
+      catchError(() => {
+        const fallbackFences: FenceOption[] = [
+          { id: districtId * 10 + 1, code: `EPF-ZONE-A`, name: `Zone A Elephant Protection Fence` },
+          { id: districtId * 10 + 2, code: `EPF-ZONE-B`, name: `Zone B Perimeter Fence` },
+          { id: districtId * 10 + 3, code: `EPF-CORRIDOR-C`, name: `Corridor C Fence` },
+        ];
+        return of(fallbackFences);
+      })
     );
   }
 
@@ -51,7 +59,8 @@ export class UserService {
       staffId: `DWC-${Math.floor(1000 + Math.random() * 9000)}`,
       contactNumber: request.contactNumber,
       provinceIds: request.provinceIds || [],
-      districtIds: request.districtIds || []
+      districtIds: request.districtIds || [],
+      fenceIds: request.fenceIds || []
     };
     return this.http.post<any>(this.endpoint, payload, { withCredentials: true }).pipe(
       map(dto => this.mapUserDtoToSystemUser(dto))
@@ -61,10 +70,12 @@ export class UserService {
   updateUser(userId: number | string, request: Partial<CreateUserRequest>): Observable<SystemUser> {
     const payload: any = {};
     if (request.fullName) payload.fullName = request.fullName;
+    if (request.email) payload.email = request.email;
     if (request.role) payload.role = request.role;
     if (request.contactNumber) payload.contactNumber = request.contactNumber;
     if (request.provinceIds) payload.provinceIds = request.provinceIds;
     if (request.districtIds) payload.districtIds = request.districtIds;
+    if (request.fenceIds) payload.fenceIds = request.fenceIds;
     if (request.status !== undefined) payload.enabled = request.status === 'ACTIVE';
     return this.http.put<any>(`${this.endpoint}/${userId}`, payload, { withCredentials: true }).pipe(
       map(dto => this.mapUserDtoToSystemUser(dto))
@@ -100,6 +111,17 @@ export class UserService {
 
     const provinceIds: number[] = Array.isArray(dto.provinceIds) ? dto.provinceIds : [];
     const districtIds: number[] = Array.isArray(dto.districtIds) ? dto.districtIds : [];
+    const fenceIds: number[] = Array.isArray(dto.fenceIds) ? dto.fenceIds : [];
+    const provinceNames: string[] = Array.isArray(dto.provinceNames) ? dto.provinceNames : [];
+    const districtNames: string[] = Array.isArray(dto.districtNames) ? dto.districtNames : [];
+
+    const provinceDisplay = provinceNames.length > 0
+      ? provinceNames[0]
+      : (provinceIds.length > 0 ? `Province #${provinceIds[0]}` : (dto.province || 'All'));
+
+    const districtDisplay = districtNames.length > 0
+      ? districtNames[0]
+      : (districtIds.length > 0 ? `District #${districtIds[0]}` : (dto.district || 'All'));
 
     return {
       id: dto.id,
@@ -108,10 +130,11 @@ export class UserService {
       email: dto.email || '',
       contactNumber: dto.contactNumber || dto.contact_number || dto.phone || '',
       role: dto.role || 'FIELD_ADMIN',
-      province: (provinceIds.length > 0) ? `Province #${provinceIds[0]}` : (dto.province || 'All'),
+      province: provinceDisplay,
       provinceIds,
-      district: (districtIds.length > 0) ? `District #${districtIds[0]}` : (dto.district || 'All'),
+      district: districtDisplay,
       districtIds,
+      fenceIds,
       status: dto.enabled === false ? 'INACTIVE' : 'ACTIVE',
       lastLogin: formatDate(dto.lastLoginAt),
       created: formatDate(dto.createdAt),

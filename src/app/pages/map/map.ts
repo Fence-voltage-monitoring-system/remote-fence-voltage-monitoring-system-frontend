@@ -1,6 +1,7 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
+import { FenceService } from '../../core/services/fence.service';
 
 type FenceStatus = 'healthy' | 'warning' | 'critical';
 
@@ -25,11 +26,12 @@ interface MapFence {
   templateUrl: './map.html',
   styleUrl: './map.css',
 })
-export class FenceMapWorkspaceComponent implements AfterViewInit, OnDestroy {
+export class FenceMapWorkspaceComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly router = inject(Router);
+  private readonly fenceService = inject(FenceService);
   @ViewChild('mapCanvas') mapElement!: ElementRef<HTMLDivElement>;
 
-  readonly fences: MapFence[] = [
+  fences: MapFence[] = [
     { id: 'MNR-A', monitoringFenceId: 'monaragala', name: 'Monaragala Elephant Protection Fence', province: 'Uva', district: 'Monaragala', status: 'healthy', voltage: 5.9, sections: 24, activeSections: 22, coordinates: [6.872, 81.350], lastCommunication: '8s ago' },
     { id: 'WLP-N', monitoringFenceId: 'wilpattu', name: 'Wilpattu North Buffer Fence', province: 'North Western', district: 'Puttalam', status: 'healthy', voltage: 6.1, sections: 18, activeSections: 18, coordinates: [8.458, 80.028], lastCommunication: '12s ago' },
     { id: 'MHT-B', monitoringFenceId: 'mihintale', name: 'Mihintale Wildlife Buffer Fence', province: 'North Central', district: 'Anuradhapura', status: 'warning', voltage: 4.2, sections: 12, activeSections: 11, coordinates: [8.350, 80.505], lastCommunication: '34s ago' },
@@ -37,7 +39,6 @@ export class FenceMapWorkspaceComponent implements AfterViewInit, OnDestroy {
     { id: 'LNV-P', monitoringFenceId: 'lunugamvehera', name: 'Lunugamvehera Park Fence', province: 'Southern', district: 'Hambantota', status: 'warning', voltage: 4.6, sections: 16, activeSections: 15, coordinates: [6.341, 81.151], lastCommunication: '51s ago' },
   ];
 
-  readonly provinces = [...new Set(this.fences.map((fence) => fence.province))].sort();
   selectedProvince = 'all';
   selectedDistrict = 'all';
   selectedStatus: FenceStatus | 'all' = 'all';
@@ -49,10 +50,14 @@ export class FenceMapWorkspaceComponent implements AfterViewInit, OnDestroy {
   private readonly markers = new Map<string, L.CircleMarker>();
   private readonly sriLankaBounds = L.latLngBounds([5.72, 79.32], [10.05, 82.05]);
 
+  get provinces(): string[] {
+    return [...new Set(this.fences.map((fence) => fence.province))].filter(Boolean).sort();
+  }
+
   get districts(): string[] {
     return [...new Set(this.fences
       .filter((fence) => this.selectedProvince === 'all' || fence.province === this.selectedProvince)
-      .map((fence) => fence.district))].sort();
+      .map((fence) => fence.district))].filter(Boolean).sort();
   }
 
   get visibleFences(): MapFence[] {
@@ -64,6 +69,57 @@ export class FenceMapWorkspaceComponent implements AfterViewInit, OnDestroy {
 
   count(status: FenceStatus): number {
     return this.fences.filter((fence) => fence.status === status).length;
+  }
+
+  ngOnInit(): void {
+    this.loadLiveFences();
+  }
+
+  loadLiveFences(): void {
+    this.fenceService.getFences().subscribe({
+      next: (records) => {
+        if (records && records.length > 0) {
+          this.fences = records.map((r, i) => this.mapRecordToMapFence(r, i));
+          if (this.map) {
+            this.renderMarkers();
+            this.fitVisibleFences(false);
+          }
+        }
+      },
+      error: (err) => console.warn('Could not load live map fences, using fallbacks:', err)
+    });
+  }
+
+  private mapRecordToMapFence(r: any, index: number): MapFence {
+    const rawHealth = (r.health || 'OFFLINE').toLowerCase();
+    const status: FenceStatus = rawHealth === 'healthy' ? 'healthy' : (rawHealth === 'warning' ? 'warning' : 'critical');
+    const districtCoords: Record<string, L.LatLngExpression> = {
+      monaragala: [6.872, 81.350],
+      puttalam: [8.458, 80.028],
+      anuradhapura: [8.350, 80.505],
+      ampara: [7.292, 81.625],
+      hambantota: [6.341, 81.151],
+      colombo: [6.927, 79.861],
+      kandy: [7.290, 80.633],
+      ratnapura: [6.682, 80.401],
+      badulla: [6.993, 81.055],
+    };
+    const distKey = (r.district || '').toLowerCase();
+    const coords = districtCoords[distKey] || [7.75 + (index * 0.15), 80.72 + (index * 0.15)];
+
+    return {
+      id: r.code || `FC-${r.id}`,
+      monitoringFenceId: String(r.id),
+      name: r.name || r.code || `Fence ${r.id}`,
+      province: r.province || 'General',
+      district: r.district || 'General',
+      status,
+      voltage: r.averageVoltageKv != null ? Number(r.averageVoltageKv) : 5.0,
+      sections: r.sections || 4,
+      activeSections: r.sections || 4,
+      coordinates: coords,
+      lastCommunication: r.lastUpdated || 'Just now',
+    };
   }
 
   ngAfterViewInit(): void {

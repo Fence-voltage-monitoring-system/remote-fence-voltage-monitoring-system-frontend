@@ -204,7 +204,7 @@
       @if (submitted && (!form.name.trim() || !form.serial.trim() || !form.imei.trim())) {<p class="form-error">
         Enter the gateway name, serial number, and IMEI.</p>}
     </div>
-    <footer><button type="button" (click)="drawerOpen = false">Cancel</button><button class="primary" type="submit"><i
+    <footer><button type="button" (click)="drawerOpen = false">Cancel</button><button class="primary" type="button" (click)="save()" [disabled]="isSubmitting"><i
           data-lucide="check"></i>{{editing ? 'Save changes' : 'Register gateway'}}</button></footer>
   </form>
   }

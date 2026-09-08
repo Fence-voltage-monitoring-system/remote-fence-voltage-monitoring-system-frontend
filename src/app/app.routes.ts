@@ -3,6 +3,7 @@ import { Login } from './pages/login/login';
 import { authGuard } from './core/guards/auth.guard';
 import { managementGuard } from './core/guards/management.guard';
 import { superAdminGuard } from './core/guards/super-admin.guard';
+import { userManagementGuard } from './core/guards/user-management.guard';
 import { ApplicationLayout } from './shared/layouts/application-layout/application-layout';
 
 export const routes: Routes = [
@@ -22,7 +23,7 @@ export const routes: Routes = [
     component: ApplicationLayout,
     canActivate: [authGuard],
     children: [
-      { path: 'users', loadComponent: () => import('./pages/user-management/user-management').then(m => m.UserManagement), title: 'User Management | Remote Fence Monitoring' },
+      { path: 'users', loadComponent: () => import('./pages/user-management/user-management').then(m => m.UserManagement), canActivate: [userManagementGuard], title: 'User Management | Remote Fence Monitoring' },
       { path: 'fences', loadComponent: () => import('./pages/fence-management/fence-management').then(m => m.FenceManagement), canActivate: [managementGuard], title: 'Fence Management | Remote Fence Monitoring' },
       { path: 'sections', loadComponent: () => import('./pages/section-management/section-management').then(m => m.SectionManagement), canActivate: [managementGuard], title: 'Section Management | Remote Fence Monitoring' },
       { path: 'historical-analysis', loadComponent: () => import('./pages/historical-analysis/historical-analysis').then(m => m.HistoricalAnalysis), title: 'Historical Analysis | Remote Fence Monitoring' },

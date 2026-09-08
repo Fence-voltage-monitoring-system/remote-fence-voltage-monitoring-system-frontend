@@ -19,6 +19,7 @@ export interface SystemUser {
   provinceIds?: number[];
   district: string;
   districtIds?: number[];
+  fenceIds?: number[];
   status: UserStatus;
   lastLogin: string;
   created: string;
