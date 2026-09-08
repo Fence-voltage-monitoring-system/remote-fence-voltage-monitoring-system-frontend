@@ -1,11 +1,32 @@
 .api-error{display:flex;align-items:center;justify-content:space-between;border:1px solid #8b5f24;border-radius:8px;background:#493d1e;padding:8px 12px;color:#e6ca73;font-size:10px}.api-error button{border:1px solid #746531;border-radius:6px;padding:4px 10px;font-size:9px}
 
-
-.pagination,.modal-actions{display:flex;align-items:center;justify-content:center;gap:16px;margin:20px 0}
-.register-alert,.pagination button,.modal-actions button{padding:10px 16px;border:1px solid #cbd5e1;border-radius:6px;cursor:pointer}
+.pagination{display:flex;align-items:center;justify-content:center;gap:16px;margin:20px 0}
+.pagination button{padding:10px 16px;border:1px solid #38513b;border-radius:8px;background:#203824;color:#d6ddd4;cursor:pointer}
+.register-alert{height:38px;padding:0 16px;border:0;border-radius:8px;background:#43d36c;color:#071c0d;font-size:11px;font-weight:700;cursor:pointer}
 button:disabled{opacity:.5;cursor:not-allowed}
-.modal-backdrop{position:fixed;inset:0;background:#0008;z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px}
-.incident-modal{background:white;color:#172b3a;border-radius:12px;padding:24px;width:min(580px,100%);max-height:90vh;overflow:auto}
-.incident-modal fieldset{border:0;padding:0}.incident-modal label{display:block;margin:12px 0;font-size:14px}
-.incident-modal input,.incident-modal select,.incident-modal textarea{display:block;box-sizing:border-box;width:100%;padding:9px;margin-top:5px;border:1px solid #94a3b8;border-radius:5px}
+.modal-backdrop{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgb(2 7 3 / 75%);backdrop-filter:blur(1px)}
+.incident-modal{display:flex;flex-direction:column;width:min(720px,100%);max-height:calc(100dvh - 32px);overflow:hidden;border:1px solid #304632;border-radius:16px;background:#142a19;color:#eef3ed;box-shadow:0 24px 70px rgb(0 0 0 / 55%);color-scheme:dark;animation:incident-modal-in .22s ease-out}
+.incident-modal-header{display:flex;flex-shrink:0;align-items:flex-start;justify-content:space-between;gap:16px;padding:22px 28px 18px;border-bottom:1px solid #304632}
+.incident-modal-header h2{margin:0;color:#fff;font-size:var(--type-dialog-title,18px);font-weight:800}
+.incident-modal-header p{margin:6px 0 0;color:#91a494;font-size:var(--type-body,11px);line-height:1.6}
+.modal-close{display:grid;flex-shrink:0;width:32px;height:32px;place-items:center;border:1px solid #425543;border-radius:8px;background:#273a2a;color:#a5b1a5;font-size:22px;cursor:pointer}
+.incident-modal form{display:flex;flex-direction:column;min-height:0}
+.incident-modal fieldset{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;min-width:0;margin:0;padding:22px 28px;border:0;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#425c45 #142a19}
+.incident-modal label{display:flex;flex-direction:column;gap:7px;min-width:0;color:#96b29b;font-size:10px;font-weight:600;letter-spacing:.06em}
+.incident-modal .full-width,.incident-modal .api-error{grid-column:1/-1}
+.incident-modal input,.incident-modal select,.incident-modal textarea{width:100%;min-width:0;height:38px;box-sizing:border-box;border:1px solid #38513b;border-radius:8px;padding:0 10px;background:#203824;color:#eef3ed;font:inherit;font-size:var(--type-control,11px);font-weight:400;letter-spacing:normal;outline:none}
+.incident-modal textarea{min-height:84px;padding:10px;resize:vertical;line-height:1.6}
+.incident-modal input:focus,.incident-modal select:focus,.incident-modal textarea:focus{border-color:#43d36c;box-shadow:0 0 0 3px rgb(67 211 108 / 10%)}
+.incident-modal select:disabled{color:#93a095;background:#203424;opacity:.65}
+.incident-modal .api-error{margin:0;font-size:11px;line-height:1.6}
+.modal-actions{display:flex;flex-shrink:0;justify-content:flex-end;gap:10px;padding:16px 28px;border-top:1px solid #304632;background:#142a19}
+.modal-actions button{height:38px;padding:0 20px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer}
+.modal-actions .secondary{border:1px solid #38513b;background:#203824;color:#d6ddd4}
+.modal-actions .primary{border:0;background:#43d36c;color:#071c0d}
+.modal-close:hover:not(:disabled),.modal-actions .secondary:hover:not(:disabled){background:#2b4630}
+.register-alert:hover:not(:disabled),.modal-actions .primary:hover:not(:disabled){background:#64e587}
+.modal-actions button:focus-visible,.modal-close:focus-visible,.register-alert:focus-visible{outline:2px solid #43d36c;outline-offset:3px}
+@keyframes incident-modal-in{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+@media(max-width:600px){.incident-modal fieldset{grid-template-columns:1fr;padding:18px;gap:14px}.incident-modal-header{padding:18px}.modal-actions{padding:14px 18px}.modal-actions button{flex:1}}
+@media(prefers-reduced-motion:reduce){.incident-modal{animation:none}}
 
