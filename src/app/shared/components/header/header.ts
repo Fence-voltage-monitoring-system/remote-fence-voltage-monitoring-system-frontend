@@ -2,7 +2,7 @@ import { AfterViewInit, Component, HostListener, inject, OnDestroy, signal } fro
 import { NavigationEnd, Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { Bell, createIcons } from 'lucide';
-import { filter, Subscription } from 'rxjs';
+import { filter, Subscription, timer, merge, of, switchMap, catchError } from 'rxjs';
 import { UserMenuComponent } from '../user-menu/user-menu';
 import { NotificationService } from '../../../core/services/notification.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -27,10 +27,12 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     this.updatePageName(this.router.url);
     this.timer = setInterval(() => this.updateClock(), 1000);
     this.routeSubscription = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(event => this.updatePageName(event.urlAfterRedirects));
-    // subscribe to published stats so header updates immediately (including preview stats)
-    this.notifications.stats$.subscribe({ next: (s) => this.unread.set(s.unread), error: () => {/* ignore */} });
+    // Use the backend count for live events, page actions, and reconnects.
+    this.statsSubscription = this.notifications.stats$.subscribe({ next: (s) => this.unread.set(s.unread), error: () => {/* ignore */} });
     // subscribe to live notifications and update unread count when new unread items arrive
-    this.liveSub = this.notifications.connectLive().subscribe({ next: (item) => { if (!item.read) this.unread.update(n => n + 1); }, error: () => {/* ignore */} });
+    this.liveSub = merge(this.notifications.connectLive(), timer(0, 30000)).pipe(
+      switchMap(() => this.notifications.getStats().pipe(catchError(() => of(null))))
+    ).subscribe();
   }
 
   onSignOut(): void {
@@ -46,7 +48,7 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     createIcons({ icons: { Bell }, attrs: { 'stroke-width': 1.7, width: 17, height: 17 } });
     // fetch initial stats so the header shows correct unread count immediately
-    this.notifications.getStats().subscribe({ next: () => {/* stats published to stats$ */}, error: () => {/* ignore */} });
+
   }
 
   async toggleFullscreen(): Promise<void> {
@@ -80,3 +82,5 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
     );
   }
 }
+
+

@@ -1,8 +1,7 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { finalize, forkJoin, Subscription } from 'rxjs';
+import { finalize, forkJoin, Subscription, timer, Observable } from 'rxjs';
 import { NotificationService } from '../../core/services/notification.service';
-import { ManagementAccessService } from '../../core/services/management-access.service';
 import { UserService } from '../../core/services/user.service';
 import { UserNotificationPreferences } from '../user-profile/user-profile.models';
 import { NotificationDetail } from './components/notification-detail/notification-detail';
@@ -12,30 +11,70 @@ import { NotificationFilter, NotificationStats, SystemNotification } from './not
 
 @Component({selector:'app-notifications',standalone:true,imports:[NotificationSummary,NotificationFeed,NotificationDetail],templateUrl:'./notifications.html',styleUrls:['./notifications.css','./notifications-api.css']})
 export class Notifications implements OnInit,OnDestroy {
-  private readonly service=inject(NotificationService);private readonly userService=inject(UserService);private readonly router=inject(Router);private readonly access=inject(ManagementAccessService);private liveSubscription?:Subscription;
-  filter:NotificationFilter='ALL';selected:SystemNotification|null=null;notice='';error='';isLoading=false;isActionPending=false;usingPreview=false;page=1;readonly pageSize=20;totalPages=1;stats:NotificationStats={inApp:0,websocket:0,smsDelivered:0,unread:0};notifications:SystemNotification[]=[];
-  private readonly preview:SystemNotification[]=[{id:1,code:'NTF-081',title:'Wire Break Detected',message:'A wire break has been detected on EPF-MNR-A at SEC-004.',category:'CRITICAL',fence:'EPF-MNR-A',section:'SEC-004',time:'09:32',read:false,channels:['IN_APP','WEBSOCKET','SMS'],relatedAlert:'ALT-2847'},{id:2,code:'NTF-082',title:'Low Battery Warning',message:'Battery level at 45% on device DEV-EFE-0049.',category:'WARNING',fence:'EPF-MNR-A',section:'SEC-003',time:'08:45',read:true,channels:['IN_APP','WEBSOCKET']},{id:3,code:'NTF-083',title:'Voltage Drop Critical',message:'Voltage dropped below the critical threshold.',category:'CRITICAL',fence:'EPF-PLN-C',section:'SEC-002',time:'08:22',read:false,channels:['IN_APP','WEBSOCKET','SMS'],relatedAlert:'ALT-2844'},{id:4,code:'NTF-084',title:'Maintenance Assigned',message:'A field inspection and repair has been assigned.',category:'MAINTENANCE',fence:'EPF-MNR-A',section:'SEC-003',time:'08:15',read:true,channels:['IN_APP']},{id:5,code:'NTF-085',title:'Gateway Firmware Update',message:'Gateway firmware was updated successfully.',category:'SYSTEM',fence:'EPF-MNR-A',section:'All sections',time:'07:30',read:true,channels:['IN_APP','WEBSOCKET']},{id:6,code:'NTF-086',title:'Solar Charging Failure',message:'Solar panel reporting 0% charging efficiency.',category:'WARNING',fence:'EPF-HMB-E',section:'SEC-008',time:'07:30',read:false,channels:['IN_APP','WEBSOCKET']},{id:7,code:'NTF-087',title:'Daily Report Generated',message:'Fence health summary report is available.',category:'SYSTEM',fence:'All fences',section:'All sections',time:'06:00',read:true,channels:['IN_APP']}];
+  private readonly service=inject(NotificationService);
+  private readonly userService=inject(UserService);
+  private readonly router=inject(Router);
+  private readonly cdr=inject(ChangeDetectorRef);
+  private readonly subscriptions=new Subscription();
+  private loadRequest?:Subscription;
+  filter:NotificationFilter='ALL';selected:SystemNotification|null=null;notice='';error='';isLoading=false;isActionPending=false;
+  page=1;readonly pageSize=20;totalPages=1;totalItems=0;
+  stats:NotificationStats={inApp:0,websocket:0,smsDelivered:0,unread:0};
+  notifications:SystemNotification[]=[];
   preferences:UserNotificationPreferences={soundEnabled:true,desktopNotificationsEnabled:false,markAsReadOnOpen:true,quietHoursEnabled:false,quietHoursStart:'22:00',quietHoursEnd:'06:00',groupSimilarNotifications:true,groupingWindowMinutes:30,digestEnabled:false,digestIntervalMinutes:60};
-  ngOnInit(){this.load();this.loadPreferences();this.connectLive();}ngOnDestroy(){this.liveSubscription?.unsubscribe();}get visible(){const scoped=this.notifications.filter(item=>this.canView(item));return this.usingPreview?this.previewFilter(scoped):scoped;}get unread(){return this.stats.unread;}
-  changeFilter(filter:NotificationFilter){this.filter=filter;this.page=1;this.selected=null;this.loadNotifications();}
-  load(){this.isLoading=true;this.error='';forkJoin({page:this.service.getNotifications({filter:this.filter,page:this.page,pageSize:this.pageSize}),stats:this.service.getStats()}).pipe(finalize(()=>this.isLoading=false)).subscribe({next:({page,stats})=>{this.usingPreview=false;this.notifications=page.items;this.totalPages=page.totalPages;this.stats=stats;},error:()=>this.usePreview()});}
-  loadNotifications(){if(this.usingPreview)return;this.isLoading=true;this.service.getNotifications({filter:this.filter,page:this.page,pageSize:this.pageSize}).pipe(finalize(()=>this.isLoading=false)).subscribe({next:page=>{this.notifications=page.items;this.totalPages=page.totalPages;},error:()=>this.error='Unable to reload notifications.'});}
-  retry(){this.load();}select(item:SystemNotification){this.selected=item;if(this.preferences.markAsReadOnOpen)this.markRead(item);}
-  viewAlert(item:SystemNotification){if(!item.relatedAlert)return;if(!item.read)this.markRead(item);void this.router.navigate(['/alerts'],{queryParams:{alert:item.relatedAlert}});}
-  markRead(item:SystemNotification){if(item.read||this.isActionPending)return;if(this.usingPreview){this.applyRead(item);return;}this.isActionPending=true;this.service.markRead(item.id).pipe(finalize(()=>this.isActionPending=false)).subscribe({next:updated=>this.applyRead(item,updated),error:()=>this.error='Unable to mark the notification as read.'});}
-  markAll(){if(this.isActionPending)return;if(this.usingPreview){this.notifications.forEach(item=>item.read=true);this.refreshPreviewStats();return;}this.isActionPending=true;this.service.markAllRead().pipe(finalize(()=>this.isActionPending=false)).subscribe({next:()=>{this.notifications.forEach(item=>item.read=true);this.stats={...this.stats,unread:0};},error:()=>this.error='Unable to mark all notifications as read.'});}
-  clearRead(){if(this.isActionPending)return;if(this.usingPreview){this.notifications=this.notifications.filter(item=>!item.read);if(this.selected?.read)this.selected=null;this.refreshPreviewStats();return;}this.isActionPending=true;this.service.clearRead().pipe(finalize(()=>this.isActionPending=false)).subscribe({next:()=>this.load(),error:()=>this.error='Unable to clear read notifications.'});}
-  private loadPreferences(){this.userService.getNotificationPreferences().subscribe({next:value=>this.preferences=value,error:()=>{}});}
-  private connectLive(){this.liveSubscription=this.service.connectLive().subscribe({next:item=>{if(!this.canView(item))return;const index=this.notifications.findIndex(current=>current.id===item.id);if(index>=0)this.notifications[index]=item;else this.notifications=[item,...this.notifications];if(!item.read)this.stats={...this.stats,inApp:this.stats.inApp+1,unread:this.stats.unread+1,websocket:this.stats.websocket+1};this.deliverBrowserNotification(item);},error:()=>{}});}
+  ngOnInit(){
+    this.load();
+    this.subscriptions.add(this.userService.getNotificationPreferences().subscribe({next:p=>{this.preferences=p;this.cdr.markForCheck();},error:()=>{}}));
+    this.subscriptions.add(this.service.connectLive().subscribe({next:item=>{this.deliverBrowserNotification(item);if(!this.isActionPending)this.load();},error:()=>{}}));
+    this.subscriptions.add(timer(30000,30000).subscribe(()=>{if(!this.isLoading&&!this.isActionPending)this.load();}));
+  }
+  ngOnDestroy(){this.loadRequest?.unsubscribe();this.subscriptions.unsubscribe();}
+  get visible(){return this.notifications.filter(item=>this.filter==='ALL'||(this.filter==='UNREAD'?!item.read:item.category===this.filter));}
+  get unread(){return this.stats.unread;}
+  changeFilter(filter:NotificationFilter){this.filter=filter;this.page=1;this.selected=null;this.notifications=[];this.totalItems=0;this.load();}
+  changePage(page:number){if(page<1||page>this.totalPages||this.isLoading)return;this.page=page;this.selected=null;this.notifications=[];this.load();}
+  load(){
+    this.loadRequest?.unsubscribe();this.isLoading=true;this.error='';
+    this.loadRequest=forkJoin({page:this.service.getNotifications({filter:this.filter,page:this.page,pageSize:this.pageSize}),stats:this.service.getStats()})
+      .pipe(finalize(()=>{this.isLoading=false;this.cdr.markForCheck();}))
+      .subscribe({next:({page,stats})=>{
+        this.notifications=page.items;this.totalPages=Math.max(1,page.totalPages);this.totalItems=page.totalItems;this.stats=stats;
+        if(this.selected)this.selected=page.items.find(n=>n.id===this.selected?.id)??this.selected;
+        if(this.page>this.totalPages){this.page=this.totalPages;this.load();}
+      },error:()=>{this.error='Unable to load notifications. Check your connection and retry.';}});
+  }
+  retry(){this.load();}
+  select(item:SystemNotification){this.selected=item;if(this.preferences.markAsReadOnOpen&&!item.read)this.markRead(item);}
+  viewAlert(item:SystemNotification){if(!item.relatedAlert)return;void this.router.navigate(['/alerts'],{queryParams:{alert:item.relatedAlert}});}
+  markRead(item:SystemNotification){
+    if(item.read||this.isActionPending)return;
+    this.perform(this.service.markRead(item.id),updated=>{
+      Object.assign(item,updated);if(this.selected?.id===item.id)this.selected=updated;
+      this.stats={...this.stats,unread:Math.max(0,this.stats.unread-1)};
+      this.service.updateStats(this.stats);
+      this.notice='Notification marked as read.';
+    },'Unable to mark the notification as read.');
+  }
+  markAll(){if(this.isActionPending)return;this.perform(this.service.markAllRead(),()=>{
+    this.notifications=this.notifications.map(item=>({...item,read:true}));
+    this.stats={...this.stats,unread:0};
+    this.service.updateStats(this.stats);
+    if(this.selected)this.selected={...this.selected,read:true};this.notice='All notifications marked as read.';
+  },'Unable to mark all notifications as read.');}
+  clearRead(){if(this.isActionPending)return;this.perform(this.service.clearRead(),()=>{
+    if(this.selected?.read)this.selected=null;this.notice='Read notifications cleared.';
+  },'Unable to clear read notifications.');}
+  private perform<T>(request:Observable<T>,success:(value:T)=>void,message:string){
+    // An older list response must not overwrite a confirmed read action.
+    this.loadRequest?.unsubscribe();
+    this.isActionPending=true;this.error='';
+    this.subscriptions.add(request.pipe(finalize(()=>{this.isActionPending=false;this.cdr.markForCheck();})).subscribe({
+      next:value=>{success(value);this.load();},
+      error:()=>{this.error=message;}
+    }));
+  }
   private deliverBrowserNotification(item:SystemNotification){const silenced=item.category!=='CRITICAL'&&this.isQuietTime();if(this.preferences.soundEnabled&&!silenced)this.playNotificationTone();if(this.preferences.desktopNotificationsEnabled&&!silenced&&typeof window.Notification!=='undefined'&&window.Notification.permission==='granted')new window.Notification(item.title,{body:item.message,tag:item.relatedAlert??item.code});}
   private isQuietTime(){if(!this.preferences.quietHoursEnabled)return false;const now=new Date();const minutes=now.getHours()*60+now.getMinutes();const parse=(value:string)=>{const[hours,mins]=value.split(':').map(Number);return hours*60+mins;};const start=parse(this.preferences.quietHoursStart),end=parse(this.preferences.quietHoursEnd);return start<=end?minutes>=start&&minutes<end:minutes>=start||minutes<end;}
   private playNotificationTone(){try{const AudioContextClass=window.AudioContext;const context=new AudioContextClass();const oscillator=context.createOscillator();const gain=context.createGain();oscillator.frequency.value=660;gain.gain.value=.04;oscillator.connect(gain);gain.connect(context.destination);oscillator.start();oscillator.stop(context.currentTime+.12);oscillator.onended=()=>void context.close();}catch{}}
-  private applyRead(target:SystemNotification,updated?:SystemNotification){Object.assign(target,updated??{read:true});this.stats={...this.stats,unread:Math.max(0,this.stats.unread-1)};}
-  private usePreview(){this.usingPreview=true;this.notifications=this.preview.map(item=>({...item,channels:[...item.channels]}));this.totalPages=1;this.error='The notification API is unavailable. Displaying local preview data.';this.refreshPreviewStats();}
-  private refreshPreviewStats(){const items=this.notifications.filter(item=>this.canView(item));this.stats={inApp:items.length,websocket:items.filter(item=>item.channels.includes('WEBSOCKET')).length,smsDelivered:items.filter(item=>item.channels.includes('SMS')).length,unread:items.filter(item=>!item.read).length};
-    // publish stats for other UI elements (header, menu)
-    this.service.updateStats(this.stats);
-  }
-  private previewFilter(items:SystemNotification[]){return items.filter(item=>this.filter==='ALL'||this.filter==='UNREAD'&&!item.read||item.category===this.filter);}
-  private canView(item:SystemNotification){if(item.fence==='All fences')return this.access.scope().role==='SUPER_ADMIN';const locations:Record<string,[string,string]>={'EPF-MNR-A':['Uva','Monaragala'],'EPF-PLN-C':['North Central','Polonnaruwa'],'EPF-HMB-E':['Southern','Hambantota'],'EPF-ANR-B':['North Central','Anuradhapura']};const [province,district]=item.province&&item.district?[item.province,item.district]:(locations[item.fence]??['','']);return this.access.canView(province,district,item.fence);}
+
 }

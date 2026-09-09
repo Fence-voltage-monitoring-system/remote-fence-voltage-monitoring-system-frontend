@@ -106,7 +106,7 @@ export interface SessionManagementSettings {
 }
 export interface ActiveSessionRecord {
   id: string;
-  userId: number;
+  userId: string;
   userName: string;
   role: string;
   device: string;

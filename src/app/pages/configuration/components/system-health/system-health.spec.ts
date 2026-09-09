@@ -16,7 +16,7 @@ describe('SystemHealth', () => {
 
   it('opens and closes system event details', async () => {
     const component = await createComponent();
-    component.openEvent(component.snapshot.events[0]);
+    component.openEvent({id:'EVT-901',occurredAt:'2026-09-09T10:00:00Z',component:'Test',severity:'INFO',message:'Test event',status:'OPEN'});
     expect(component.selectedEvent?.id).toBe('EVT-901');
     component.closeEvent();
     expect(component.selectedEvent).toBeNull();

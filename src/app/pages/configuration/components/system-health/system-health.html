@@ -2,6 +2,7 @@
   <header><div><h2>System Health</h2><p>Monitor platform services, gateway communication and critical background processing.</p></div><div class="header-actions"><label><input type="checkbox" [(ngModel)]="autoRefreshEnabled"/> Auto-refresh every {{refreshIntervalSeconds}}s</label><button type="button" [disabled]="isLoading" (click)="refresh()">{{isLoading?'Refreshing…':'↻ Refresh Health'}}</button></div></header>
   @if(notice){<div class="notice" role="status">{{notice}}<button type="button" (click)="notice=''">×</button></div>}
 
+  @if(hasSnapshot){
   <div class="summary">
     <article [attr.data-state]="snapshot.overallState"><span>Overall status</span><strong>{{stateLabel(snapshot.overallState)}}</strong></article>
     <article><span>System uptime</span><strong>{{formatUptime(snapshot.uptimeSeconds)}}</strong></article>
@@ -18,6 +19,7 @@
 
   <fieldset><legend>Recent System Events</legend><div class="table-wrap"><table><thead><tr><th>Time</th><th>Component</th><th>Severity</th><th>Message</th><th>Status</th><th></th></tr></thead><tbody>@for(event of snapshot.events;track event.id){<tr><td>{{event.occurredAt|date:'dd MMM, HH:mm:ss'}}</td><td>{{event.component}}</td><td><b [class]="event.severity.toLowerCase()">{{event.severity}}</b></td><td>{{event.message}} <code>{{event.id}}</code></td><td>{{event.status}}</td><td><button class="details" type="button" (click)="openEvent(event)">Details</button></td></tr>}</tbody></table></div></fieldset>
 
+  } @else { <p role="status">{{isLoading?'Loading system health…':'No health data available. Use Refresh Health to retry.'}}</p> }
   @if(pendingJob){<div class="modal" role="dialog" aria-modal="true"><section><h3>Retry {{pendingJob.name}}?</h3><p>This queues a new execution. It does not modify the job schedule.</p><label>Administrative reason<textarea [(ngModel)]="retryReason" placeholder="Explain why this job should be retried"></textarea></label><footer><button type="button" (click)="cancelRetry()">Cancel</button><button class="confirm" type="button" [disabled]="!retryReason.trim()||!!retryingJobId" (click)="confirmRetry()">{{retryingJobId?'Retrying…':'Confirm retry'}}</button></footer></section></div>}
   @if(selectedEvent){<div class="modal" role="dialog" aria-modal="true"><section><h3>System Event {{selectedEvent.id}}</h3><dl class="event-detail"><div><dt>Component</dt><dd>{{selectedEvent.component}}</dd></div><div><dt>Severity</dt><dd>{{selectedEvent.severity}}</dd></div><div><dt>Occurred</dt><dd>{{selectedEvent.occurredAt|date:'dd MMM yyyy, HH:mm:ss'}}</dd></div><div><dt>Status</dt><dd>{{selectedEvent.status}}</dd></div></dl><p>{{selectedEvent.message}}</p><footer><button type="button" (click)="closeEvent()">Close</button></footer></section></div>}
 </section>

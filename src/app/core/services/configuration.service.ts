@@ -5,7 +5,7 @@ import { AlertRuleSettings, ConfigurationSection, DataRetentionSettings, General
 
 export type ConfigurationValue=GeneralConfiguration|VoltageThresholds|AlertRuleSettings|NotificationSettings|DataRetentionSettings|SecurityPolicySettings|SessionManagementSettings|MapSettings;
 export interface ConfigurationSaveRequest<T extends ConfigurationValue>{value:T;reason:string;}
-export interface ConfigurationSaveResponse<T extends ConfigurationValue>{section:ConfigurationSection;value:T;updatedBy:string;updatedAt:string;version:number;}
+export interface ConfigurationSaveResponse<T extends ConfigurationValue>{section:ConfigurationSection;value:T;updatedBy:string|null;updatedAt:string;version:number;}
 
 @Injectable({providedIn:'root'})
 export class ConfigurationService {
@@ -14,5 +14,5 @@ export class ConfigurationService {
   saveSection<T extends ConfigurationValue>(section:ConfigurationSection,value:T,reason:string):Observable<ConfigurationSaveResponse<T>>{return this.http.put<ConfigurationSaveResponse<T>>(`${this.endpoint}/${section}`,{value,reason},{withCredentials:true});}
   getSessionOverview():Observable<SessionOverview>{return this.http.get<SessionOverview>(`${this.endpoint}/sessions/active`,{withCredentials:true});}
   revokeSession(sessionId:string,reason:string):Observable<{message:string}>{return this.http.post<{message:string}>(`${this.endpoint}/sessions/active/${sessionId}/revoke`,{reason},{withCredentials:true});}
-  revokeUserSessions(userId:number,reason:string):Observable<{message:string;revokedSessions:number}>{return this.http.post<{message:string;revokedSessions:number}>(`${this.endpoint}/sessions/users/${userId}/revoke`,{reason},{withCredentials:true});}
+  revokeUserSessions(userId:string,reason:string):Observable<{message:string;revokedSessions:number}>{return this.http.post<{message:string;revokedSessions:number}>(`${this.endpoint}/sessions/users/${userId}/revoke`,{reason},{withCredentials:true});}
 }

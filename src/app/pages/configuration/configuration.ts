@@ -1,6 +1,6 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { finalize } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { ConfigurationService, ConfigurationValue } from '../../core/services/configuration.service';
 import { MapSettingsService } from '../../core/services/map-settings.service';
 import { ConfigurationMenu } from './components/configuration-menu/configuration-menu';
@@ -23,8 +23,18 @@ import { AlertRuleSettings, ConfigurationSection, DataRetentionSettings, General
   templateUrl: './configuration.html',
   styleUrl: './configuration.css'
 })
-export class Configuration implements OnInit {
+export class Configuration implements OnInit, OnDestroy {
   private readonly service=inject(ConfigurationService);
+  private readonly cdr=inject(ChangeDetectorRef);
+  private loadRequest?:Subscription;
+  private saveRequest?:Subscription;
+  loadError='';
+  saveError='';
+  private readonly metadata=new Map<ConfigurationSection,{updatedAt:string;updatedBy:string}>();
+  get ready(){return this.active==='health'||this.loadedSections.has(this.active);}
+  ngOnDestroy(){this.loadRequest?.unsubscribe();this.saveRequest?.unsubscribe();}
+  retryLoad(){this.loadSection(this.active);}
+
   private readonly mapSettingsStore=inject(MapSettingsService);
   readonly voltageDefaults: VoltageThresholds = { healthyKv: 5, warningKv: 3, criticalKv: 1.5, lowBatteryPercent: 20 };
   readonly generalDefaults: GeneralConfiguration = {
@@ -82,8 +92,8 @@ export class Configuration implements OnInit {
   showSave = false;
   isSaving = false;
   isLoading = false;
-  lastModified = '2025-07-13 14:22:05';
-  lastModifiedBy = 'Suresh Ambegoda';
+  lastModified = '—';
+  lastModifiedBy = '—';
   private readonly loadedSections = new Set<ConfigurationSection>();
 
   ngOnInit(): void {
@@ -177,7 +187,15 @@ export class Configuration implements OnInit {
   }
 
   selectSection(section: ConfigurationSection): void {
+    if(this.isSaving)return;
+    this.loadRequest?.unsubscribe();
+    this.showSave=false;
+    this.saveError='';
+    this.loadError='';
     this.active = section;
+    const metadata=this.metadata.get(section);
+    this.lastModified=metadata?.updatedAt??'—';
+    this.lastModifiedBy=metadata?.updatedBy??'—';
     this.notice = '';
     this.loadSection(section);
   }
@@ -207,32 +225,37 @@ export class Configuration implements OnInit {
   }
 
   confirmSave(reason: string): void {
-    if(this.isSaving || !this.valid || !reason.trim())return;
+    if(this.isSaving || !this.ready || !this.dirty || !this.valid || !reason.trim())return;
     const section=this.active;
     const value=this.activeValue();
-    this.isSaving=true;
-    this.service.saveSection(section,value,reason).pipe(finalize(()=>this.isSaving=false)).subscribe({
-      next:response=>{this.applyResponse(section,response.value);this.commitCurrent();this.lastModified=response.updatedAt;this.lastModifiedBy=response.updatedBy;this.showSave=false;this.notice=`Configuration saved by ${response.updatedBy}.`;},
-      error:(error:HttpErrorResponse)=>{this.showSave=false;this.notice=this.apiErrorMessage(error,'save');}
+    this.isSaving=true;this.saveError='';
+    this.saveRequest=this.service.saveSection(section,value,reason.trim()).pipe(finalize(()=>{this.isSaving=false;this.cdr.markForCheck();})).subscribe({
+      next:response=>{this.applyResponse(section,response.value);this.commitSection(section);this.updateMetadata(section,response.updatedAt,response.updatedBy);this.showSave=false;this.notice=`Configuration saved by ${response.updatedBy}.`;},
+      error:(error:HttpErrorResponse)=>{this.saveError=this.apiErrorMessage(error,'save');}
     });
   }
 
   private loadSection(section: ConfigurationSection): void {
     if (this.loadedSections.has(section) || !this.isImplemented(section)) return;
-    this.isLoading = true;
-    this.service.getSection(section).pipe(finalize(() => this.isLoading = false)).subscribe({
+    this.loadRequest?.unsubscribe();
+    this.isLoading = true;this.loadError='';
+    this.loadRequest=this.service.getSection(section).pipe(finalize(() => {this.isLoading = false;this.cdr.markForCheck();})).subscribe({
       next: response => {
         this.applyResponse(section, response.value);
-        this.commitCurrent();
-        this.lastModified = response.updatedAt;
-        this.lastModifiedBy = response.updatedBy;
+        this.commitSection(section);
+        this.updateMetadata(section,response.updatedAt,response.updatedBy);
         this.loadedSections.add(section);
       },
       error: (error: HttpErrorResponse) => {
-        this.loadedSections.add(section);
-        this.notice = this.apiErrorMessage(error, 'load');
+        this.loadError = this.apiErrorMessage(error, 'load');
       }
     });
+  }
+
+  private updateMetadata(section:ConfigurationSection,updatedAt:string,updatedBy:string|null){
+    const data={updatedAt,updatedBy:updatedBy||'System defaults'};
+    this.metadata.set(section,data);
+    if(this.active===section){this.lastModified=data.updatedAt;this.lastModifiedBy=data.updatedBy;}
   }
 
   private isImplemented(section: ConfigurationSection): boolean {
@@ -254,7 +277,7 @@ export class Configuration implements OnInit {
   }
 
   private apiErrorMessage(error: HttpErrorResponse, action: 'load' | 'save'): string {
-    if (error.status === 0) return `Configuration API unavailable. Unable to ${action} settings; ${action === 'load' ? 'showing safe preview defaults' : 'your changes remain unsaved'}.`;
+    if (error.status === 0) return `Configuration API unavailable. Unable to ${action} settings; ${action === 'load' ? 'settings have not been loaded' : 'your changes remain unsaved'}.`;
     if (error.status === 401) return 'Your session has expired. Sign in again before changing configuration.';
     if (error.status === 403) return 'You do not have permission to change system configuration.';
     if (error.status === 409) return 'These settings were changed by another administrator. Reload the page and review the latest version.';
@@ -273,14 +296,14 @@ export class Configuration implements OnInit {
     return this.voltageValue;
   }
 
-  private commitCurrent(): void {
-    if (this.active === 'general') this.savedGeneral = { ...this.generalValue };
-    else if (this.active === 'alerts') this.savedAlerts = { ...this.alertValue };
-    else if (this.active === 'notifications') this.savedNotifications = { ...this.notificationValue };
-    else if (this.active === 'retention') this.savedRetention = { ...this.retentionValue };
-    else if (this.active === 'security') this.savedSecurity = { ...this.securityValue };
-    else if (this.active === 'sessions') this.savedSessions = { ...this.sessionValue };
-    else if (this.active === 'map') this.savedMap = { ...this.mapValue };
+  private commitSection(section:ConfigurationSection): void {
+    if (section === 'general') this.savedGeneral = { ...this.generalValue };
+    else if (section === 'alerts') this.savedAlerts = { ...this.alertValue };
+    else if (section === 'notifications') this.savedNotifications = { ...this.notificationValue };
+    else if (section === 'retention') this.savedRetention = { ...this.retentionValue };
+    else if (section === 'security') this.savedSecurity = { ...this.securityValue };
+    else if (section === 'sessions') this.savedSessions = { ...this.sessionValue };
+    else if (section === 'map') this.savedMap = { ...this.mapValue };
     else this.savedVoltage = { ...this.voltageValue };
   }
 
@@ -289,6 +312,6 @@ export class Configuration implements OnInit {
       this.notice = 'Save or cancel retention-policy changes before starting a cleanup job.';
       return;
     }
-    this.notice = 'Manual cleanup request prepared. Backend confirmation and an audit reason are required before execution.';
+    this.notice = 'Manual cleanup is not available yet. Retention settings can be saved, but no cleanup job has been started.';
   }
 }

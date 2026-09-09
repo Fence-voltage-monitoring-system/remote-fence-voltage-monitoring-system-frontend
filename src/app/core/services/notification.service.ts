@@ -1,4 +1,4 @@
-import{HttpClient,HttpParams}from'@angular/common/http';import{inject,Injectable}from'@angular/core';import{BehaviorSubject,Observable}from'rxjs';import{tap}from'rxjs/operators';import{NotificationPage,NotificationQuery,NotificationStats,SystemNotification}from'../../pages/notifications/notifications.models';
+import{HttpClient,HttpParams}from'@angular/common/http';import{inject,Injectable}from'@angular/core';import{BehaviorSubject,Observable,share}from'rxjs';import{tap}from'rxjs/operators';import{NotificationPage,NotificationQuery,NotificationStats,SystemNotification}from'../../pages/notifications/notifications.models';
 
 import { LiveUpdatesService } from './live-updates.service';
 @Injectable({providedIn:'root'})
@@ -21,7 +21,10 @@ export class NotificationService{
 	clearRead():Observable<{deleted:number}>{return this.http.delete<{deleted:number}>(`${this.endpoint}/read`,{withCredentials:true});}
 
 	private readonly live=inject(LiveUpdatesService);
-	connectLive():Observable<SystemNotification>{return this.live.connect<SystemNotification>('notifications');}
+	private readonly liveMessages=this.live.connect<SystemNotification>('notifications').pipe(share());
+	connectLive():Observable<SystemNotification>{return this.liveMessages;}
 }
+
+
 
 

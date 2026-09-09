@@ -1,8 +1,10 @@
 <main><div class="page">
-  <header><div><p>Administration</p><h1>System Configuration</h1><span>Configure operational rules and system values</span></div><b>● SYSTEM ONLINE</b></header>
+  <header><div><p>Administration</p><h1>System Configuration</h1><span>Configure operational rules and system values</span></div><b>Super Admin settings</b></header>
   @if(notice){<div class="notice">{{notice}}<button (click)="notice=''">×</button></div>}
+  @if(loadError){<div class="validation" role="alert">{{loadError}} <button (click)="retryLoad()">Retry</button></div>}
   <section class="layout">
     <app-configuration-menu [active]="active" (sectionChange)="selectSection($event)" />
+    <fieldset class="configuration-content" [disabled]="!ready||isLoading||isSaving">
     @if(active === 'general') {
       <app-general-configuration-editor [value]="generalValue" (valueChange)="generalValue=$event" />
     } @else if(active === 'alerts') {
@@ -22,11 +24,12 @@
     } @else {
       <app-voltage-threshold-editor [value]="voltageValue" (valueChange)="voltageValue=$event" />
     }
+    </fieldset>
   </section>
   @if(active!=='health'){
     @if(isLoading){<div class="notice" role="status">Loading saved configuration…</div>}
     @if(!valid){<div class="validation" role="alert">@for(message of validationMessages; track message){<div>{{message}}</div>}</div>}
-    <footer><p>Last modified by <strong>{{lastModifiedBy}}</strong> on <code>{{lastModified}}</code></p><div><button (click)="reset()" [disabled]="isLoading||isSaving">↻ Reset to Default</button><button (click)="cancel()" [disabled]="!dirty||isSaving">Cancel</button><button class="save" [disabled]="!dirty||!valid||isLoading||isSaving" (click)="showSave=true">{{isSaving ? 'Saving…' : '▣ Save Configuration'}}</button></div></footer>
+    <footer><p>Last modified by <strong>{{lastModifiedBy}}</strong> on <code>{{lastModified}}</code></p><div><button (click)="reset()" [disabled]="!ready||isLoading||isSaving">↻ Reset to Default</button><button (click)="cancel()" [disabled]="!ready||!dirty||isSaving">Cancel</button><button class="save" [disabled]="!ready||!dirty||!valid||isLoading||isSaving" (click)="saveError='';showSave=true">{{isSaving ? 'Saving…' : '▣ Save Configuration'}}</button></div></footer>
   }
 </div></main>
-@if(showSave){<app-save-configuration-modal (closed)="showSave=false" (confirmed)="confirmSave($event)" />}
+@if(showSave){<app-save-configuration-modal [saving]="isSaving" [error]="saveError" (closed)="showSave=false" (confirmed)="confirmSave($event)" />}
