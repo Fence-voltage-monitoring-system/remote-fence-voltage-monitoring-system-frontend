@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, EventEmitter, HostListener, inject, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, inject, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize, timeout } from 'rxjs';
 import { UserService } from '../../../../core/services/user.service';
@@ -9,6 +9,7 @@ import { CurrentUserProfile } from '../../../user-profile/user-profile.models';
 @Component({ selector: 'app-user-create-drawer', standalone: true, imports: [ReactiveFormsModule], templateUrl: './user-create-drawer.html', styleUrl: './user-create-drawer.css' })
 export class UserCreateDrawer implements OnInit {
   private readonly userService = inject(UserService);
+  private readonly cdr = inject(ChangeDetectorRef);
   @Output() closed = new EventEmitter<void>();
   @Output() userCreated = new EventEmitter<SystemUser>();
   @Output() userUpdated = new EventEmitter<SystemUser>();
@@ -205,7 +206,7 @@ export class UserCreateDrawer implements OnInit {
     this.fences = [];
     if (!this.needsDistrict) return;
     this.isLoadingDistricts = true;
-    this.userService.getDistricts(provinceId).pipe(finalize(() => { this.isLoadingDistricts = false; })).subscribe({
+    this.userService.getDistricts(provinceId).pipe(finalize(() => { this.isLoadingDistricts = false; this.cdr.markForCheck(); })).subscribe({
       next: (districts) => { this.districts = districts; },
       error: () => { this.apiError = 'Unable to load districts.'; },
     });

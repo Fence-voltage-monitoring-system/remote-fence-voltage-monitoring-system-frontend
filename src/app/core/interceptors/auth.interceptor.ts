@@ -19,7 +19,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      if ((error.status === 401 || error.status === 403) && !req.url.includes("/api/auth/login")) {
+      // A forbidden action does not invalidate an authenticated session.
+      if (error.status === 401 && !req.url.includes("/api/auth/login")) {
         authService.clearSessionLocally();
         void router.navigate(["/"]);
       }

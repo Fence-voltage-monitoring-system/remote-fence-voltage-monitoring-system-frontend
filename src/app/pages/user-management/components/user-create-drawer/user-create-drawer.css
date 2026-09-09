@@ -5,3 +5,8 @@
 .control::placeholder { color: #8fa392; }
 .control:focus { border-color: #43d36c; box-shadow: 0 0 0 3px rgb(67 211 108 / 10%); }
 .error { margin: 0; color: #ff8e84; font-size: 9px; }
+.control.district-list { height: 132px; padding: 6px; overflow-y: auto; color-scheme: dark; scrollbar-width: thin; scrollbar-color: #526b56 #203824; }
+.district-list option { padding: 7px 10px; border-radius: 5px; color: #eef3ed; background: #203824; }
+.district-list option:checked { color: #b9f6ca; background: #285b36; }
+.district-list option:disabled { color: #8fa392; }
+.district-help { color: #91a494; font-size: 10px; line-height: 1.5; }
