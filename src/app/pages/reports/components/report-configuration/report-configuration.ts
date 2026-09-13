@@ -11,6 +11,7 @@ export class ReportConfiguration {
   @Input() fences:ReportOption[]=[];
   @Input() sections:ReportOption[]=[];
   @Input() optionsLoading=false;
+  @Input() optionsUnavailable=false;
   @Input() generating=false;
   @Output() valueChange=new EventEmitter<ReportConfigurationValue>();
   @Output() previewRequested=new EventEmitter<void>();

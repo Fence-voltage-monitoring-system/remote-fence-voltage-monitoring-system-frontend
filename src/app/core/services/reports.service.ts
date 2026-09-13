@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
+import { GeneratedReport, ReportFilterOptions, ReportGenerationRequest, ReportHistoryPage, ReportPreview } from '../../pages/reports/reports.models';
 import { AnalysisPeriod } from '../../pages/historical-analysis/historical-analysis.models';
 
 export interface HistoricalAnalysisData {
@@ -24,58 +25,21 @@ export class ReportsService {
     return this.http.get<HistoricalAnalysisData>(`${this.baseUrl}/historical-analysis`, { params, withCredentials: true });
   }
 
-  // Reports page methods
-  preview(request: any): Observable<any> {
-    return of({
-      title: 'Fence Performance Report Preview',
-      recordCount: 1420,
-      scopeLabel: request.scope?.province || 'All Regions',
-      dateRangeLabel: request.dateRange?.preset || 'Last 30 Days',
-      warnings: []
-    });
+  preview(request: ReportGenerationRequest): Observable<ReportPreview> {
+    return this.http.post<ReportPreview>('/api/reports/preview', request);
   }
-
-  generate(request: any): Observable<any> {
-    return of({
-      id: Date.now(),
-      name: 'Fence Health Report',
-      generatedBy: 'System Administrator',
-      dateRange: 'Current Period',
-      generatedAt: new Date().toISOString(),
-      status: 'READY',
-      size: '1.8 MB',
-      format: request.format || 'PDF'
-    });
+  generate(request: ReportGenerationRequest): Observable<GeneratedReport> {
+    return this.http.post<GeneratedReport>('/api/reports', request);
   }
-
   download(id: number): Observable<Blob> {
-    const blob = new Blob(['Sample Report Content'], { type: 'application/pdf' });
-    return of(blob);
+    return this.http.get(`/api/reports/${id}/download`, { responseType: 'blob' });
   }
-
-  getFilterOptions(scope: any): Observable<any> {
-    return of({
-      provinces: [{ value: 'Uva', label: 'Uva' }, { value: 'Western', label: 'Western' }],
-      districts: [{ value: 'Monaragala', label: 'Monaragala' }, { value: 'Puttalam', label: 'Puttalam' }],
-      fences: [{ value: 'EPF-MON-01', label: 'Monaragala Elephant Protection Fence' }],
-      sections: [{ value: 'SEC-001', label: 'SEC-001' }]
-    });
+  getFilterOptions(scope: {province: string; district: string; fence: string}): Observable<ReportFilterOptions> {
+    let params = new HttpParams();
+    for (const [key, value] of Object.entries(scope)) if (value) params = params.set(key, value);
+    return this.http.get<ReportFilterOptions>('/api/reports/filters', { params });
   }
-
-  getHistory(): Observable<any> {
-    return of({
-      items: [
-        {
-          id: 1,
-          name: 'Fence Health Report — September 2026',
-          generatedBy: 'System Administrator',
-          dateRange: '01 Sep – 08 Sep 2026',
-          generatedAt: new Date().toISOString(),
-          status: 'READY',
-          size: '2.4 MB',
-          format: 'PDF'
-        }
-      ]
-    });
+  getHistory(page = 0): Observable<ReportHistoryPage> {
+    return this.http.get<ReportHistoryPage>('/api/reports', { params: { page } });
   }
 }

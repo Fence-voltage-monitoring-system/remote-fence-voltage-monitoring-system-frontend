@@ -28,7 +28,8 @@
   </section>
   @if(active!=='health'){
     @if(isLoading){<div class="notice" role="status">Loading saved configuration…</div>}
-    @if(!valid){<div class="validation" role="alert">@for(message of validationMessages; track message){<div>{{message}}</div>}</div>}
+    @if(ready&&!valid){<div class="validation" role="alert">@for(message of validationMessages; track message){<div>{{message}}</div>}</div>}
+    @if(saveDisabledReason){<p class="notice" role="status">{{saveDisabledReason}}</p>}
     <footer><p>Last modified by <strong>{{lastModifiedBy}}</strong> on <code>{{lastModified}}</code></p><div><button (click)="reset()" [disabled]="!ready||isLoading||isSaving">↻ Reset to Default</button><button (click)="cancel()" [disabled]="!ready||!dirty||isSaving">Cancel</button><button class="save" [disabled]="!ready||!dirty||!valid||isLoading||isSaving" (click)="saveError='';showSave=true">{{isSaving ? 'Saving…' : '▣ Save Configuration'}}</button></div></footer>
   }
 </div></main>

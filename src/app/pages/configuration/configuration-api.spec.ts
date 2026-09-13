@@ -56,5 +56,28 @@ describe('Configuration API integration',()=>{
     expect(page.showSave).toBe(true);expect(page.generalValue.systemName).toBe('Unsaved');
     expect(page.dirty).toBe(true);expect(page.saveError).toBe('Invalid configuration');
   });
+  it('explains disabled saving and clears validation after correction',()=>{
+    expect(page.saveDisabledReason).toContain('loading');
+    http.expectOne('/api/configuration/general').flush(reply('general',page.generalDefaults));
+    expect(page.saveDisabledReason).toContain('Change a setting');
+    page.generalValue={...page.generalValue,offlineTimeoutMinutes:1,lateArrivalGraceMinutes:5};
+    expect(page.valid).toBe(false);
+    expect(page.validationMessages).toContain('Offline timeout must be greater than late-arrival grace.');
+    page.generalValue={...page.generalValue,offlineTimeoutMinutes:10};
+    expect(page.valid).toBe(true);
+    expect(page.saveDisabledReason).toBe('');
+    page.confirmSave('Correct timeout');
+    http.expectOne('/api/configuration/general').flush(reply('general',page.generalValue));
+    expect(page.dirty).toBe(false);
+  });
+  it('explains voltage ordering and allows corrected thresholds',()=>{
+    http.expectOne('/api/configuration/general').flush(reply('general',page.generalDefaults));
+    page.selectSection('voltage');
+    http.expectOne('/api/configuration/voltage').flush(reply('voltage',page.voltageDefaults));
+    page.voltageValue={...page.voltageValue,warningKv:8};
+    expect(page.validationMessages[0]).toContain('Healthy > Warning > Critical');
+    page.voltageValue={...page.voltageValue,healthyKv:9};
+    expect(page.valid).toBe(true);
+    expect(page.saveDisabledReason).toBe('');
+  });
 });
-

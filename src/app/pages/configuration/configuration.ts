@@ -32,6 +32,14 @@ export class Configuration implements OnInit, OnDestroy {
   saveError='';
   private readonly metadata=new Map<ConfigurationSection,{updatedAt:string;updatedBy:string}>();
   get ready(){return this.active==='health'||this.loadedSections.has(this.active);}
+  get saveDisabledReason():string {
+    if(this.isLoading)return 'Wait until the saved settings finish loading.';
+    if(!this.ready)return 'Settings could not be loaded. Click Retry above before editing.';
+    if(this.isSaving)return 'Saving your changes…';
+    if(!this.valid)return 'Correct the validation messages below before saving.';
+    if(!this.dirty)return 'Change a setting to enable Save Configuration.';
+    return '';
+  }
   ngOnDestroy(){this.loadRequest?.unsubscribe();this.saveRequest?.unsubscribe();}
   retryLoad(){this.loadSection(this.active);}
 
@@ -161,6 +169,25 @@ export class Configuration implements OnInit, OnDestroy {
   }
 
   get validationMessages(): string[] {
+    if(this.active==='general') {
+      const v=this.generalValue; const messages:string[]=[];
+      if(!v.systemName.trim())messages.push('Enter a system name.');
+      if(!v.organizationName.trim())messages.push('Enter an organization name.');
+      if(!v.systemCode.trim())messages.push('Enter a system code.');
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.supportEmail))messages.push('Enter a valid support email address.');
+      if(!(v.expectedReportingIntervalMinutes>=1))messages.push('Reporting interval must be at least 1 minute.');
+      if(!(v.lateArrivalGraceMinutes>=0))messages.push('Late-arrival grace must be zero or greater.');
+      if(!(v.offlineTimeoutMinutes>v.lateArrivalGraceMinutes))messages.push('Offline timeout must be greater than late-arrival grace.');
+      if(!(v.staleDataMinutes>=0))messages.push('Stale-data time must be zero or greater.');
+      if(!(v.pageSize>0))messages.push('Page size must be greater than zero.');
+      return messages;
+    }
+    if(this.active==='voltage') {
+      const v=this.voltageValue;const messages:string[]=[];
+      if(!(v.healthyKv>v.warningKv&&v.warningKv>v.criticalKv&&v.criticalKv>=0))messages.push('Voltage thresholds must follow Healthy > Warning > Critical, with Critical zero or greater.');
+      if(!(v.lowBatteryPercent>=0&&v.lowBatteryPercent<=100))messages.push('Low battery must be between 0 and 100 percent.');
+      return messages;
+    }
     if (this.active === 'map') {
       const value = this.mapValue;
       const messages: string[] = [];
@@ -280,6 +307,7 @@ export class Configuration implements OnInit, OnDestroy {
     if (error.status === 0) return `Configuration API unavailable. Unable to ${action} settings; ${action === 'load' ? 'settings have not been loaded' : 'your changes remain unsaved'}.`;
     if (error.status === 401) return 'Your session has expired. Sign in again before changing configuration.';
     if (error.status === 403) return 'You do not have permission to change system configuration.';
+    if (error.status === 404) return 'Configuration API not found. Restart the backend with the latest code, then retry.';
     if (error.status === 409) return 'These settings were changed by another administrator. Reload the page and review the latest version.';
     if (error.status === 422 || error.status === 400) return error.error?.message ?? 'The backend rejected one or more configuration values.';
     return `Unable to ${action} configuration. Please try again.`;
