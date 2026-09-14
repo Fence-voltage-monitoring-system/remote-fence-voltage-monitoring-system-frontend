@@ -5,6 +5,7 @@ import { finalize } from 'rxjs';
 import { Check, ChevronDown, createIcons, MoreHorizontal, Pencil, Plus, RadioTower, Search, Signal, Trash2, Wifi, X } from 'lucide';
 import { Gateway, GatewayStatus } from '../../core/models/gateway.models';
 import { GatewayService } from '../../core/services/gateway.service';
+import { FenceService } from '../../core/services/fence.service';
 import { HeaderComponent } from '../../shared/components/header/header';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 
@@ -17,9 +18,10 @@ import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 })
 export class GatewayManagementPage implements OnInit, AfterViewChecked {
   private readonly gatewayService = inject(GatewayService);
+  private readonly fenceService = inject(FenceService);
   private readonly cdr = inject(ChangeDetectorRef);
 
-  readonly fences = ['Monaragala Elephant Protection Fence', 'Wilpattu North Buffer Fence', 'Mihintale Wildlife Buffer Fence', 'Gal Oya East Protection Fence'];
+  fences: string[] = [];
   gateways: Gateway[] = [];
 
   isLoading = false;
@@ -41,6 +43,14 @@ export class GatewayManagementPage implements OnInit, AfterViewChecked {
 
   ngOnInit(): void {
     this.loadGateways();
+    this.loadFences();
+  }
+
+  private loadFences(): void {
+    this.fenceService.getFences().subscribe({
+      next: (fences) => { this.fences = (fences || []).map((f) => f.name); },
+      error: () => { this.fences = []; }
+    });
   }
 
   private refreshIcons(): void {

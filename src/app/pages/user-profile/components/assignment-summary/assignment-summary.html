@@ -50,6 +50,12 @@
             </div>
           </div>
         }
+
+        @if (!profile.provinces.length && !profile.districts.length && !profile.fences.length) {
+          <div class="rounded-xl border border-[#304735] bg-[#112316] p-4 text-center">
+            <p class="text-[9px] text-[#8fa08c]">No specific operational coverage assigned</p>
+          </div>
+        }
       </div>
     }
   </div>

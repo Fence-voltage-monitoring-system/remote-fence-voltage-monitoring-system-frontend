@@ -27,6 +27,14 @@ const SESSION_KEY = "auth_user_session";
 const TOKEN_KEY = "auth_access_token";
 const SCOPE_KEY = "auth_management_scope";
 
+const PROVINCE_MAP: Record<number, string> = {
+  1: 'Central', 2: 'Western', 3: 'North Central', 4: 'North Western', 5: 'Sabaragamuwa', 6: 'Eastern', 7: 'Southern', 8: 'Uva', 9: 'Northern'
+};
+
+const DISTRICT_MAP: Record<number, string> = {
+  1: 'Kandy', 2: 'Matale', 3: 'Nuwara Eliya', 4: 'Colombo', 5: 'Gampaha', 6: 'Kalutara', 7: 'Anuradhapura', 8: 'Polonnaruwa', 9: 'Kurunegala', 10: 'Puttalam', 11: 'Ratnapura', 12: 'Kegalle', 13: 'Trincomalee', 14: 'Batticaloa', 15: 'Ampara', 16: 'Galle', 17: 'Matara', 18: 'Hambantota', 19: 'Badulla', 20: 'Monaragala', 21: 'Jaffna', 22: 'Kilinochchi', 23: 'Mannar', 24: 'Vavuniya', 25: 'Mullaitivu'
+};
+
 @Injectable({ providedIn: "root" })
 export class AuthService {
   private readonly http = inject(HttpClient);
@@ -67,14 +75,27 @@ export class AuthService {
             sessionStorage.setItem("access_token", accessToken);
             localStorage.setItem("access_token", accessToken);
           }
+
+          const provincesList = (Array.isArray(user.provinceNames) && user.provinceNames.length > 0)
+            ? user.provinceNames
+            : (Array.isArray(user.provinceIds) && user.provinceIds.length > 0)
+              ? user.provinceIds.map((id: number) => PROVINCE_MAP[id] || `Province #${id}`)
+              : (user.province ? [user.province] : (user.provinces ?? []));
+
+          const districtsList = (Array.isArray(user.districtNames) && user.districtNames.length > 0)
+            ? user.districtNames
+            : (Array.isArray(user.districtIds) && user.districtIds.length > 0)
+              ? user.districtIds.map((id: number) => DISTRICT_MAP[id] || `District #${id}`)
+              : (user.district ? [user.district] : (user.districts ?? []));
+
           const authUser: AuthUser = {
             id: user.id,
             fullName: user.fullName || user.name || "System User",
             email: user.email,
             role: user.role,
             contactNumber: user.contactNumber,
-            provinces: user.provinces ?? [],
-            districts: user.districts ?? [],
+            provinces: provincesList,
+            districts: districtsList,
             fences: user.fences ?? [],
           };
           this.currentUser.set(authUser);
@@ -87,8 +108,8 @@ export class AuthService {
 
           const scopeData = {
             role: user.role as ManagementRole,
-            provinces: user.provinces ?? [],
-            districts: user.districts ?? [],
+            provinces: provincesList,
+            districts: districtsList,
             fences: user.fences ?? [],
             userId: user.id,
             userName: authUser.fullName,

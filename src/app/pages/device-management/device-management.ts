@@ -5,6 +5,7 @@ import { finalize } from 'rxjs';
 import { Activity, BatteryCharging, Check, ChevronDown, CirclePlus, Cpu, createIcons, MoreHorizontal, Pencil, Plus, Radio, Search, Signal, SlidersHorizontal, Trash2, Wifi, X } from 'lucide';
 import { Device, DeviceStatus } from '../../core/models/device.models';
 import { DeviceService } from '../../core/services/device.service';
+import { FenceService } from '../../core/services/fence.service';
 import { HeaderComponent } from '../../shared/components/header/header';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 
@@ -18,15 +19,11 @@ import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 export class DeviceManagementPage implements OnInit, AfterViewChecked {
   private readonly router = inject(Router);
   private readonly deviceService = inject(DeviceService);
+  private readonly fenceService = inject(FenceService);
   private readonly cdr = inject(ChangeDetectorRef);
 
-  readonly fences = ['Monaragala Elephant Protection Fence', 'Wilpattu North Buffer Fence', 'Mihintale Wildlife Buffer Fence', 'Gal Oya East Protection Fence'];
-  readonly sectionsByFence: Record<string, string[]> = {
-    [this.fences[0]]: ['SEC-001', 'SEC-002', 'SEC-003', 'SEC-004'],
-    [this.fences[1]]: ['SEC-001', 'SEC-002', 'SEC-003'],
-    [this.fences[2]]: ['SEC-001', 'SEC-002', 'SEC-003'],
-    [this.fences[3]]: ['SEC-001', 'SEC-002', 'SEC-003', 'SEC-004'],
-  };
+  fences: string[] = [];
+  sectionsByFence: Record<string, string[]> = {};
 
   devices: Device[] = [];
   isLoading = false;
@@ -46,15 +43,29 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
   assignmentOpen = false;
   wizardStep = 1;
   selectedUnassigned?: Device;
-  assignmentFence = this.fences[0];
+  assignmentFence = '';
   assignmentSection = '';
-  registrationFence = this.fences[0];
+  registrationFence = '';
   registrationSection = '';
   submitted = false;
   private iconsReady = false;
 
   ngOnInit(): void {
     this.loadDevices();
+    this.loadFences();
+  }
+
+  private loadFences(): void {
+    this.fenceService.getFences().subscribe({
+      next: (fences) => {
+        this.fences = (fences || []).map((f) => f.name);
+        if (this.fences.length > 0) {
+          this.assignmentFence = this.fences[0];
+          this.registrationFence = this.fences[0];
+        }
+      },
+      error: () => { this.fences = []; }
+    });
   }
 
   private refreshIcons(): void {

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
@@ -16,6 +16,7 @@ import { CurrentUserProfile, UserNotificationPreferences } from './user-profile.
 export class UserProfilePage implements OnInit {
   private readonly userService = inject(UserService);
   private readonly authService = inject(AuthService);
+  private readonly cdr = inject(ChangeDetectorRef);
   get initialProfile(): CurrentUserProfile {
     const user = this.authService.currentUser();
     const fullName = user?.fullName || 'System Administrator';
@@ -25,9 +26,16 @@ export class UserProfilePage implements OnInit {
     const parts = fullName.trim().split(' ');
     const initials = parts.length >= 2 ? (parts[0][0] + parts[1][0]).toUpperCase() : fullName.substring(0, 2).toUpperCase();
 
+    const provinces = (user?.provinces && user.provinces.length > 0)
+      ? user.provinces.map((name, idx) => ({ id: idx + 1, name }))
+      : [];
+    const districts = (user?.districts && user.districts.length > 0)
+      ? user.districts.map((name, idx) => ({ id: idx + 1, name }))
+      : [];
+
     return {
       id: 1, staffId: 'NERDC-ADMIN-01', initials, fullName, username: email.split('@')[0], email, contactNumber, department: 'Department of Wildlife Conservation / NERDC', role, status: 'ACTIVE', mustChangePassword: false,
-      provinces: [], districts: [], fences: [], createdAt: '01 Jan 2026', lastLoginAt: 'Just now', passwordChangedAt: 'Not set',
+      provinces, districts, fences: [], createdAt: '01 Jan 2026', lastLoginAt: 'Just now', passwordChangedAt: 'Not set',
       recentActivity: [{ id: 1, action: 'Logged in successfully', occurredAt: 'Just now', category: 'SECURITY' }],
     };
   }
@@ -44,16 +52,42 @@ export class UserProfilePage implements OnInit {
 
   ngOnInit(): void { this.loadProfile();this.loadNotificationPreferences(); }
 
-  loadNotificationPreferences():void{this.userService.getNotificationPreferences().subscribe({next:value=>this.notificationPreferences=value,error:()=>{}});}
+  loadNotificationPreferences(): void {
+    this.userService.getNotificationPreferences().subscribe({
+      next: (value) => {
+        this.notificationPreferences = value;
+        this.cdr.markForCheck();
+      },
+      error: () => {}
+    });
+  }
 
-  async saveNotificationPreferences(value:UserNotificationPreferences):Promise<void>{
-    const next={...value};
-    if(next.desktopNotificationsEnabled&&typeof Notification!=='undefined'&&Notification.permission!=='granted'){
-      const permission=await Notification.requestPermission();
-      if(permission!=='granted'){next.desktopNotificationsEnabled=false;this.notice='Browser permission was not granted. Desktop notifications remain disabled.';}
+  saveNotificationPreferences(value: UserNotificationPreferences): void {
+    this.isSavingNotificationPreferences = true;
+    this.cdr.markForCheck();
+    const next = { ...value };
+
+    if (next.desktopNotificationsEnabled && typeof Notification !== 'undefined' && Notification.permission === 'default') {
+      Notification.requestPermission().catch(() => {});
     }
-    this.isSavingNotificationPreferences=true;
-    this.userService.updateNotificationPreferences(next).pipe(finalize(()=>this.isSavingNotificationPreferences=false)).subscribe({next:saved=>{this.notificationPreferences=saved;this.notice='Notification preferences saved.';},error:()=>{this.notificationPreferences=next;this.notice='Profile API unavailable. Notification preferences are saved in local preview only.';}});
+
+    this.userService.updateNotificationPreferences(next).pipe(
+      finalize(() => {
+        this.isSavingNotificationPreferences = false;
+        this.cdr.markForCheck();
+      })
+    ).subscribe({
+      next: (saved) => {
+        this.notificationPreferences = saved;
+        this.notice = 'Notification preferences saved.';
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.notificationPreferences = next;
+        this.notice = 'Unable to save notification preferences. Please try again.';
+        this.cdr.markForCheck();
+      },
+    });
   }
 
   loadProfile(): void {
@@ -64,10 +98,17 @@ export class UserProfilePage implements OnInit {
         this.profile = profile;
         this.notice = '';
         const current = this.authService.currentUser();
-        if (current && profile.contactNumber) {
-          const updated = { ...current, fullName: profile.fullName, contactNumber: profile.contactNumber };
+        if (current) {
+          const updated = {
+            ...current,
+            fullName: profile.fullName,
+            contactNumber: profile.contactNumber,
+            provinces: profile.provinces.map(p => p.name),
+            districts: profile.districts.map(d => d.name)
+          };
           this.authService.currentUser.set(updated);
           sessionStorage.setItem('auth_user_session', JSON.stringify(updated));
+          localStorage.setItem('auth_user_session', JSON.stringify(updated));
         }
       },
       error: () => { this.profileLoadFailed = true; this.notice = 'Profile API unavailable. Displaying preview data.'; },

@@ -4,6 +4,30 @@ import { Observable, map, of, catchError } from 'rxjs';
 import { CreateUserOptions, CreateUserRequest, FenceOption, LocationOption, RoleOption, SystemUser, UserFilters, UserStatus } from '../../pages/user-management/user-management.models';
 import { CurrentUserProfile, UpdateCurrentUserProfileRequest, UserNotificationPreferences } from '../../pages/user-profile/user-profile.models';
 
+const PROVINCE_MAP: Record<number, string> = {
+  1: 'Central',
+  2: 'Western',
+  3: 'North Central',
+  4: 'North Western',
+  5: 'Sabaragamuwa',
+  6: 'Eastern',
+  7: 'Southern',
+  8: 'Uva',
+  9: 'Northern'
+};
+
+const DISTRICT_MAP: Record<number, string> = {
+  1: 'Kandy', 2: 'Matale', 3: 'Nuwara Eliya',
+  4: 'Colombo', 5: 'Gampaha', 6: 'Kalutara',
+  7: 'Anuradhapura', 8: 'Polonnaruwa',
+  9: 'Kurunegala', 10: 'Puttalam',
+  11: 'Ratnapura', 12: 'Kegalle',
+  13: 'Trincomalee', 14: 'Batticaloa', 15: 'Ampara',
+  16: 'Galle', 17: 'Matara', 18: 'Hambantota',
+  19: 'Badulla', 20: 'Monaragala',
+  21: 'Jaffna', 22: 'Kilinochchi', 23: 'Mannar', 24: 'Vavuniya', 25: 'Mullaitivu'
+};
+
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private readonly http = inject(HttpClient);
@@ -117,11 +141,11 @@ export class UserService {
 
     const provinceDisplay = provinceNames.length > 0
       ? provinceNames[0]
-      : (provinceIds.length > 0 ? `Province #${provinceIds[0]}` : (dto.province || 'All'));
+      : (provinceIds.length > 0 ? (PROVINCE_MAP[provinceIds[0]] || `Province #${provinceIds[0]}`) : (dto.province || 'All'));
 
     const districtDisplay = districtNames.length > 0
       ? districtNames[0]
-      : (districtIds.length > 0 ? `District #${districtIds[0]}` : (dto.district || 'All'));
+      : (districtIds.length > 0 ? (DISTRICT_MAP[districtIds[0]] || `District #${districtIds[0]}`) : (dto.district || 'All'));
 
     return {
       id: dto.id,
@@ -174,8 +198,16 @@ export class UserService {
       role: dto.role || 'SUPER_ADMIN',
       status: dto.enabled ? 'ACTIVE' : 'INACTIVE',
       mustChangePassword: dto.passwordChangeRequired || false,
-      provinces: (dto.provinceIds || []).map((id: number) => ({ id, name: `Province #${id}` })),
-      districts: (dto.districtIds || []).map((id: number) => ({ id, name: `District #${id}` })),
+      provinces: (dto.provinceNames && dto.provinceNames.length > 0)
+        ? dto.provinceNames.map((name: string, idx: number) => ({ id: dto.provinceIds?.[idx] || idx + 1, name }))
+        : (dto.provinceIds && dto.provinceIds.length > 0)
+          ? dto.provinceIds.map((id: number) => ({ id, name: PROVINCE_MAP[id] || `Province #${id}` }))
+          : (dto.province ? [{ id: 1, name: dto.province }] : []),
+      districts: (dto.districtNames && dto.districtNames.length > 0)
+        ? dto.districtNames.map((name: string, idx: number) => ({ id: dto.districtIds?.[idx] || idx + 1, name }))
+        : (dto.districtIds && dto.districtIds.length > 0)
+          ? dto.districtIds.map((id: number) => ({ id, name: DISTRICT_MAP[id] || `District #${id}` }))
+          : (dto.district ? [{ id: 1, name: dto.district }] : []),
       fences: [],
       createdAt: formatDate(dto.createdAt),
       lastLoginAt: formatDate(dto.lastLoginAt),

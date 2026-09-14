@@ -1,9 +1,11 @@
-import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DeviceMonitoringContext } from '../../../../core/models/device-monitoring';
+import { FenceService } from '../../../../core/services/fence.service';
+import { SectionService, SectionResponse } from '../../../../core/services/section.service';
 
 type FenceState = 'healthy' | 'warning' | 'critical' | 'offline';
-interface Fence { id: string; name: string; province: string; district: string; zone: string; gateway: string; latitude: number; longitude: number; sectionCount: number; updateIntervalMinutes: number; }
+interface Fence { id: string; dbId?: number; name: string; province: string; district: string; zone: string; gateway: string; latitude: number; longitude: number; sectionCount: number; updateIntervalMinutes: number; }
 export interface FenceSelection { id: string; name: string; latitude: number; longitude: number; sectionCount: number; }
 export interface FenceRouteSection { id: string; status: FenceState; voltage: number; latitude: number; longitude: number; updated: string; }
 export interface FenceRouteData { id: string; name: string; district: string; zone: string; sections: FenceRouteSection[]; }
@@ -16,6 +18,9 @@ interface Section {
 
 @Component({ selector: 'app-fence-monitor', standalone: true, imports: [FormsModule], templateUrl: './fence-monitor.html', styleUrl: './fence-monitor.css' })
 export class FenceMonitorComponent implements OnInit, OnDestroy {
+  private readonly fenceService = inject(FenceService);
+  private readonly sectionService = inject(SectionService);
+
   @ViewChild('scroller') scroller!: ElementRef<HTMLElement>;
   @ViewChild('cardsDeck') cardsDeck?: ElementRef<HTMLElement>;
   @Output() readonly deviceChange = new EventEmitter<DeviceMonitoringContext>();
@@ -26,7 +31,7 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
   @Input() showSectionTable = false;
   @Input() statusFilter: FenceState | 'all' = 'all';
   @Input() set fenceId(value: string) {
-    if (value && value !== this.selectedFence.id) this.selectFence(value);
+    if (value && this.selectedFence && value !== this.selectedFence.id) this.selectFence(value);
   }
 
   readonly provinceDistricts: Readonly<Record<string, readonly string[]>> = {
@@ -42,37 +47,60 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
   };
   readonly provinces = Object.keys(this.provinceDistricts);
 
-  readonly fences: Fence[] = [
-    { id: 'monaragala', name: 'Monaragala Elephant Protection Fence', province: 'Uva', district: 'Monaragala', zone: 'Zone A', gateway: 'MNR', latitude: 6.8681, longitude: 81.3342, sectionCount: 24, updateIntervalMinutes: 15 },
-    { id: 'wilpattu', name: 'Wilpattu North Buffer Fence', province: 'North Western', district: 'Puttalam', zone: 'Zone B', gateway: 'WLP', latitude: 8.4580, longitude: 80.0280, sectionCount: 18, updateIntervalMinutes: 15 },
-    { id: 'mihintale', name: 'Mihintale Wildlife Buffer Fence', province: 'North Central', district: 'Anuradhapura', zone: 'Zone C', gateway: 'MHT', latitude: 8.3500, longitude: 80.5050, sectionCount: 12, updateIntervalMinutes: 15 },
-    { id: 'gal-oya', name: 'Gal Oya East Protection Fence', province: 'Eastern', district: 'Ampara', zone: 'Zone D', gateway: 'GOY', latitude: 7.2920, longitude: 81.6250, sectionCount: 20, updateIntervalMinutes: 15 },
-    { id: 'lunugamvehera', name: 'Lunugamvehera Park Fence', province: 'Southern', district: 'Hambantota', zone: 'Zone E', gateway: 'LNV', latitude: 6.3410, longitude: 81.1510, sectionCount: 16, updateIntervalMinutes: 15 },
-  ];
-
-  private readonly schedules = new Map<string, ScheduleState>(this.fences.flatMap((fence, fenceIndex) =>
-    Array.from({ length: fence.sectionCount }, (_, sectionIndex) => {
-      const sectionId = `SEC-${String(sectionIndex + 1).padStart(3, '0')}`;
-      const elapsedSeconds = (fenceIndex * 137 + sectionIndex * 47) % (15 * 60);
-      const lastUpdatedAt = Date.now() - elapsedSeconds * 1000;
-      return [`${fence.id}:${sectionId}`, {
-        lastUpdatedAt,
-        nextUpdateAt: lastUpdatedAt + 15 * 60_000,
-        cycle: 0,
-      }] as [string, ScheduleState];
-    })));
-  private readonly scheduleTimer = setInterval(() => this.updateSchedule(), 1000);
-  lastUpdatedLabel = 'just now';
-  nextUpdateLabel = '15:00';
-
-  selectedFence = this.fences[0];
+  fences: Fence[] = [];
+  selectedFence: Fence | null = null;
   selectedProvince = 'all';
   selectedDistrict = 'all';
-  sections = this.buildSections(this.selectedFence);
-  selected: Section = this.sections[4];
-  ngOnInit(): void { this.emitFenceRoute(); }
+  sections: Section[] = [];
+  selected: Section | null = null;
+
+  private schedules = new Map<string, ScheduleState>();
+  private scheduleTimer: any = null;
+  lastUpdatedLabel = 'just now';
+  nextUpdateLabel = '15:00';
   drawerOpen = false;
   alertAcknowledged = false;
+
+  ngOnInit(): void {
+    this.loadBackendFences();
+    this.scheduleTimer = setInterval(() => this.updateSchedule(), 1000);
+  }
+
+  private loadBackendFences(): void {
+    this.fenceService.getFences().subscribe({
+      next: (records) => {
+        if (!records || records.length === 0) {
+          this.fences = [];
+          this.selectedFence = null;
+          this.sections = [];
+          this.selected = null;
+          return;
+        }
+        this.fences = records.map((r) => ({
+          id: r.code || String(r.id),
+          dbId: r.id,
+          name: r.name,
+          province: r.province,
+          district: r.district,
+          zone: 'Zone A',
+          gateway: r.gateway || 'GTW',
+          latitude: 6.8681,
+          longitude: 81.3342,
+          sectionCount: r.sections || 0,
+          updateIntervalMinutes: 15,
+        }));
+        if (this.fences.length > 0) {
+          this.selectFence(this.fences[0].id);
+        }
+      },
+      error: () => {
+        this.fences = [];
+        this.selectedFence = null;
+        this.sections = [];
+        this.selected = null;
+      }
+    });
+  }
 
   get availableDistricts(): readonly string[] {
     return this.selectedProvince === 'all'
@@ -102,14 +130,46 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
   }
 
   selectFence(fenceId: string): void {
-    this.selectedFence = this.fences.find((fence) => fence.id === fenceId) ?? this.fences[0];
-    this.sections = this.buildSections(this.selectedFence);
-    this.selected = this.sections[0];
-    this.scroller?.nativeElement.scrollTo({ left: 0, behavior: 'smooth' });
-    this.emitDevice();
-    this.updateSchedule();
-    this.fenceChange.emit({ id: this.selectedFence.id, name: this.selectedFence.name, latitude: this.selectedFence.latitude, longitude: this.selectedFence.longitude, sectionCount: this.selectedFence.sectionCount });
-    this.emitFenceRoute();
+    const found = this.fences.find((fence) => fence.id === fenceId);
+    if (!found) return;
+    this.selectedFence = found;
+    if (this.selectedFence.dbId) {
+      this.sectionService.getSectionsByFence(this.selectedFence.dbId).subscribe({
+        next: (rows) => {
+          this.sections = (rows || []).map((row) => this.mapSectionResponseToSection(row, this.selectedFence!));
+          this.selected = this.sections[0] || null;
+          this.scroller?.nativeElement.scrollTo({ left: 0, behavior: 'smooth' });
+          if (this.selected) this.emitDevice();
+          this.fenceChange.emit({ id: this.selectedFence!.id, name: this.selectedFence!.name, latitude: this.selectedFence!.latitude, longitude: this.selectedFence!.longitude, sectionCount: this.sections.length });
+          this.emitFenceRoute();
+        },
+        error: () => {
+          this.sections = [];
+          this.selected = null;
+        }
+      });
+    } else {
+      this.sections = [];
+      this.selected = null;
+    }
+  }
+
+  private mapSectionResponseToSection(row: SectionResponse, fence: Fence): Section {
+    const rawStatus = (row.status || 'OFFLINE').toLowerCase();
+    const state: FenceState = rawStatus === 'healthy' ? 'healthy' : rawStatus === 'warning' ? 'warning' : rawStatus === 'critical' ? 'critical' : 'offline';
+    return {
+      id: row.code,
+      voltage: row.voltageKv != null ? Number(row.voltageKv).toFixed(1) : '—',
+      state,
+      battery: row.battery != null ? row.battery : 0,
+      voltageDrop: '0.0',
+      solarCharging: 0,
+      signalStrength: -70,
+      gateway: fence.gateway,
+      latitude: row.startGps ? row.startGps.split(',')[0]?.trim() || '' : '',
+      longitude: row.startGps ? row.startGps.split(',')[1]?.trim() || '' : '',
+      updated: row.updatedAt ? new Date(row.updatedAt).toLocaleTimeString() : 'Unavailable',
+    };
   }
 
   selectSection(section: Section): void {
@@ -127,6 +187,7 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
   closeSectionDetails(): void { this.drawerOpen = false; }
 
   viewSelectedOnMap(): void {
+    if (!this.selected) return;
     const sectionId = this.selected.id;
     this.closeSectionDetails();
     this.sectionMapRequest.emit(sectionId);
@@ -136,9 +197,10 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
   closeDrawerOnEscape(): void { this.closeSectionDetails(); }
 
   get trendPoints(): string {
+    if (!this.selected) return '';
     const base = Number.parseFloat(this.selected.voltage) || 0;
     return Array.from({ length: 16 }, (_, index) => {
-      const value = this.selected.state === 'offline' ? 0 : Math.max(0, Math.min(7, base + Math.sin(index * .8) * .42 + Math.cos(index * .35) * .2));
+      const value = this.selected?.state === 'offline' ? 0 : Math.max(0, Math.min(7, base + Math.sin(index * .8) * .42 + Math.cos(index * .35) * .2));
       return `${index * 24},${82 - value * 10}`;
     }).join(' ');
   }
@@ -149,36 +211,18 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
   }
 
   deviceId(section: Section): string {
-    const fenceNumber = String(this.fences.indexOf(this.selectedFence) + 1).padStart(2, '0');
+    if (!section || !this.selectedFence) return '—';
+    const fenceIndex = this.fences.indexOf(this.selectedFence);
+    const fenceNumber = String(fenceIndex >= 0 ? fenceIndex + 1 : 1).padStart(2, '0');
     return `DEV-EFE-${fenceNumber}${section.id.slice(-3)}`;
   }
 
-  private buildSections(fence: Fence): Section[] {
-    return Array.from({ length: fence.sectionCount }, (_, index) => {
-      const states: FenceState[] = ['healthy', 'healthy', 'warning', 'critical', 'healthy', 'offline', 'healthy', 'warning'];
-      const volts = ['6.2', '5.8', '4.1', '0.0', '5.9', '—', '5.4', '4.8'];
-      const batteries = [96, 88, 42, 74, 91, 0, 86, 53];
-      const solar = [98, 92, 61, 80, 95, 0, 90, 68];
-      const signal = [-61, -65, -77, -72, -68, -120, -64, -75];
-      const slot = (index + this.fences.indexOf(fence)) % 8;
-      return {
-        id: `SEC-${String(index + 1).padStart(3, '0')}`,
-        voltage: volts[slot], state: states[slot], battery: batteries[slot],
-        voltageDrop: states[slot] === 'critical' ? '5.9' : states[slot] === 'warning' ? '1.8' : '0.2',
-        solarCharging: solar[slot], signalStrength: signal[slot],
-        gateway: `GTW-${fence.gateway}-${String(Math.floor(index / 8) + 1).padStart(2, '0')}`,
-        latitude: `${(fence.latitude + index * 0.001).toFixed(4)}° N`,
-        longitude: `${(fence.longitude + index * 0.001).toFixed(4)}° E`,
-        updated: states[slot] === 'offline' ? '22m ago' : `${8 + index}s ago`,
-      };
-    });
-  }
-
   ngOnDestroy(): void {
-    clearInterval(this.scheduleTimer);
+    if (this.scheduleTimer) clearInterval(this.scheduleTimer);
   }
 
   private refreshTelemetry(cycle: number): void {
+    if (!this.selected) return;
     const selectedId = this.selected.id;
     this.sections = this.sections.map((section, index) => {
       if (section.state === 'offline') return { ...section, updated: 'just now' };
@@ -191,12 +235,13 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
         updated: 'just now',
       };
     });
-    this.selected = this.sections.find((section) => section.id === selectedId) ?? this.sections[0];
-    this.emitDevice();
+    this.selected = this.sections.find((section) => section.id === selectedId) ?? this.sections[0] ?? null;
+    if (this.selected) this.emitDevice();
     this.emitFenceRoute();
   }
 
   private updateSchedule(): void {
+    if (!this.selectedFence || !this.selected) return;
     const schedule = this.schedules.get(`${this.selectedFence.id}:${this.selected.id}`);
     if (!schedule) return;
     const now = Date.now();
@@ -240,6 +285,7 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
   }
 
   private emitDevice(): void {
+    if (!this.selectedFence || !this.selected) return;
     this.deviceChange.emit({
       fenceId: this.selectedFence.id,
       fenceName: this.selectedFence.name,
@@ -252,9 +298,10 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
   }
 
   private emitFenceRoute(): void {
+    if (!this.selectedFence) return;
     this.fenceRouteChange.emit({
       id: this.selectedFence.id, name: this.selectedFence.name, district: this.selectedFence.district, zone: this.selectedFence.zone,
-      sections: this.sections.map(section => ({ id: section.id, status: section.state, voltage: Number.parseFloat(section.voltage) || 0, latitude: Number.parseFloat(section.latitude), longitude: Number.parseFloat(section.longitude), updated: section.updated })),
+      sections: this.sections.map(section => ({ id: section.id, status: section.state, voltage: Number.parseFloat(section.voltage) || 0, latitude: Number.parseFloat(section.latitude) || 0, longitude: Number.parseFloat(section.longitude) || 0, updated: section.updated })),
     });
   }
 }

@@ -5,6 +5,8 @@ import { VoltageTrendChart } from './components/voltage-trend-chart/voltage-tren
 import { MiniAnalysisCharts } from './components/mini-analysis-charts/mini-analysis-charts';
 import { AnalysisFilters, AnalysisMetric } from './historical-analysis.models';
 import { ReportsService } from '../../core/services/reports.service';
+import { FenceService } from '../../core/services/fence.service';
+import { DeviceService } from '../../core/services/device.service';
 
 @Component({
   selector: 'app-historical-analysis',
@@ -15,27 +17,45 @@ import { ReportsService } from '../../core/services/reports.service';
 })
 export class HistoricalAnalysis implements OnInit {
   private readonly reportsService = inject(ReportsService);
+  private readonly fenceService = inject(FenceService);
+  private readonly deviceService = inject(DeviceService);
 
   filters: AnalysisFilters = { province: '', district: '', fence: '', section: '', device: '', period: '24h' };
   notice = '';
 
-  readonly provinces = ['Eastern', 'North Central', 'Southern', 'Uva', 'Western', 'Central', 'North Western', 'Northern'];
-  readonly districts = ['Ampara', 'Anuradhapura', 'Polonnaruwa', 'Hambantota', 'Monaragala', 'Badulla', 'Colombo', 'Puttalam'];
-  readonly fences = ['EPF-MON-01', 'EPF-WIL-01', 'EPF-MIH-01', 'EPF-GAL-01'];
-  readonly sections = ['SEC-001', 'SEC-002', 'SEC-003', 'SEC-004'];
-  readonly devices = ['DEV-EFE-0062', 'DEV-EFE-0065'];
+  readonly provinces = ['Western', 'Central', 'Southern', 'North Western', 'North Central', 'Uva', 'Sabaragamuwa', 'Eastern', 'Northern'];
+  readonly districts = ['Colombo', 'Gampaha', 'Kalutara', 'Kandy', 'Matale', 'Nuwara Eliya', 'Galle', 'Matara', 'Hambantota', 'Kurunegala', 'Puttalam', 'Anuradhapura', 'Polonnaruwa', 'Badulla', 'Monaragala', 'Ratnapura', 'Kegalle', 'Trincomalee', 'Batticaloa', 'Ampara', 'Jaffna', 'Kilinochchi', 'Mannar', 'Vavuniya', 'Mullaitivu'];
+  fences: string[] = [];
+  sections: string[] = [];
+  devices: string[] = [];
 
   metrics: AnalysisMetric[] = [
-    { label: 'Avg Voltage', value: '5.4', unit: 'kV', tone: 'green' },
-    { label: 'Min Voltage', value: '3.2', unit: 'kV', tone: 'amber' },
-    { label: 'Max Voltage', value: '6.4', unit: 'kV', tone: 'green' },
-    { label: 'Voltage Stability', value: '87', unit: '%', tone: 'green' },
+    { label: 'Avg Voltage', value: '—', unit: 'kV', tone: 'amber' },
+    { label: 'Min Voltage', value: '—', unit: 'kV', tone: 'amber' },
+    { label: 'Max Voltage', value: '—', unit: 'kV', tone: 'amber' },
+    { label: 'Voltage Stability', value: '—', unit: '%', tone: 'amber' },
     { label: 'Total Faults', value: '0', tone: 'green' },
-    { label: 'Uptime', value: '96.2', unit: '%', tone: 'green' }
+    { label: 'Uptime', value: '—', unit: '%', tone: 'amber' }
   ];
 
   ngOnInit(): void {
     this.loadAnalysis();
+    this.loadFencesAndDevices();
+  }
+
+  loadFencesAndDevices(): void {
+    this.fenceService.getFences().subscribe({
+      next: (fences) => {
+        this.fences = (fences || []).map((f) => f.code);
+      },
+      error: () => { this.fences = []; }
+    });
+    this.deviceService.getDevices().subscribe({
+      next: (devices) => {
+        this.devices = (devices || []).map((d) => d.id);
+      },
+      error: () => { this.devices = []; }
+    });
   }
 
   loadAnalysis(): void {

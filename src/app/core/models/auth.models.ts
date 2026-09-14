@@ -16,8 +16,14 @@ export interface LoginResponse {
     role: string;
     contactNumber?: string;
     provinces?: string[];
+    provinceNames?: string[];
+    provinceIds?: number[];
     districts?: string[];
+    districtNames?: string[];
+    districtIds?: number[];
     fences?: string[];
+    province?: string;
+    district?: string;
   };
 }
 
