@@ -84,8 +84,16 @@
               <tr (click)="selectGateway(gateway)">
                 <td>
                   <div class="gateway-cell"><span class="gateway-icon"><i data-lucide="radio-tower"></i></span>
-                    <div><strong>{{gateway.name}}</strong><small>{{gateway.id}} &middot;
-                        {{gateway.serial}}</small><em>IMEI {{gateway.imei}}</em></div>
+                    <div>
+                      <strong>{{gateway.name}}</strong>
+                      <small>{{gateway.id}} &middot; {{gateway.serial}}</small>
+                      <em>IMEI {{gateway.imei}}</em>
+                      @if (gateway.latitude && gateway.longitude) {
+                        <small style="color: #55e777; display: flex; items-center; gap: 3px; margin-top: 3px; font-size: 7px;">
+                          <i data-lucide="map-pin" style="width:10px;height:10px;"></i> {{gateway.latitude}}, {{gateway.longitude}}
+                        </small>
+                      }
+                    </div>
                   </div>
                 </td>
                 <td>@if (gateway.fences.length) {<strong class="fence-name">{{gateway.fences[0]}}</strong><small
@@ -162,6 +170,28 @@
       </dl>
     </section>
     <section>
+      <h3>Physical Location</h3>
+      @if (selected.latitude && selected.longitude) {
+        <dl>
+          <div>
+            <dt>Latitude</dt>
+            <dd class="font-mono">{{selected.latitude}}</dd>
+          </div>
+          <div>
+            <dt>Longitude</dt>
+            <dd class="font-mono">{{selected.longitude}}</dd>
+          </div>
+        </dl>
+        <div style="margin-top: 10px;">
+          <a [href]="'https://www.openstreetmap.org/?mlat=' + selected.latitude + '&mlon=' + selected.longitude + '#map=15/' + selected.latitude + '/' + selected.longitude" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; font-size: 8px; font-weight: 600; color: #55e777; text-decoration: none; border: 1px solid #2d6b3a; background: #15391d; padding: 6px 10px; border-radius: 8px;">
+            <i data-lucide="map-pin"></i> View on OpenStreetMap
+          </a>
+        </div>
+      } @else {
+        <p class="no-assignment">No physical coordinates registered</p>
+      }
+    </section>
+    <section>
       <h3>Current health</h3>
       <div class="metrics">
         <article><span>Signal</span><b>{{selected.signal}}%</b></article>
@@ -175,14 +205,14 @@
   }
 
   @if (drawerOpen) {
-  <button class="backdrop" type="button" (click)="drawerOpen = false" aria-label="Close gateway form"></button>
+  <button class="backdrop" type="button" (click)="closeDrawer()" aria-label="Close gateway form"></button>
   <form class="form-drawer" (submit)="$event.preventDefault(); save()" (click)="$event.stopPropagation()">
     <header>
       <div><span>{{editing ? 'Update gateway' : 'New network gateway'}}</span>
         <h2>{{editing ? 'Edit gateway' : 'Register gateway'}}</h2>
         <p>{{editing ? 'Update the gateway identity and network information.' : 'Add gateway hardware to the monitoring
           network.'}}</p>
-      </div><button class="close" type="button" (click)="drawerOpen = false"
+      </div><button class="close" type="button" (click)="closeDrawer()"
         aria-label="Close gateway form" title="Close"><span aria-hidden="true">&times;</span></button>
     </header>
     <div class="form-body">
@@ -194,6 +224,16 @@
             [class.invalid]="submitted && !form.serial.trim()"></label>
         <label><span>IMEI number</span><input name="imei" [(ngModel)]="form.imei" placeholder="15-digit cellular IMEI"
             [class.invalid]="submitted && !form.imei.trim()"></label>
+        
+        <div class="map-picker-section">
+          <label><span>Physical Location (Interactive Map)</span><small style="color: #8fa890; margin-bottom: 6px; display: block;">Click on the map or drag the green pin to set physical coordinates.</small></label>
+          <div id="gatewayModalMap" class="modal-map-canvas"></div>
+          <div class="latlng-inputs">
+            <label><span>Latitude</span><input type="number" step="any" name="latitude" [(ngModel)]="form.latitude" (change)="onLatLngInputChange()" placeholder="e.g. 6.868100"></label>
+            <label><span>Longitude</span><input type="number" step="any" name="longitude" [(ngModel)]="form.longitude" (change)="onLatLngInputChange()" placeholder="e.g. 81.334200"></label>
+          </div>
+        </div>
+
         <div class="note"><i data-lucide="check"></i><span><strong>Fence relationships are managed
               separately</strong><small>Assign fences to this gateway from Fence Management. Sections inherit the
               gateway through their parent fence.</small></span></div>
@@ -204,7 +244,7 @@
       @if (submitted && (!form.name.trim() || !form.serial.trim() || !form.imei.trim())) {<p class="form-error">
         Enter the gateway name, serial number, and IMEI.</p>}
     </div>
-    <footer><button type="button" (click)="drawerOpen = false">Cancel</button><button class="primary" type="button" (click)="save()" [disabled]="isSubmitting"><i
+    <footer><button type="button" (click)="closeDrawer()">Cancel</button><button class="primary" type="button" (click)="save()" [disabled]="isSubmitting"><i
           data-lucide="check"></i>{{editing ? 'Save changes' : 'Register gateway'}}</button></footer>
   </form>
   }

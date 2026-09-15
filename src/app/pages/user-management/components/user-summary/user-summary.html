@@ -1,0 +1,22 @@
+<section class="grid gap-3 grid-cols-2 md:grid-cols-5 mb-4 max-w-[1780px] mx-auto w-full shrink-0" aria-label="User role summary">
+  <article class="summary-card">
+    <span>Total Users</span>
+    <strong>{{ summary.total }}</strong>
+  </article>
+  <article class="summary-card">
+    <span>Super Admin</span>
+    <strong class="text-[#43d36c]">{{ summary.superAdmin }}</strong>
+  </article>
+  <article class="summary-card">
+    <span>Regional Admin</span>
+    <strong class="text-[#ffb800]">{{ summary.regionalAdmin }}</strong>
+  </article>
+  <article class="summary-card">
+    <span>Field Admin</span>
+    <strong class="text-[#38bdf8]">{{ summary.fieldAdmin }}</strong>
+  </article>
+  <article class="summary-card">
+    <span>Maintenance Staff</span>
+    <strong class="text-[#a7f3d0]">{{ summary.maintenance }}</strong>
+  </article>
+</section>

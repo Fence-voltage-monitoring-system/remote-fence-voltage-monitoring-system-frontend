@@ -12,6 +12,7 @@ import {
   Validators,
 } from "@angular/forms";
 import { FenceOption } from "../../section-management.models";
+import { Device } from "../../../../core/models/device.models";
 
 export interface SectionRegistrationValue {
   fenceCode: string;
@@ -23,6 +24,7 @@ export interface SectionRegistrationValue {
   lengthKm: number;
   installationDate: string;
   maintenanceNotes: string;
+  deviceId?: number | null;
 }
 @Component({
   selector: "app-section-registration-drawer",
@@ -37,6 +39,7 @@ export interface SectionRegistrationValue {
 export class SectionRegistrationDrawer {
   @Input() fences: FenceOption[] = [];
   @Input() selectedFenceCode = "";
+  @Input() availableDevices: Device[] = [];
   @Output() closed = new EventEmitter<void>();
   @Output() registered = new EventEmitter<SectionRegistrationValue>();
   @Input() saving = false;
@@ -79,6 +82,7 @@ export class SectionRegistrationDrawer {
       Validators.required,
       Validators.min(0.1),
     ]),
+    deviceId: new FormControl<number | null>(null),
     installationDate: new FormControl("", { nonNullable: true }),
     maintenanceNotes: new FormControl("", { nonNullable: true }),
   });
@@ -109,6 +113,7 @@ export class SectionRegistrationDrawer {
       endLatitude: v.endLatitude!,
       endLongitude: v.endLongitude!,
       lengthKm: v.lengthKm!,
+      deviceId: v.deviceId ? Number(v.deviceId) : null,
       installationDate: v.installationDate,
       maintenanceNotes: v.maintenanceNotes,
     };

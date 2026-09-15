@@ -13,6 +13,8 @@ export interface Gateway {
   lastSeen: string;
   firmware: string;
   enabled: boolean;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface CreateGatewayPayload {
@@ -21,6 +23,8 @@ export interface CreateGatewayPayload {
   imei: string;
   fences?: string[];
   firmware?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export interface UpdateGatewayPayload {
@@ -30,4 +34,6 @@ export interface UpdateGatewayPayload {
   fences?: string[];
   firmware?: string;
   enabled?: boolean;
+  latitude?: number;
+  longitude?: number;
 }

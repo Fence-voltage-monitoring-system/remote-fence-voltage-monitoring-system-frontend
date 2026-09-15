@@ -11,4 +11,5 @@
 @keyframes drawer-in{from{transform:translateX(100%)}to{transform:translateX(0)}}@keyframes fade-in{from{opacity:0}to{opacity:1}}
 @media(max-width:1200px){.stats{@apply grid-cols-3}.toolbar{@apply grid-cols-[minmax(240px,1fr)_140px_165px]}.toolbar .results{@apply col-span-3 text-left}}
 @media(max-width:760px){main{@apply p-3}.page-heading{@apply items-start flex-col}.heading-actions{@apply w-full}.heading-actions button{@apply flex-1}.stats{@apply grid-cols-2}.toolbar{@apply grid-cols-2}.toolbar .search{@apply col-span-2}.toolbar .results{@apply col-span-2}.details-drawer,.form-drawer{@apply w-full}.details-drawer>header,.form-drawer>header,.form-body{@apply p-5}}
+.map-picker-section{@apply grid gap-2.5 mt-1}.modal-map-canvas{height:200px;width:100%;border-radius:12px;border:1px solid #405943;background:#0d1d12;overflow:hidden}.latlng-inputs{@apply grid grid-cols-2 gap-3}.custom-gateway-marker-pin{background:transparent;border:none}
 @media(max-width:480px){.stats{@apply grid-cols-1}.metrics{@apply grid-cols-1}}

@@ -16,6 +16,7 @@ import {
   MaintenanceUserOption,
   LocationProvince,
 } from "../../fence-management.models";
+import { Gateway } from "../../../../core/models/gateway.models";
 
 export interface FenceRegistrationValue {
   name: string;
@@ -43,6 +44,7 @@ export interface FenceRegistrationValue {
 })
 export class FenceRegistrationDrawer {
   @Input() maintenanceUsers: MaintenanceUserOption[] = [];
+  @Input() gateways: Gateway[] = [];
   @Output() closed = new EventEmitter<void>();
   @Output() draftSaved = new EventEmitter<FenceRegistrationValue>();
   @Output() registered = new EventEmitter<FenceRegistrationValue>();
@@ -85,9 +87,8 @@ export class FenceRegistrationDrawer {
       nonNullable: true,
       validators: Validators.required,
     }),
-    gateway: new FormControl("GTW-COL-01", {
+    gateway: new FormControl("", {
       nonNullable: true,
-      validators: Validators.required,
     }),
     startGps: new FormControl("6.9271, 79.8612", {
       nonNullable: true,
@@ -113,7 +114,6 @@ export class FenceRegistrationDrawer {
   ngOnInit() {
     for (const key of [
       "installationDate",
-      "gateway",
       "startGps",
       "endGps",
       "description",

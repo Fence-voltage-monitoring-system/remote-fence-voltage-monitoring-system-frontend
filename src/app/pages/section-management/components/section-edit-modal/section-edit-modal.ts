@@ -12,6 +12,7 @@ import {
   Validators,
 } from "@angular/forms";
 import { FenceOption, FenceSection } from "../../section-management.models";
+import { Device } from "../../../../core/models/device.models";
 
 export interface SectionEditValue {
   id: number;
@@ -24,6 +25,7 @@ export interface SectionEditValue {
   lengthKm: number;
   installationDate: string;
   maintenanceNotes: string;
+  deviceId?: number | null;
 }
 @Component({
   selector: "app-section-edit-modal",
@@ -35,6 +37,7 @@ export interface SectionEditValue {
 export class SectionEditModal {
   @Input({ required: true }) section!: FenceSection;
   @Input() fences: FenceOption[] = [];
+  @Input() availableDevices: Device[] = [];
   @Output() deleted = new EventEmitter<FenceSection>();
   @Output() closed = new EventEmitter<void>();
   @Output() saved = new EventEmitter<SectionEditValue>();
@@ -75,6 +78,7 @@ export class SectionEditModal {
       Validators.required,
       Validators.min(0.1),
     ]),
+    deviceId: new FormControl<string | null>(null),
     installationDate: new FormControl("", { nonNullable: true }),
     maintenanceNotes: new FormControl("", { nonNullable: true }),
   });
@@ -82,6 +86,20 @@ export class SectionEditModal {
     this.form.controls.fenceCode.disable();
     const start = this.parseGps(this.section.startGps),
       end = this.parseGps(this.section.endGps);
+
+    let initialDeviceId: string | null =
+      this.section.deviceId != null ? this.section.deviceId.toString() : null;
+    if (!initialDeviceId && this.availableDevices.length) {
+      const match = this.availableDevices.find(
+        (d) =>
+          (this.section.deviceSerial && d.serial === this.section.deviceSerial) ||
+          (d.fence === this.section.fenceCode && d.section === this.section.code),
+      );
+      if (match) {
+        initialDeviceId = match.id.toString();
+      }
+    }
+
     this.form.reset({
       fenceCode: this.section.fenceCode,
       sectionCode: this.section.code,
@@ -90,6 +108,7 @@ export class SectionEditModal {
       endLatitude: end[0],
       endLongitude: end[1],
       lengthKm: this.section.lengthKm,
+      deviceId: initialDeviceId,
       installationDate: "",
       maintenanceNotes:
         this.section.maintenance === "No Issues"
@@ -122,6 +141,12 @@ export class SectionEditModal {
       return;
     }
     const v = this.form.getRawValue();
+    const rawId = v.deviceId;
+    const deviceIdNum =
+      rawId !== null && rawId !== undefined && rawId !== "0" && rawId !== ""
+        ? Number(rawId)
+        : null;
+
     this.saved.emit({
       id: this.section.id,
       fenceCode: v.fenceCode,
@@ -131,6 +156,7 @@ export class SectionEditModal {
       endLatitude: v.endLatitude!,
       endLongitude: v.endLongitude!,
       lengthKm: v.lengthKm!,
+      deviceId: deviceIdNum,
       installationDate: v.installationDate,
       maintenanceNotes: v.maintenanceNotes,
     });

@@ -12,6 +12,9 @@ export interface SectionResponse {
   voltageKv: number | null;
   battery: number | null;
   status: SectionStatus | null;
+  deviceId?: number | null;
+  deviceName?: string | null;
+  deviceSerial?: string | null;
   updatedAt: string | null;
 }
 export interface SectionCreateRequest {
@@ -20,6 +23,7 @@ export interface SectionCreateRequest {
   startGps: string;
   endGps: string;
   lengthKm: number;
+  deviceId?: number | null;
 }
 export type SectionUpdateRequest = Omit<SectionCreateRequest, "fenceId">;
 export interface SectionBulkRequest {

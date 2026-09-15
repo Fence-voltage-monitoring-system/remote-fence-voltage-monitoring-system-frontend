@@ -9,6 +9,8 @@ import { Observable, Subscription } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ManagementAccessService } from "../../core/services/management-access.service";
 import { FenceService } from "../../core/services/fence.service";
+import { DeviceService } from "../../core/services/device.service";
+import { Device } from "../../core/models/device.models";
 import {
   SectionService,
   SectionResponse,
@@ -47,11 +49,13 @@ export class SectionManagement implements OnInit, OnDestroy {
   readonly access = inject(ManagementAccessService);
   private readonly fenceService = inject(FenceService);
   private readonly sectionService = inject(SectionService);
+  private readonly deviceService = inject(DeviceService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly subscriptions = new Subscription();
   private sectionsRequest?: Subscription;
   fences: FenceOption[] = [];
   sections: FenceSection[] = [];
+  availableDevices: Device[] = [];
   selectedFence: FenceOption | null = null;
   province = this.access.lockedProvince;
   district = this.access.lockedDistrict;
@@ -66,6 +70,33 @@ export class SectionManagement implements OnInit, OnDestroy {
   selectedSection: FenceSection | null = null;
   ngOnInit() {
     this.loadFences();
+    this.loadDevices();
+  }
+  loadDevices() {
+    this.deviceService.getDevices().subscribe({
+      next: (devices) => {
+        this.availableDevices = devices || [];
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.availableDevices = [];
+      },
+    });
+  }
+
+  get unassignedDevicesForRegistration(): Device[] {
+    return this.availableDevices.filter((d) => !d.section);
+  }
+
+  get availableDevicesForSelectedSection(): Device[] {
+    const sec = this.selectedSection;
+    if (!sec) return this.unassignedDevicesForRegistration;
+    return this.availableDevices.filter(
+      (d) =>
+        !d.section ||
+        (sec.deviceId != null && d.id.toString() === sec.deviceId.toString()) ||
+        (d.fence === sec.fenceCode && d.section === sec.code),
+    );
   }
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
@@ -270,6 +301,7 @@ export class SectionManagement implements OnInit, OnDestroy {
       startGps: `${value.startLatitude}, ${value.startLongitude}`,
       endGps: `${value.endLatitude}, ${value.endLongitude}`,
       lengthKm: value.lengthKm,
+      deviceId: value.deviceId ?? null,
     };
   }
   private mutate<T>(
@@ -290,6 +322,7 @@ export class SectionManagement implements OnInit, OnDestroy {
           this.selectedSection = null;
           this.notice = message;
           this.selectFence(fenceCode);
+          this.loadDevices();
           this.cdr.markForCheck();
         },
         error: (error) => {
@@ -301,6 +334,10 @@ export class SectionManagement implements OnInit, OnDestroy {
     );
   }
   private toSection(row: SectionResponse, fenceCode: string): FenceSection {
+    const deviceDisplay = row.deviceName
+      ? `${row.deviceName} (${row.deviceSerial})`
+      : row.deviceSerial ?? null;
+
     return {
       id: row.id,
       fenceCode,
@@ -311,8 +348,10 @@ export class SectionManagement implements OnInit, OnDestroy {
       voltageKv: row.voltageKv == null ? null : Number(row.voltageKv),
       battery: row.battery,
       status: row.status ?? "OFFLINE",
-      device: null,
-      maintenance: "Unavailable",
+      device: deviceDisplay,
+      deviceId: row.deviceId ?? null,
+      deviceSerial: row.deviceSerial ?? null,
+      maintenance: "No Issues",
       updated: row.updatedAt
         ? new Date(row.updatedAt).toLocaleString()
         : "Unavailable",

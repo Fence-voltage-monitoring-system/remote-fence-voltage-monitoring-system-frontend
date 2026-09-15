@@ -27,6 +27,9 @@ import {
   FenceEditValue,
 } from "./components/fence-edit-drawer/fence-edit-drawer";
 import { FenceService } from "../../core/services/fence.service";
+import { GatewayService } from "../../core/services/gateway.service";
+import { Gateway } from "../../core/models/gateway.models";
+
 @Component({
   selector: "app-fence-management",
   standalone: true,
@@ -43,12 +46,14 @@ import { FenceService } from "../../core/services/fence.service";
 export class FenceManagement implements OnInit, OnDestroy {
   readonly access = inject(ManagementAccessService);
   private readonly fenceService = inject(FenceService);
+  private readonly gatewayService = inject(GatewayService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly subscriptions = new Subscription();
   private candidatesRequest?: Subscription;
   maintenanceUsers: MaintenanceUserOption[] = [];
   fences: FenceRecord[] = [];
   locations: LocationProvince[] = [];
+  registeredGateways: Gateway[] = [];
   isLoading = false;
   isSaving = false;
   notice = "";
@@ -64,6 +69,19 @@ export class FenceManagement implements OnInit, OnDestroy {
   };
   ngOnInit() {
     this.loadFences();
+    this.loadGateways();
+  }
+
+  private loadGateways() {
+    this.gatewayService.getGateways().subscribe({
+      next: (gws) => {
+        this.registeredGateways = gws || [];
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        this.registeredGateways = [];
+      }
+    });
   }
   ngOnDestroy() {
     this.subscriptions.unsubscribe();

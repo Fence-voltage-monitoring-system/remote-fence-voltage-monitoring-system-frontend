@@ -6,6 +6,7 @@ import { Activity, BatteryCharging, Check, ChevronDown, CirclePlus, Cpu, createI
 import { Device, DeviceStatus } from '../../core/models/device.models';
 import { DeviceService } from '../../core/services/device.service';
 import { FenceService } from '../../core/services/fence.service';
+import { SectionService } from '../../core/services/section.service';
 import { HeaderComponent } from '../../shared/components/header/header';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 
@@ -20,6 +21,7 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
   private readonly router = inject(Router);
   private readonly deviceService = inject(DeviceService);
   private readonly fenceService = inject(FenceService);
+  private readonly sectionService = inject(SectionService);
   private readonly cdr = inject(ChangeDetectorRef);
 
   fences: string[] = [];
@@ -63,6 +65,17 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
           this.assignmentFence = this.fences[0];
           this.registrationFence = this.fences[0];
         }
+        (fences || []).forEach((f) => {
+          this.sectionService.getSectionsByFence(f.id).subscribe({
+            next: (sections) => {
+              this.sectionsByFence[f.name] = (sections || []).map((s) => s.code);
+              this.cdr.markForCheck();
+            },
+            error: () => {
+              this.sectionsByFence[f.name] = [];
+            }
+          });
+        });
       },
       error: () => { this.fences = []; }
     });
@@ -115,13 +128,37 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
   }
 
   get unassignedDevices(): Device[] { return this.devices.filter(device => !device.section); }
-  get availableSections(): string[] {
-    const assigned = new Set(this.devices.filter(device => device.fence === this.assignmentFence && device.section).map(device => device.section));
-    return (this.sectionsByFence[this.assignmentFence] ?? []).filter(section => !assigned.has(section));
+  get availableSections(): { code: string; label: string }[] {
+    const sections = this.sectionsByFence[this.assignmentFence] ?? [];
+    const assignedMap = new Map<string, string>();
+    for (const dev of this.devices) {
+      if (dev.fence === this.assignmentFence && dev.section) {
+        assignedMap.set(dev.section, dev.name);
+      }
+    }
+    return sections.map((secCode) => {
+      const assignedTo = assignedMap.get(secCode);
+      return {
+        code: secCode,
+        label: assignedTo ? `${secCode} (In use: ${assignedTo})` : `${secCode} (Unassigned)`
+      };
+    });
   }
-  get availableRegistrationSections(): string[] {
-    const assigned = new Set(this.devices.filter(device => device !== this.editing && device.fence === this.registrationFence && device.section).map(device => device.section));
-    return (this.sectionsByFence[this.registrationFence] ?? []).filter(section => !assigned.has(section));
+  get availableRegistrationSections(): { code: string; label: string }[] {
+    const sections = this.sectionsByFence[this.registrationFence] ?? [];
+    const assignedMap = new Map<string, string>();
+    for (const dev of this.devices) {
+      if (dev !== this.editing && dev.fence === this.registrationFence && dev.section) {
+        assignedMap.set(dev.section, dev.name);
+      }
+    }
+    return sections.map((secCode) => {
+      const assignedTo = assignedMap.get(secCode);
+      return {
+        code: secCode,
+        label: assignedTo ? `${secCode} (In use: ${assignedTo})` : `${secCode} (Unassigned)`
+      };
+    });
   }
 
   count(status: DeviceStatus): number { return this.devices.filter((device) => device.status === status).length; }

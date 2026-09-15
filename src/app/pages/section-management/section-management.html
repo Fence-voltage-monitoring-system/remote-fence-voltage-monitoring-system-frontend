@@ -12,6 +12,6 @@
     </section>
   </div>
 </main>
-@if(isRegistrationOpen){<app-section-registration-drawer [fences]="manageableFences" [selectedFenceCode]="selectedFence?.code ?? ''" [saving]="isSaving" [error]="error" (closed)="closeRegistration()" (registered)="registerSection($event)"/>}
-@if(selectedSection){<app-section-edit-modal [section]="selectedSection" [fences]="manageableFences" [saving]="isSaving" [error]="error" (closed)="closeEdit()" (saved)="saveSection($event)" (deleted)="deleteSection($event)"/>}
+@if(isRegistrationOpen){<app-section-registration-drawer [fences]="manageableFences" [selectedFenceCode]="selectedFence?.code ?? ''" [availableDevices]="unassignedDevicesForRegistration" [saving]="isSaving" [error]="error" (closed)="closeRegistration()" (registered)="registerSection($event)"/>}
+@if(selectedSection){<app-section-edit-modal [section]="selectedSection" [fences]="manageableFences" [availableDevices]="availableDevicesForSelectedSection" [saving]="isSaving" [error]="error" (closed)="closeEdit()" (saved)="saveSection($event)" (deleted)="deleteSection($event)"/>}
 @if(isBulkAddOpen){<app-section-bulk-add-modal [fences]="manageableFences" [selectedFenceCode]="selectedFence?.code ?? ''" [saving]="isSaving" [error]="error" (closed)="closeBulkAdd()" (imported)="importSections($event)"/>}

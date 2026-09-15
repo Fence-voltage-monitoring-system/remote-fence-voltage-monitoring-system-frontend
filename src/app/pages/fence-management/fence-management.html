@@ -13,5 +13,5 @@
     </section>
   </div>
 </main>
-@if (isRegistrationOpen) { <app-fence-registration-drawer [maintenanceUsers]="maintenanceUsers" [locations]="editableLocations" [authorityDescription]="authorityDescription" [saving]="isSaving" [error]="error" (locationChanged)="locationChanged($event)" (closed)="closeRegistration()" (draftSaved)="saveDraft($event)" (registered)="registerFence($event)" /> }
-@if (selectedFence) { <app-fence-edit-drawer [fence]="selectedFence" [maintenanceUsers]="maintenanceUsers" [locations]="editableLocations" [authorityDescription]="authorityDescription" [saving]="isSaving" [error]="error" (locationChanged)="locationChanged($event)" (closed)="closeEdit()" (saved)="saveFence($event)" (deleted)="deleteFence($event)" /> }
+@if (isRegistrationOpen) { <app-fence-registration-drawer [gateways]="registeredGateways" [maintenanceUsers]="maintenanceUsers" [locations]="editableLocations" [authorityDescription]="authorityDescription" [saving]="isSaving" [error]="error" (locationChanged)="locationChanged($event)" (closed)="closeRegistration()" (draftSaved)="saveDraft($event)" (registered)="registerFence($event)" /> }
+@if (selectedFence) { <app-fence-edit-drawer [gateways]="registeredGateways" [fence]="selectedFence" [maintenanceUsers]="maintenanceUsers" [locations]="editableLocations" [authorityDescription]="authorityDescription" [saving]="isSaving" [error]="error" (locationChanged)="locationChanged($event)" (closed)="closeEdit()" (saved)="saveFence($event)" (deleted)="deleteFence($event)" /> }

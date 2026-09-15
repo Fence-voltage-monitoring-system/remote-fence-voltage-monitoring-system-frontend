@@ -22,29 +22,33 @@ export class GatewayService {
   }
 
   updateGateway(id: string, payload: UpdateGatewayPayload): Observable<Gateway> {
-    const rawId = String(id).replace(/^GW-/, '');
+    const rawId = String(id).replace(/^(GW-|GTW-)/, '');
     return this.http.patch<any>(`${this.endpoint}/${rawId}`, payload, this.options).pipe(
       map((dto) => this.mapDtoToGateway(dto))
     );
   }
 
   toggleEnabled(id: string, enabled: boolean): Observable<Gateway> {
-    const rawId = String(id).replace(/^GW-/, '');
+    const rawId = String(id).replace(/^(GW-|GTW-)/, '');
     return this.http.patch<any>(`${this.endpoint}/${rawId}/status`, { enabled }, this.options).pipe(
       map((dto) => this.mapDtoToGateway(dto))
     );
   }
 
   deleteGateway(id: string): Observable<void> {
-    const rawId = String(id).replace(/^GW-/, '');
+    const rawId = String(id).replace(/^(GW-|GTW-)/, '');
     return this.http.delete<void>(`${this.endpoint}/${rawId}`, this.options);
   }
 
   private mapDtoToGateway(dto: any): Gateway {
-    const formatDate = (iso: string | null) => {
-      if (!iso) return 'Not installed';
+    const parseLastSeen = (val: any) => {
+      if (!val) return 'Not installed';
+      if (typeof val === 'string' && (val.includes('ago') || val.includes('now') || val.includes('Not'))) {
+        return val;
+      }
       try {
-        const diffMs = Date.now() - new Date(iso).getTime();
+        const diffMs = Date.now() - new Date(val).getTime();
+        if (isNaN(diffMs)) return String(val);
         const diffMin = Math.floor(diffMs / 60000);
         if (diffMin < 1) return 'Just now';
         if (diffMin < 60) return `${diffMin} min ago`;
@@ -53,12 +57,17 @@ export class GatewayService {
         const diffDay = Math.floor(diffHr / 24);
         return `${diffDay} days ago`;
       } catch {
-        return iso;
+        return String(val);
       }
     };
 
+    let idStr = String(dto.id || dto.serial || 'GTW-0');
+    if (!idStr.startsWith('GTW-') && !idStr.startsWith('GW-')) {
+      idStr = `GTW-${idStr}`;
+    }
+
     return {
-      id: dto.id ? (String(dto.id).startsWith('GW-') ? dto.id : `GW-${dto.id}`) : (dto.serial || 'GW-0000'),
+      id: idStr,
       name: dto.name || 'Gateway',
       serial: dto.serial || '',
       imei: dto.imei || '',
@@ -67,9 +76,11 @@ export class GatewayService {
       signal: dto.signal || 0,
       power: dto.power || 0,
       devices: dto.devices || 0,
-      lastSeen: formatDate(dto.lastSeen),
+      lastSeen: parseLastSeen(dto.lastSeen),
       firmware: dto.firmware || 'v2.4.1',
       enabled: dto.enabled !== false,
+      latitude: dto.latitude != null ? Number(dto.latitude) : undefined,
+      longitude: dto.longitude != null ? Number(dto.longitude) : undefined,
     };
   }
 }

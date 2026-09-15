@@ -18,6 +18,8 @@ export interface FenceSection {
   endGps: string;
   lengthKm: number;
   device: string | null;
+  deviceId?: number | null;
+  deviceSerial?: string | null;
   voltageKv: number | null;
   battery: number | null;
   maintenance: string;

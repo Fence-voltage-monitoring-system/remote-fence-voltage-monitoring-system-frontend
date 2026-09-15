@@ -19,6 +19,7 @@ import {
   MaintenanceUserOption,
   LocationProvince,
 } from "../../fence-management.models";
+import { Gateway } from "../../../../core/models/gateway.models";
 
 export interface FenceEditValue {
   id: number;
@@ -49,6 +50,7 @@ export interface FenceEditValue {
 export class FenceEditDrawer implements OnInit {
   @Input({ required: true }) fence!: FenceRecord;
   @Input() maintenanceUsers: MaintenanceUserOption[] = [];
+  @Input() gateways: Gateway[] = [];
   @Output() closed = new EventEmitter<void>();
   @Output() saved = new EventEmitter<FenceEditValue>();
   @Output() deleted = new EventEmitter<FenceRecord>();
@@ -145,7 +147,6 @@ export class FenceEditDrawer implements OnInit {
   ngOnInit(): void {
     for (const key of [
       "installationDate",
-      "gateway",
       "startGps",
       "endGps",
       "description",
@@ -159,7 +160,7 @@ export class FenceEditDrawer implements OnInit {
       lengthKm: this.fence.lengthKm,
       health: this.fence.health,
       installationDate: "2024-01-15",
-      gateway: this.fence.gateway || "GTW-COL-01",
+      gateway: this.fence.gateway || "",
       startGps: "6.9271, 79.8612",
       endGps: "6.9502, 79.9110",
       description: "",

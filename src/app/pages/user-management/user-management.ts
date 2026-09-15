@@ -4,19 +4,30 @@ import { UserProfile } from './components/user-profile/user-profile';
 import { UserCreateDrawer } from './components/user-create-drawer/user-create-drawer';
 import { UserTable } from './components/user-table/user-table';
 import { UserToolbar } from './components/user-toolbar/user-toolbar';
+import { UserSummary, UserSummaryData } from './components/user-summary/user-summary';
 import { CurrentUserProfile } from '../user-profile/user-profile.models';
 import { SystemUser, UserFilters } from './user-management.models';
 
 @Component({
   selector: 'app-user-management',
   standalone: true,
-  imports: [UserToolbar, UserTable, UserProfile, UserCreateDrawer],
+  imports: [UserToolbar, UserTable, UserProfile, UserCreateDrawer, UserSummary],
   templateUrl: './user-management.html',
 })
 export class UserManagement implements OnInit {
   private readonly userService = inject(UserService);
   private readonly cdr = inject(ChangeDetectorRef);
   users: SystemUser[] = [];
+
+  get userSummaryData(): UserSummaryData {
+    return {
+      total: this.users.length,
+      superAdmin: this.users.filter((u) => u.role === 'SUPER_ADMIN').length,
+      regionalAdmin: this.users.filter((u) => u.role === 'REGIONAL_ADMIN').length,
+      fieldAdmin: this.users.filter((u) => u.role === 'FIELD_ADMIN').length,
+      maintenance: this.users.filter((u) => u.role === 'MAINTENANCE').length,
+    };
+  }
 
   currentUserProfile: CurrentUserProfile | null = null;
   filters: UserFilters = { search: '', role: '', province: '', status: '' };

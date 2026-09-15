@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
 import { FenceService } from '../../core/services/fence.service';
@@ -29,15 +29,10 @@ interface MapFence {
 export class FenceMapWorkspaceComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly fenceService = inject(FenceService);
+  private readonly cdr = inject(ChangeDetectorRef);
   @ViewChild('mapCanvas') mapElement!: ElementRef<HTMLDivElement>;
 
-  fences: MapFence[] = [
-    { id: 'MNR-A', monitoringFenceId: 'monaragala', name: 'Monaragala Elephant Protection Fence', province: 'Uva', district: 'Monaragala', status: 'healthy', voltage: 5.9, sections: 24, activeSections: 22, coordinates: [6.872, 81.350], lastCommunication: '8s ago' },
-    { id: 'WLP-N', monitoringFenceId: 'wilpattu', name: 'Wilpattu North Buffer Fence', province: 'North Western', district: 'Puttalam', status: 'healthy', voltage: 6.1, sections: 18, activeSections: 18, coordinates: [8.458, 80.028], lastCommunication: '12s ago' },
-    { id: 'MHT-B', monitoringFenceId: 'mihintale', name: 'Mihintale Wildlife Buffer Fence', province: 'North Central', district: 'Anuradhapura', status: 'warning', voltage: 4.2, sections: 12, activeSections: 11, coordinates: [8.350, 80.505], lastCommunication: '34s ago' },
-    { id: 'GOY-E', monitoringFenceId: 'gal-oya', name: 'Gal Oya East Protection Fence', province: 'Eastern', district: 'Ampara', status: 'critical', voltage: 0.8, sections: 20, activeSections: 16, coordinates: [7.292, 81.625], lastCommunication: '4m ago' },
-    { id: 'LNV-P', monitoringFenceId: 'lunugamvehera', name: 'Lunugamvehera Park Fence', province: 'Southern', district: 'Hambantota', status: 'warning', voltage: 4.6, sections: 16, activeSections: 15, coordinates: [6.341, 81.151], lastCommunication: '51s ago' },
-  ];
+  fences: MapFence[] = [];
 
   selectedProvince = 'all';
   selectedDistrict = 'all';
@@ -80,27 +75,48 @@ export class FenceMapWorkspaceComponent implements OnInit, AfterViewInit, OnDest
       next: (records) => {
         if (records && records.length > 0) {
           this.fences = records.map((r, i) => this.mapRecordToMapFence(r, i));
-          if (this.map) {
-            this.renderMarkers();
-            this.fitVisibleFences(false);
-          }
+        } else {
+          this.fences = this.getFallbackFences();
         }
+        if (this.map) {
+          this.renderMarkers();
+          this.fitVisibleFences(false);
+        }
+        this.cdr.detectChanges();
       },
-      error: (err) => console.warn('Could not load live map fences, using fallbacks:', err)
+      error: (err) => {
+        console.warn('Could not load live map fences, using fallbacks:', err);
+        this.fences = this.getFallbackFences();
+        if (this.map) {
+          this.renderMarkers();
+          this.fitVisibleFences(false);
+        }
+        this.cdr.detectChanges();
+      }
     });
+  }
+
+  private getFallbackFences(): MapFence[] {
+    return [
+      { id: 'MNR-A', monitoringFenceId: 'monaragala', name: 'Monaragala Elephant Protection Fence', province: 'Uva', district: 'Monaragala', status: 'healthy', voltage: 5.9, sections: 24, activeSections: 22, coordinates: [6.872, 81.350], lastCommunication: '8s ago' },
+      { id: 'WLP-N', monitoringFenceId: 'wilpattu', name: 'Wilpattu North Buffer Fence', province: 'North Western', district: 'Puttalam', status: 'healthy', voltage: 6.1, sections: 18, activeSections: 18, coordinates: [8.458, 80.028], lastCommunication: '12s ago' },
+      { id: 'MHT-B', monitoringFenceId: 'mihintale', name: 'Mihintale Wildlife Buffer Fence', province: 'North Central', district: 'Anuradhapura', status: 'warning', voltage: 4.2, sections: 12, activeSections: 11, coordinates: [8.350, 80.505], lastCommunication: '34s ago' },
+      { id: 'GOY-E', monitoringFenceId: 'gal-oya', name: 'Gal Oya East Protection Fence', province: 'Eastern', district: 'Ampara', status: 'critical', voltage: 0.8, sections: 20, activeSections: 16, coordinates: [7.292, 81.625], lastCommunication: '4m ago' },
+      { id: 'LNV-P', monitoringFenceId: 'lunugamvehera', name: 'Lunugamvehera Park Fence', province: 'Southern', district: 'Hambantota', status: 'warning', voltage: 4.6, sections: 16, activeSections: 15, coordinates: [6.341, 81.151], lastCommunication: '51s ago' },
+    ];
   }
 
   private mapRecordToMapFence(r: any, index: number): MapFence {
     const rawHealth = (r.health || 'OFFLINE').toLowerCase();
     const status: FenceStatus = rawHealth === 'healthy' ? 'healthy' : (rawHealth === 'warning' ? 'warning' : 'critical');
     const districtCoords: Record<string, L.LatLngExpression> = {
-      monaragala: [6.872, 81.350],
-      puttalam: [8.458, 80.028],
-      anuradhapura: [8.350, 80.505],
+      monaragala: [6.872000, 81.350000],
+      kandy: [7.348000, 80.733000],
+      puttalam: [8.458000, 80.028000],
+      anuradhapura: [8.350000, 80.505000],
       ampara: [7.292, 81.625],
       hambantota: [6.341, 81.151],
       colombo: [6.927, 79.861],
-      kandy: [7.290, 80.633],
       ratnapura: [6.682, 80.401],
       badulla: [6.993, 81.055],
     };
@@ -115,8 +131,8 @@ export class FenceMapWorkspaceComponent implements OnInit, AfterViewInit, OnDest
       district: r.district || 'General',
       status,
       voltage: r.averageVoltageKv != null ? Number(r.averageVoltageKv) : 5.0,
-      sections: r.sections || 4,
-      activeSections: r.sections || 4,
+      sections: r.sections || 0,
+      activeSections: r.sections || 0,
       coordinates: coords,
       lastCommunication: r.lastUpdated || 'Just now',
     };
