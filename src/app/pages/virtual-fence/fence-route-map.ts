@@ -50,7 +50,11 @@ export class FenceRouteMapComponent implements AfterViewInit, OnChanges, OnDestr
     const previous = points.at(-2) ?? [last[0] - .001, last[1] - .001];
     points.push([last[0] + (last[0] - previous[0]), last[1] + (last[1] - previous[1])]);
     sections.forEach((section, index) => this.drawSegment(section, points[index], points[index + 1]));
-    this.map.fitBounds(L.latLngBounds(points), { padding: [38, 38], maxZoom: 15, animate: false });
+    const boundsPoints = [...points];
+    if (this.fence.gateway?.latitude && this.fence.gateway?.longitude) {
+      boundsPoints.push([this.fence.gateway.latitude, this.fence.gateway.longitude]);
+    }
+    this.map.fitBounds(L.latLngBounds(boundsPoints), { padding: [38, 38], maxZoom: 15, animate: false });
     this.updateZoomDetails();
   }
 
@@ -85,7 +89,7 @@ export class FenceRouteMapComponent implements AfterViewInit, OnChanges, OnDestr
       segment.route.setStyle({ weight: closeZoom ? 4 : this.zoomLevel >= 13 ? 5 : 6, opacity: closeZoom ? .78 : .95 });
     });
     if (this.zoomLevel >= 13) this.addSectionLabels();
-    if (this.zoomLevel >= 14) this.addGatewayMarker();
+    this.addGatewayMarker();
     if (this.zoomLevel >= 15) this.addDeviceMarkers();
   }
 
@@ -101,9 +105,30 @@ export class FenceRouteMapComponent implements AfterViewInit, OnChanges, OnDestr
 
   private addGatewayMarker(): void {
     const first = this.segments[0];
-    if (!first) return;
-    L.marker(first.start, { icon: L.divIcon({ className: 'fence-gateway-marker', html: '<span>G</span>', iconSize: [26, 26], iconAnchor: [13, 13] }) })
-      .bindPopup(`<strong>Fence gateway</strong><br><small>${this.fence!.name}</small>`).addTo(this.detailLayer!);
+    const gwLat = this.fence?.gateway?.latitude;
+    const gwLng = this.fence?.gateway?.longitude;
+    const position: L.LatLngTuple | null = (gwLat != null && gwLng != null)
+      ? [gwLat, gwLng]
+      : first ? first.start : null;
+
+    if (!position) return;
+
+    const gwName = this.fence?.gateway?.name || 'Fence Gateway';
+    const gwSerial = this.fence?.gateway?.serial ? ` (${this.fence.gateway.serial})` : '';
+    const gwStatus = (this.fence?.gateway?.status || 'ONLINE').toUpperCase();
+
+    L.marker(position, {
+      zIndexOffset: 1000,
+      icon: L.divIcon({
+        className: 'fence-gateway-marker',
+        html: '<span>G</span>',
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+      }),
+    })
+      .bindTooltip(`Gateway: ${gwName}${gwSerial}`, { permanent: false, direction: 'top', offset: [0, -10] })
+      .bindPopup(`<strong>${gwName}</strong><br><small>${this.fence?.name ?? ''}</small><br><b>Serial: ${this.fence?.gateway?.serial ?? '—'}</b><br><b>Status: ${gwStatus}</b>`)
+      .addTo(this.detailLayer!);
   }
 
   private addDeviceMarkers(): void {

@@ -23,6 +23,11 @@ export interface FenceRecord {
   lengthKm: number;
   sections: number;
   gateway?: string;
+  gatewayId?: number;
+  gatewaySerial?: string;
+  gatewayLatitude?: number;
+  gatewayLongitude?: number;
+  gatewayStatus?: string;
   averageVoltageKv: number | null;
   health: FenceHealth;
   lastUpdated?: string;

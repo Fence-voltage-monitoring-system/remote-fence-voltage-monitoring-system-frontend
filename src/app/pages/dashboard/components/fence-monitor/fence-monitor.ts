@@ -5,10 +5,11 @@ import { FenceService } from '../../../../core/services/fence.service';
 import { SectionService, SectionResponse } from '../../../../core/services/section.service';
 
 type FenceState = 'healthy' | 'warning' | 'critical' | 'offline';
-interface Fence { id: string; dbId?: number; name: string; province: string; district: string; zone: string; gateway: string; latitude: number; longitude: number; sectionCount: number; updateIntervalMinutes: number; }
+interface Fence { id: string; dbId?: number; name: string; province: string; district: string; zone: string; gateway: string; gatewaySerial?: string; gatewayLatitude?: number; gatewayLongitude?: number; gatewayStatus?: string; latitude: number; longitude: number; sectionCount: number; updateIntervalMinutes: number; }
 export interface FenceSelection { id: string; name: string; latitude: number; longitude: number; sectionCount: number; }
 export interface FenceRouteSection { id: string; status: FenceState; voltage: number; latitude: number; longitude: number; updated: string; }
-export interface FenceRouteData { id: string; name: string; district: string; zone: string; sections: FenceRouteSection[]; }
+export interface FenceRouteGateway { name: string; serial?: string; latitude?: number; longitude?: number; status?: string; }
+export interface FenceRouteData { id: string; name: string; district: string; zone: string; gateway?: FenceRouteGateway; sections: FenceRouteSection[]; }
 interface ScheduleState { lastUpdatedAt: number; nextUpdateAt: number; cycle: number; }
 interface Section {
   id: string; voltage: string; state: FenceState; battery: number; voltageDrop: string;
@@ -30,8 +31,13 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
   @Input() showFenceSelector = true;
   @Input() showSectionTable = false;
   @Input() statusFilter: FenceState | 'all' = 'all';
+  private requestedFenceId?: string;
   @Input() set fenceId(value: string) {
-    if (value && this.selectedFence && value !== this.selectedFence.id) this.selectFence(value);
+    if (!value) return;
+    this.requestedFenceId = value;
+    if (this.fences.length > 0) {
+      this.selectFence(value);
+    }
   }
 
   readonly provinceDistricts: Readonly<Record<string, readonly string[]>> = {
@@ -84,13 +90,20 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
           district: r.district,
           zone: 'Zone A',
           gateway: r.gateway || 'GTW',
-          latitude: 6.8681,
-          longitude: 81.3342,
+          gatewaySerial: r.gatewaySerial,
+          gatewayLatitude: r.gatewayLatitude,
+          gatewayLongitude: r.gatewayLongitude,
+          gatewayStatus: r.gatewayStatus,
+          latitude: r.gatewayLatitude || 6.8681,
+          longitude: r.gatewayLongitude || 81.3342,
           sectionCount: r.sections || 0,
           updateIntervalMinutes: 15,
         }));
         if (this.fences.length > 0) {
-          this.selectFence(this.fences[0].id);
+          const target = (this.requestedFenceId && this.fences.find(f => f.id === this.requestedFenceId || String(f.dbId) === this.requestedFenceId))
+            ? this.requestedFenceId
+            : this.fences[0].id;
+          this.selectFence(target);
         }
       },
       error: () => {
@@ -130,9 +143,11 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
   }
 
   selectFence(fenceId: string): void {
-    const found = this.fences.find((fence) => fence.id === fenceId);
+    const found = this.fences.find((fence) => fence.id === fenceId || String(fence.dbId) === fenceId);
     if (!found) return;
     this.selectedFence = found;
+    this.selectedProvince = found.province;
+    this.selectedDistrict = found.district;
     if (this.selectedFence.dbId) {
       this.sectionService.getSectionsByFence(this.selectedFence.dbId).subscribe({
         next: (rows) => {
@@ -301,6 +316,13 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
     if (!this.selectedFence) return;
     this.fenceRouteChange.emit({
       id: this.selectedFence.id, name: this.selectedFence.name, district: this.selectedFence.district, zone: this.selectedFence.zone,
+      gateway: {
+        name: this.selectedFence.gateway,
+        serial: this.selectedFence.gatewaySerial,
+        latitude: this.selectedFence.gatewayLatitude,
+        longitude: this.selectedFence.gatewayLongitude,
+        status: this.selectedFence.gatewayStatus,
+      },
       sections: this.sections.map(section => ({ id: section.id, status: section.state, voltage: Number.parseFloat(section.voltage) || 0, latitude: Number.parseFloat(section.latitude) || 0, longitude: Number.parseFloat(section.longitude) || 0, updated: section.updated })),
     });
   }
