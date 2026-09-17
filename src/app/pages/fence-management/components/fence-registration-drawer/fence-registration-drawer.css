@@ -9,3 +9,97 @@
 .scrollbar-hidden { scrollbar-width:none; }.scrollbar-hidden::-webkit-scrollbar { display:none; }
 @keyframes modal-in { from { opacity:0; transform:translate(-50%,-46%) scale(.96); } to { opacity:1; transform:translate(-50%,-50%) scale(1); } } @keyframes modal-out { from { opacity:1; transform:translate(-50%,-50%) scale(1); } to { opacity:0; transform:translate(-50%,-46%) scale(.96); } } @keyframes fade-in { from { opacity:0; } to { opacity:1; } } @keyframes fade-out { from { opacity:1; } to { opacity:0; } }
 @media (prefers-reduced-motion: reduce) { .backdrop,.drawer { animation:none; } }
+
+/* Light Theme Overrides for Register Fence Drawer */
+:host-context(html[data-theme='light']) .drawer,
+html[data-theme='light'] .drawer {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15) !important;
+}
+
+:host-context(html[data-theme='light']) .drawer h2,
+html[data-theme='light'] .drawer h2 {
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .drawer p,
+html[data-theme='light'] .drawer p {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .close,
+html[data-theme='light'] .close {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .close:hover,
+html[data-theme='light'] .close:hover {
+  background: #e2e8f0 !important;
+}
+
+:host-context(html[data-theme='light']) .field label,
+html[data-theme='light'] .field label,
+:host-context(html[data-theme='light']) fieldset legend,
+html[data-theme='light'] fieldset legend,
+:host-context(html[data-theme='light']) .backup-list > span,
+html[data-theme='light'] .backup-list > span {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .control,
+html[data-theme='light'] .control {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .maintenance-team,
+html[data-theme='light'] .maintenance-team {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+:host-context(html[data-theme='light']) .maintenance-team legend,
+html[data-theme='light'] .maintenance-team legend {
+  color: #15803d !important;
+}
+
+:host-context(html[data-theme='light']) .maintenance-team > p,
+html[data-theme='light'] .maintenance-team > p {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .backup-list label,
+html[data-theme='light'] .backup-list label {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+:host-context(html[data-theme='light']) .backup-list strong,
+html[data-theme='light'] .backup-list strong {
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .backup-list small,
+html[data-theme='light'] .backup-list small,
+:host-context(html[data-theme='light']) .backup-list em,
+html[data-theme='light'] .backup-list em {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .secondary,
+html[data-theme='light'] .secondary {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .secondary:hover,
+html[data-theme='light'] .secondary:hover {
+  background: #e2e8f0 !important;
+}
+

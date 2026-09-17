@@ -1,1 +1,82 @@
-:host{position:fixed;inset:0;z-index:2000}.backdrop{animation:fade-in .2s}.modal{scrollbar-width:none;transform:translate(-50%,-50%);animation:modal-in .28s cubic-bezier(.2,.8,.2,1)}.modal::-webkit-scrollbar,.table-wrap::-webkit-scrollbar{display:none}.table-wrap{scrollbar-width:none}.backdrop.is-closing{animation:fade-out .28s forwards}.modal.is-closing{animation:modal-out .28s forwards}.close{display:grid;width:2rem;height:2rem;place-items:center;border:1px solid #425543;border-radius:.5rem;background:#273a2a;color:#a5b1a5;font-size:1.2rem}.field{display:grid;gap:.35rem}.field span{color:#96b29b;font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}.control{height:36px;border:1px solid #38513b;border-radius:8px;background:#203824;padding:0 10px;color:#eef3ed;font-size:11px}.upload{align-self:end;height:36px;display:flex;align-items:center;border-radius:8px;background:#43d36c;padding:0 14px;color:#071c0d;font-size:11px;font-weight:700;cursor:pointer}.upload input{display:none}table{width:100%;min-width:1040px;border-collapse:collapse}th{padding:8px 6px;color:#8fa292;font-size:8px;letter-spacing:.06em;text-align:left;text-transform:uppercase}td{padding:5px;border-top:1px solid #304632}td input{width:100%;height:32px;box-sizing:border-box;border:1px solid #3d5140;border-radius:6px;background:#223726;padding:0 7px;color:#e6ece5;font-size:10px;outline:none}td input:focus{border-color:#43d36c}.row-number{color:#8ea091;font-family:monospace}.valid,.invalid{font-size:9px;white-space:nowrap}.valid{color:#43d36c}.invalid{color:#ff8e84}.remove{color:#ff8e84;font-size:16px}.add-row,.secondary,.primary{height:35px;border-radius:8px;padding:0 13px;font-size:10px;font-weight:700}.add-row,.secondary{border:1px solid #38513b;background:#203824;color:#d6ddd4}.primary{border:0;background:#43d36c;color:#071c0d}.primary:disabled{cursor:not-allowed;opacity:.45}.error{color:#ff8e84;font-size:10px}@keyframes modal-in{from{opacity:0;transform:translate(-50%,-46%) scale(.96)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}@keyframes modal-out{from{opacity:1;transform:translate(-50%,-50%)}to{opacity:0;transform:translate(-50%,-46%) scale(.96)}}@keyframes fade-in{from{opacity:0}to{opacity:1}}@keyframes fade-out{from{opacity:1}to{opacity:0}}
+:host-context(html[data-theme='light']) .modal,
+html[data-theme='light'] .modal {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.15) !important;
+}
+
+:host-context(html[data-theme='light']) .modal h2,
+html[data-theme='light'] .modal h2 {
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .modal p,
+html[data-theme='light'] .modal p {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .close,
+html[data-theme='light'] .close {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .close:hover,
+html[data-theme='light'] .close:hover {
+  background: #e2e8f0 !important;
+}
+
+:host-context(html[data-theme='light']) .field span,
+html[data-theme='light'] .field span,
+:host-context(html[data-theme='light']) th,
+html[data-theme='light'] th {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .control,
+html[data-theme='light'] .control,
+:host-context(html[data-theme='light']) td input,
+html[data-theme='light'] td input {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .modal div[class*='bg-[#0d2312]'],
+html[data-theme='light'] .modal div[class*='bg-[#0d2312]'],
+:host-context(html[data-theme='light']) .modal div.mb-4.rounded-lg,
+html[data-theme='light'] .modal div.mb-4.rounded-lg {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .modal div.mb-4.rounded-lg strong,
+html[data-theme='light'] .modal div.mb-4.rounded-lg strong {
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) td,
+html[data-theme='light'] td {
+  border-top-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .add-row,
+html[data-theme='light'] .add-row,
+:host-context(html[data-theme='light']) .secondary,
+html[data-theme='light'] .secondary {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .add-row:hover,
+html[data-theme='light'] .add-row:hover,
+:host-context(html[data-theme='light']) .secondary:hover,
+html[data-theme='light'] .secondary:hover {
+  background: #e2e8f0 !important;
+}
+

@@ -1,3 +1,11 @@
 :host { display: block; }
 .filter-select { height: 2.5rem; min-width: 8.5rem; border: 1px solid #586651; border-radius: .5rem; padding: 0 2rem 0 .8rem; color: #edf2eb; background-color: #3d4c38; font-size: .75rem; outline: none; }
 .filter-select:focus { border-color: #42d46c; }
+
+:host-context(html[data-theme='light']) section, html[data-theme='light'] section { border-bottom-color: #cbd5e1 !important; }
+:host-context(html[data-theme='light']) input, html[data-theme='light'] input, :host-context(html[data-theme='light']) .filter-select, html[data-theme='light'] .filter-select { background-color: #ffffff !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+:host-context(html[data-theme='light']) input::placeholder, html[data-theme='light'] input::placeholder { color: #64748b !important; }
+:host-context(html[data-theme='light']) svg, html[data-theme='light'] svg { stroke: #64748b !important; }
+:host-context(html[data-theme='light']) button, html[data-theme='light'] button { background-color: #16a34a !important; color: #ffffff !important; }
+:host-context(html[data-theme='light']) button:hover, html[data-theme='light'] button:hover { background-color: #15803d !important; }
+

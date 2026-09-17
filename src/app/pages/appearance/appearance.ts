@@ -61,7 +61,12 @@ export class AppearancePage {
 
   private applyPreferences(): void {
     const root = document.documentElement;
-    root.dataset['theme'] = this.preferences.theme;
+    let activeTheme = this.preferences.theme;
+    if (activeTheme === 'system') {
+      activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    root.dataset['theme'] = activeTheme;
+    root.dataset['userThemeSetting'] = this.preferences.theme;
     root.dataset['textSize'] = this.preferences.textSize;
     root.dataset['density'] = this.preferences.density;
     root.dataset['highContrast'] = String(this.preferences.highContrast);

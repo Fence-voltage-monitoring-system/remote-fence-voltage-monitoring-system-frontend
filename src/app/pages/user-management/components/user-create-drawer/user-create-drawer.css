@@ -10,3 +10,21 @@
 .district-list option:checked { color: #b9f6ca; background: #285b36; }
 .district-list option:disabled { color: #8fa392; }
 .district-help { color: #91a494; font-size: 10px; line-height: 1.5; }
+
+:host-context(html[data-theme='light']) aside, html[data-theme='light'] aside { background-color: #ffffff !important; border-left-color: #cbd5e1 !important; color: #0f172a !important; box-shadow: -12px 0 36px rgba(15, 23, 42, 0.12) !important; }
+:host-context(html[data-theme='light']) header h2, html[data-theme='light'] header h2 { color: #0f172a !important; }
+:host-context(html[data-theme='light']) header p, html[data-theme='light'] header p, :host-context(html[data-theme='light']) .field label, html[data-theme='light'] .field label, :host-context(html[data-theme='light']) .field-label, html[data-theme='light'] .field-label { color: #475569 !important; font-weight: 600 !important; }
+:host-context(html[data-theme='light']) header button, html[data-theme='light'] header button { background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+:host-context(html[data-theme='light']) .control, html[data-theme='light'] .control { background-color: #ffffff !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+:host-context(html[data-theme='light']) .control::placeholder, html[data-theme='light'] .control::placeholder { color: #64748b !important; }
+:host-context(html[data-theme='light']) .district-list option, html[data-theme='light'] .district-list option { background-color: #ffffff !important; color: #0f172a !important; }
+:host-context(html[data-theme='light']) .district-list option:checked, html[data-theme='light'] .district-list option:checked { background-color: #e0f2fe !important; color: #16a34a !important; }
+:host-context(html[data-theme='light']) footer button[type="button"], html[data-theme='light'] footer button[type="button"] { background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #0f172a !important; font-weight: 700 !important; }
+:host-context(html[data-theme='light']) footer button[type="submit"], html[data-theme='light'] footer button[type="submit"] { background-color: #16a34a !important; color: #ffffff !important; font-weight: 700 !important; }
+
+:host-context(html[data-theme='light']) p[role="status"], html[data-theme='light'] p[role="status"] { background-color: #dcfce7 !important; border-color: #86efac !important; color: #15803d !important; }
+:host-context(html[data-theme='light']) fieldset label, html[data-theme='light'] fieldset label { background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #0f172a !important; }
+:host-context(html[data-theme='light']) fieldset label[class*="bg-[#1d4d2b]"], html[data-theme='light'] fieldset label[class*="bg-[#1d4d2b]"] { background-color: #dcfce7 !important; border-color: #16a34a !important; color: #15803d !important; font-weight: 700 !important; }
+:host-context(html[data-theme='light']) select option, html[data-theme='light'] select option { background-color: #ffffff !important; color: #0f172a !important; }
+
+

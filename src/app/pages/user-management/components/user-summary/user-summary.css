@@ -7,3 +7,12 @@
   .summary-card span { font-size: 9px; }
   .summary-card strong { font-size: 1.6rem; }
 }
+
+:host-context(html[data-theme='light']) .summary-card, html[data-theme='light'] .summary-card { background: #ffffff !important; border-color: #cbd5e1 !important; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important; }
+:host-context(html[data-theme='light']) .summary-card span, html[data-theme='light'] .summary-card span { color: #475569 !important; font-weight: 600 !important; }
+:host-context(html[data-theme='light']) .summary-card strong, html[data-theme='light'] .summary-card strong { color: #0f172a !important; font-weight: 800 !important; }
+:host-context(html[data-theme='light']) .summary-card strong.text-\[\#43d36c\], html[data-theme='light'] .summary-card strong.text-\[\#43d36c\] { color: #16a34a !important; }
+:host-context(html[data-theme='light']) .summary-card strong.text-\[\#ffb800\], html[data-theme='light'] .summary-card strong.text-\[\#ffb800\] { color: #d97706 !important; }
+:host-context(html[data-theme='light']) .summary-card strong.text-\[\#38bdf8\], html[data-theme='light'] .summary-card strong.text-\[\#38bdf8\] { color: #0284c7 !important; }
+:host-context(html[data-theme='light']) .summary-card strong.text-\[\#a7f3d0\], html[data-theme='light'] .summary-card strong.text-\[\#a7f3d0\] { color: #059669 !important; }
+

@@ -17,3 +17,58 @@ header { @apply sticky top-0 z-1000 flex h-[60px] items-center gap-3 border-b bo
 .view-action svg { @apply size-[17px] fill-none stroke-current stroke-2; stroke-linecap: round; stroke-linejoin: round; }
 .bell { @apply relative grid size-8 cursor-pointer place-items-center rounded-full border border-transparent bg-transparent text-[#a8b5a4] transition-colors hover:border-[#315238] hover:bg-[#18321f] hover:text-[#4ee672] focus-visible:outline-2 focus-visible:outline-[#4ee672]; }
 .bell em { @apply absolute -top-0.5 right-0 grid size-[15px] place-items-center rounded-full bg-[#ed3f35] text-[8px] font-bold not-italic; }
+
+:host-context(html[data-theme='light']) header, html[data-theme='light'] header {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05) !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .brand-text, html[data-theme='light'] .brand-text {
+  filter: brightness(0.15) !important;
+}
+
+:host-context(html[data-theme='light']) .application-name, html[data-theme='light'] .application-name {
+  border-color: #e2e8f0 !important;
+}
+
+:host-context(html[data-theme='light']) .application-name strong, html[data-theme='light'] .application-name strong {
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .application-name span,
+:host-context(html[data-theme='light']) .crumb,
+:host-context(html[data-theme='light']) .clock span,
+html[data-theme='light'] .application-name span,
+html[data-theme='light'] .crumb,
+html[data-theme='light'] .clock span {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .crumb, html[data-theme='light'] .crumb {
+  border-color: #cbd5e1 !important;
+  background: #f1f5f9 !important;
+}
+
+:host-context(html[data-theme='light']) .clock strong, html[data-theme='light'] .clock strong {
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) :is(.view-action, .bell), html[data-theme='light'] :is(.view-action, .bell) {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) :is(.view-action, .bell):hover, html[data-theme='light'] :is(.view-action, .bell):hover {
+  background-color: #f1f5f9 !important;
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+}
+
+:host-context(html[data-theme='light']) .status, html[data-theme='light'] .status {
+  background-color: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+

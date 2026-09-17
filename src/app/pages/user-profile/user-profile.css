@@ -133,3 +133,124 @@
 .modal-panel {
   @apply fixed top-1/2 left-1/2 z-50 max-h-[calc(100vh-40px)] w-[calc(100%-32px)] max-w-[440px] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl border border-[#38513b] bg-[#14291a] p-6 shadow-2xl;
 }
+
+/* Light Theme Overrides */
+:host-context(html[data-theme='light']) .profile-page-container,
+html[data-theme='light'] app-user-profile .profile-page-container {
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .heading h1,
+html[data-theme='light'] app-user-profile .heading h1,
+:host-context(html[data-theme='light']) .card-header h2,
+html[data-theme='light'] app-user-profile .card-header h2 {
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .heading p,
+html[data-theme='light'] app-user-profile .heading p,
+:host-context(html[data-theme='light']) .card-header p,
+html[data-theme='light'] app-user-profile .card-header p,
+:host-context(html[data-theme='light']) .detail-label,
+html[data-theme='light'] app-user-profile .detail-label {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .detail-value,
+html[data-theme='light'] app-user-profile .detail-value {
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .status-notice,
+html[data-theme='light'] app-user-profile .status-notice {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #047857 !important;
+}
+
+:host-context(html[data-theme='light']) .card-base,
+html[data-theme='light'] app-user-profile .card-base {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05) !important;
+}
+
+:host-context(html[data-theme='light']) .card-header,
+html[data-theme='light'] app-user-profile .card-header,
+:host-context(html[data-theme='light']) .account-active-state,
+html[data-theme='light'] app-user-profile .account-active-state,
+:host-context(html[data-theme='light']) .detail-grid > div,
+html[data-theme='light'] app-user-profile .detail-grid > div {
+  border-color: #e2e8f0 !important;
+}
+
+:host-context(html[data-theme='light']) .badge-verified,
+html[data-theme='light'] app-user-profile .badge-verified {
+  background: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+
+:host-context(html[data-theme='light']) .badge-tag,
+html[data-theme='light'] app-user-profile .badge-tag {
+  background: #e0f2fe !important;
+  border-color: #93c5fd !important;
+  color: #0369a1 !important;
+}
+
+:host-context(html[data-theme='light']) .badge-tag-muted,
+html[data-theme='light'] app-user-profile .badge-tag-muted {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .cover-gradient,
+html[data-theme='light'] app-user-profile .cover-gradient {
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1) !important;
+}
+
+:host-context(html[data-theme='light']) .avatar-circle,
+html[data-theme='light'] app-user-profile .avatar-circle {
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #16a34a !important;
+  box-shadow: 0 0 0 2px #cbd5e1 !important;
+}
+
+:host-context(html[data-theme='light']) .role-badge,
+html[data-theme='light'] app-user-profile .role-badge {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .toggle-item,
+html[data-theme='light'] app-user-profile .toggle-item {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .form-input,
+html[data-theme='light'] app-user-profile .form-input {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .drawer-overlay,
+html[data-theme='light'] app-user-profile .drawer-overlay {
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  background: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+:host-context(html[data-theme='light']) .drawer-panel,
+html[data-theme='light'] app-user-profile .drawer-panel,
+:host-context(html[data-theme='light']) .modal-panel,
+html[data-theme='light'] app-user-profile .modal-panel {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+

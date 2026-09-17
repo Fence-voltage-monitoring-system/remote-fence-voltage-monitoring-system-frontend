@@ -7,3 +7,17 @@
 }
 .profile-label { margin-bottom: .25rem; color: #849080; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
 .profile-value { margin: 0; color: #d3d9d1; }
+
+:host-context(html[data-theme='light']) aside, html[data-theme='light'] aside { background-color: #ffffff !important; border: 1px solid #cbd5e1 !important; color: #0f172a !important; box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06) !important; }
+:host-context(html[data-theme='light']) header, html[data-theme='light'] header, :host-context(html[data-theme='light']) dl, html[data-theme='light'] dl, :host-context(html[data-theme='light']) section li, html[data-theme='light'] section li { border-color: #e2e8f0 !important; color: #475569 !important; }
+:host-context(html[data-theme='light']) header span, html[data-theme='light'] header span, :host-context(html[data-theme='light']) .profile-label, html[data-theme='light'] .profile-label, :host-context(html[data-theme='light']) section h3, html[data-theme='light'] section h3 { color: #475569 !important; font-weight: 600 !important; }
+:host-context(html[data-theme='light']) header button, html[data-theme='light'] header button, :host-context(html[data-theme='light']) h2, html[data-theme='light'] h2, :host-context(html[data-theme='light']) .profile-value, html[data-theme='light'] .profile-value { color: #0f172a !important; font-weight: 700 !important; }
+:host-context(html[data-theme='light']) p, html[data-theme='light'] p { color: #64748b !important; }
+:host-context(html[data-theme='light']) button.bg-\[\#43d36c\], html[data-theme='light'] button.bg-\[\#43d36c\] { background-color: #16a34a !important; color: #ffffff !important; font-weight: 700 !important; }
+:host-context(html[data-theme='light']) button[class*="bg-[#223526]"], html[data-theme='light'] button[class*="bg-[#223526]"] { background-color: #f1f5f9 !important; border-color: #cbd5e1 !important; color: #0f172a !important; font-weight: 700 !important; }
+:host-context(html[data-theme='light']) button[class*="bg-[#4b271f]"], html[data-theme='light'] button[class*="bg-[#4b271f]"] { background-color: #fef3c7 !important; border-color: #fde68a !important; color: #b45309 !important; font-weight: 700 !important; }
+:host-context(html[data-theme='light']) button.bg-red-950\/80, html[data-theme='light'] button.bg-red-950\/80 { background-color: #fee2e2 !important; border-color: #fca5a5 !important; color: #dc2626 !important; font-weight: 700 !important; }
+:host-context(html[data-theme='light']) aside div.mt-auto button:first-child, html[data-theme='light'] aside div.mt-auto button:first-child { background-color: #16a34a !important; color: #ffffff !important; font-weight: 700 !important; }
+:host-context(html[data-theme='light']) section ul li, html[data-theme='light'] section ul li { border-bottom-color: #e2e8f0 !important; color: #475569 !important; }
+
+

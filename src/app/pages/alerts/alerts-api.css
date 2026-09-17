@@ -30,3 +30,92 @@ button:disabled{opacity:.5;cursor:not-allowed}
 @media(max-width:600px){.incident-modal fieldset{grid-template-columns:1fr;padding:18px;gap:14px}.incident-modal-header{padding:18px}.modal-actions{padding:14px 18px}.modal-actions button{flex:1}}
 @media(prefers-reduced-motion:reduce){.incident-modal{animation:none}}
 
+/* Light Theme Overrides for Register Incident Modal */
+:host-context(html[data-theme='light']) .incident-modal,
+html[data-theme='light'] .incident-modal {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  color-scheme: light !important;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.15) !important;
+}
+
+:host-context(html[data-theme='light']) .incident-modal-header,
+html[data-theme='light'] .incident-modal-header {
+  border-bottom-color: #e2e8f0 !important;
+}
+
+:host-context(html[data-theme='light']) .incident-modal-header h2,
+html[data-theme='light'] .incident-modal-header h2 {
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .incident-modal-header p,
+html[data-theme='light'] .incident-modal-header p {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .modal-close,
+html[data-theme='light'] .modal-close {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .modal-close:hover,
+html[data-theme='light'] .modal-close:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .incident-modal label,
+html[data-theme='light'] .incident-modal label {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .incident-modal input,
+html[data-theme='light'] .incident-modal input,
+:host-context(html[data-theme='light']) .incident-modal select,
+html[data-theme='light'] .incident-modal select,
+:host-context(html[data-theme='light']) .incident-modal textarea,
+html[data-theme='light'] .incident-modal textarea {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .modal-actions,
+html[data-theme='light'] .modal-actions {
+  background: #ffffff !important;
+  border-top-color: #e2e8f0 !important;
+}
+
+:host-context(html[data-theme='light']) .modal-actions .secondary,
+html[data-theme='light'] .modal-actions .secondary {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .modal-actions .secondary:hover,
+html[data-theme='light'] .modal-actions .secondary:hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .register-alert,
+html[data-theme='light'] .register-alert {
+  background: #16a34a !important;
+  border: 1px solid #15803d !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+:host-context(html[data-theme='light']) .register-alert:hover,
+html[data-theme='light'] .register-alert:hover {
+  background: #15803d !important;
+  border-color: #166534 !important;
+  color: #ffffff !important;
+}
+
+

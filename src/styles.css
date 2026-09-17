@@ -116,6 +116,2462 @@ body { min-height: 100%; margin: 0; min-width: 320px; font-family: Inter, ui-san
 button, input { font: inherit; }
 button { color: inherit; }
 
+/*
+ * Application-Wide Light Theme Layer (Zero Dark Green Palette)
+ * Adapts page shells, navigation sidebars, headers, KPI cards, tables, inputs, configuration panels, and modals to a clean daylight slate palette.
+ */
+/* ==========================================================================
+   Application-Wide Light Theme Layer (Slate Daylight Palette)
+   Adapts page shells, navigation sidebars, headers, KPI cards, tables, inputs, configuration panels, and modals.
+   ========================================================================== */
+html[data-theme='light'] {
+  background: #edf2f7 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] body,
+html[data-theme='light'] html,
+html[data-theme='light'] .app-shell,
+html[data-theme='light'] .page-shell,
+html[data-theme='light'] .page-content,
+html[data-theme='light'] .profile-page-container,
+html[data-theme='light'] :is(
+  app-dashboard,
+  app-configuration,
+  app-device-management-page,
+  app-gateway-management-page,
+  app-fence-management,
+  app-section-management,
+  app-audit-logs-page,
+  app-user-management,
+  app-user-profile,
+  app-historical-analysis,
+  app-alerts,
+  app-notifications,
+  app-reports,
+  app-help-support-page,
+  app-security-page,
+  app-appearance-page,
+  app-map-page,
+  app-virtual-fence-page,
+  app-application-layout
+) :is(:host, main, .app-shell, .page-shell, .page-content, .page) {
+  background-color: #f1f5f9 !important;
+  background: #f1f5f9 !important;
+  background-image: none !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] main {
+  background-color: #f1f5f9 !important;
+  background: #f1f5f9 !important;
+  background-image: none !important;
+}
+
+/* 2. Top Header Component */
+html[data-theme='light'] :is(app-header, app-header header) {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05) !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-header .brand-text {
+  filter: brightness(0.15) !important;
+}
+
+html[data-theme='light'] app-header .application-name {
+  border-color: #e2e8f0 !important;
+}
+
+html[data-theme='light'] app-header .application-name strong {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-header .application-name span,
+html[data-theme='light'] app-header .crumb,
+html[data-theme='light'] app-header .clock span {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-header .crumb {
+  border-color: #cbd5e1 !important;
+  background: #f1f5f9 !important;
+}
+
+html[data-theme='light'] app-header .clock strong {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-header :is(.view-action, .bell) {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-header :is(.view-action, .bell):hover {
+  background-color: #f1f5f9 !important;
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] app-header .status {
+  background-color: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+
+/* 3. Left Navigation Sidebar Component */
+html[data-theme='light'] :is(app-sidebar, aside):not(.detail):not(.section-drawer):not(.drawer):not([role='dialog']) {
+  background-color: #ffffff !important;
+  border-right: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-sidebar button {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-sidebar button:hover {
+  background-color: #f1f5f9 !important;
+  color: #16a34a !important;
+  border-left-color: #16a34a !important;
+}
+
+html[data-theme='light'] app-sidebar button.active {
+  background-color: #e0f2fe !important;
+  color: #16a34a !important;
+  border-left-color: #16a34a !important;
+}
+
+html[data-theme='light'] app-sidebar .tooltip {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* 4. Cards, Editors, Fieldsets, Panels & Containers */
+html[data-theme='light'] :is(
+  article,
+  section,
+  fieldset,
+  .panel,
+  .card,
+  .editor,
+  .setting-card,
+  .preview-card,
+  .device-panel,
+  .incident-panel,
+  .analysis-summary,
+  .mini-analysis-charts,
+  .page-intro,
+  .modal,
+  .drawer,
+  .details-drawer,
+  .form-drawer,
+  .register-drawer,
+  .assignment-drawer,
+  .edit-drawer,
+  [role='dialog']
+):not(app-fence-monitor .scroller *):not(.fence-track *) {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03) !important;
+}
+
+/* Global Light Theme Dialog & Modal Component Overrides */
+html[data-theme='light'] :is(.modal, .drawer, .details-drawer, .form-drawer, .register-drawer, .assignment-drawer, .edit-drawer, .incident-modal, [role='dialog']) {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  color-scheme: light !important;
+}
+
+html[data-theme='light'] :is(.modal, .drawer, .details-drawer, .form-drawer, .register-drawer, .assignment-drawer, .edit-drawer, .incident-modal, [role='dialog']) :is(header, footer, .modal-actions) {
+  border-color: #e2e8f0 !important;
+  background-color: #ffffff !important;
+}
+
+html[data-theme='light'] :is(.modal, .drawer, .details-drawer, .form-drawer, .register-drawer, .assignment-drawer, .edit-drawer, .incident-modal, [role='dialog']) :is(header button, .close, .modal-close, .register-close, .details-close) {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(.modal, .drawer, .details-drawer, .form-drawer, .register-drawer, .assignment-drawer, .edit-drawer, .incident-modal, [role='dialog']) :is(header button, .close, .modal-close, .register-close, .details-close):hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(.modal, .drawer, .details-drawer, .form-drawer, .register-drawer, .assignment-drawer, .edit-drawer, .incident-modal, [role='dialog']) :is(button.secondary, button.cancel, button.outline, footer button:not(.primary):not(.save):not(.continue):not(.danger), .modal-actions button.secondary) {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(.modal, .drawer, .details-drawer, .form-drawer, .register-drawer, .assignment-drawer, .edit-drawer, .incident-modal, [role='dialog']) :is(button.secondary, button.cancel, button.outline, footer button:not(.primary):not(.save):not(.continue):not(.danger), .modal-actions button.secondary):hover {
+  background: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+
+/* Fieldsets & Legend Tags Inside Editors */
+html[data-theme='light'] fieldset:not(app-fence-monitor .scroller *) {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+
+html[data-theme='light'] legend:not(app-fence-monitor .scroller *) {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #16a34a !important;
+}
+
+/* Switches, Option Cards, Toggles & Choice Rows */
+html[data-theme='light'] :is(.switches label, .toggle-row, .theme-option, .accent, .notice, .validation):not(app-fence-monitor .scroller *) {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(.switches label strong, .toggle-row span strong, .theme-option strong) {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(.switches label small, .toggle-row span small, .theme-option small) {
+  color: #475569 !important;
+}
+
+/* Configuration Side Navigation Menu */
+html[data-theme='light'] :is(app-configuration-menu nav, .layout > nav, .menu-nav):not(app-fence-monitor .scroller *) {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+html[data-theme='light'] :is(app-configuration-menu h2, .menu-nav h2) {
+  background-color: #f8fafc !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(app-configuration-menu button, .menu-nav button) {
+  color: #475569 !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+html[data-theme='light'] :is(app-configuration-menu button:hover, .menu-nav button:hover) {
+  background-color: #f1f5f9 !important;
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] :is(app-configuration-menu button.active, .menu-nav button.active) {
+  background-color: #e0f2fe !important;
+  border-left-color: #16a34a !important;
+  color: #16a34a !important;
+}
+
+/* 5. Typography, Field Labels & Copy */
+html[data-theme='light'] :is(.top, header, .card-header):not(app-fence-monitor .scroller *):not(.fence-track *):not(.drawer-header):not(.panel > header) {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] :is(h1, h2, h3, h4, h5, h6):not(app-fence-monitor .scroller *):not(.fence-track *) {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(p, small, span, dt, dd):not(app-fence-monitor .scroller *):not(.fence-track *):not(.status-pill):not(.reading-badge *):not(.section-tag *):not(.live-state *) {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] :is(label, .field-label):not(app-fence-monitor .scroller *):not(.theme-option *) {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] label > small:not(app-fence-monitor .scroller *) {
+  color: #64748b !important;
+}
+
+html[data-theme='light'] :is(strong, b, .metric strong):not(app-fence-monitor .scroller *):not(.fence-track *):not(.status-pill):not(.section-tag *):not(.live-state *) {
+  color: #0f172a !important;
+}
+
+/* Voltage Cards Accent Styles */
+html[data-theme='light'] app-voltage-card article {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-top: 3px solid #15803d !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-voltage-card article.danger {
+  border-top-color: #dc2626 !important;
+}
+
+html[data-theme='light'] app-voltage-card article.warning {
+  border-top-color: #d97706 !important;
+}
+
+html[data-theme='light'] app-voltage-card .top b {
+  color: #15803d !important;
+}
+
+html[data-theme='light'] app-voltage-card article.danger .top b,
+html[data-theme='light'] app-voltage-card article.danger p {
+  color: #dc2626 !important;
+}
+
+html[data-theme='light'] app-voltage-card article.warning .top b,
+html[data-theme='light'] app-voltage-card article.warning p {
+  color: #d97706 !important;
+}
+
+html[data-theme='light'] app-voltage-card p {
+  color: #15803d !important;
+}
+
+html[data-theme='light'] app-voltage-card .metric strong {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-voltage-card .metric small {
+  color: #475569 !important;
+}
+
+/* Alert List Dashboard Card */
+html[data-theme='light'] app-alert-list section {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-alert-list h2 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-alert-list header span {
+  background-color: #fee2e2 !important;
+  border: 1px solid #fca5a5 !important;
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-alert-list article {
+  background-color: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-left: 3px solid #dc2626 !important;
+}
+
+html[data-theme='light'] app-alert-list article:hover {
+  background-color: #f1f5f9 !important;
+}
+
+html[data-theme='light'] app-alert-list article strong {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-alert-list article small,
+html[data-theme='light'] app-alert-list time {
+  color: #64748b !important;
+}
+
+html[data-theme='light'] app-alert-list article.warning {
+  border-left-color: #d97706 !important;
+}
+
+html[data-theme='light'] app-alert-list article.healthy {
+  border-left-color: #15803d !important;
+}
+
+html[data-theme='light'] app-alert-list article.offline {
+  border-left-color: #6b7280 !important;
+}
+
+/* Voltage Chart Dashboard Card */
+html[data-theme='light'] app-voltage-chart section {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-voltage-chart h2 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-voltage-chart section > p {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-voltage-chart :is(.x, .y) {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+/* Alert Summary Dashboard Card */
+html[data-theme='light'] app-alert-summary section {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-alert-summary h2 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-alert-summary section > small {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-alert-summary div {
+  color: #334155 !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+html[data-theme='light'] app-alert-summary strong {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+/* Live State Pill (e.g. Fence Map Top Banner) */
+html[data-theme='light'] :is(.live-state, app-map-page .live-state) {
+  background: #dcfce7 !important;
+  border: 1px solid #86efac !important;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.12) !important;
+}
+
+html[data-theme='light'] :is(.live-state, app-map-page .live-state) i {
+  background: #16a34a !important;
+  box-shadow: 0 0 8px rgba(22, 163, 74, 0.6) !important;
+}
+
+html[data-theme='light'] :is(.live-state, app-map-page .live-state) span {
+  color: #166534 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] :is(.live-state, app-map-page .live-state) b {
+  color: #14532d !important;
+  font-weight: 800 !important;
+}
+
+/* Data Tables High Contrast Light Theme Overrides */
+html[data-theme='light'] :is(table th, .table-heading, thead tr):not(app-fence-monitor .scroller *) {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] :is(tbody tr, table td, td):not(app-fence-monitor .scroller *) {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(td.text-white, td.text-\[\#43d36c\], td[class*="text-[#43d36c]"], td[class*="text-[#55e777]"]):not(app-fence-monitor .scroller *) {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(td.font-mono.text-\[\#43d36c\], td[class*="text-[#43d36c]"]):not(app-fence-monitor .scroller *) {
+  color: #15803d !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] tbody tr:hover:not(app-fence-monitor .scroller *) {
+  background-color: #f1f5f9 !important;
+}
+
+html[data-theme='light'] tbody tr:hover td:not(app-fence-monitor .scroller *) {
+  background-color: #f1f5f9 !important;
+}
+
+html[data-theme='light'] tbody tr:nth-child(even):not(app-fence-monitor .scroller *) {
+  background-color: #f8fafc !important;
+}
+
+/* Input Controls, Textareas, Selects */
+html[data-theme='light'] :is(input, select, textarea):not(app-fence-monitor .scroller *) {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(input, select, textarea):focus:not(app-fence-monitor .scroller *) {
+  border-color: #15803d !important;
+  box-shadow: 0 0 0 2px rgba(21, 128, 61, 0.18) !important;
+}
+
+/* Footer Action Bars */
+html[data-theme='light'] :is(.page > footer, footer.action-bar):not(app-fence-monitor .scroller *) {
+  background-color: #ffffff !important;
+  border-top: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(.page > footer p, .page > footer strong, .page > footer code) {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] .page > footer button {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] .page > footer .save,
+html[data-theme='light'] button.primary,
+html[data-theme='light'] .btn-primary,
+html[data-theme='light'] .register-alert,
+html[data-theme='light'] button.register-alert {
+  background: #16a34a !important;
+  border-color: #15803d !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* Modals & Backdrop */
+html[data-theme='light'] .drawer-backdrop,
+html[data-theme='light'] .backdrop,
+html[data-theme='light'] .register-backdrop,
+html[data-theme='light'] .modal-backdrop {
+  background-color: rgba(15, 23, 42, 0.4) !important;
+  backdrop-filter: blur(3px) !important;
+}
+
+/* ==========================================================================
+   Fence Monitor Unencapsulated Global Light Theme Overrides
+   ========================================================================== */
+html[data-theme='light'] app-fence-monitor .panel {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06) !important;
+}
+
+html[data-theme='light'] app-fence-monitor .panel > header {
+  background: #f8fafc !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .panel h2 {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-fence-monitor .panel header p {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .location-select span,
+html[data-theme='light'] app-fence-monitor .fence-select span {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .location-select select,
+html[data-theme='light'] app-fence-monitor .fence-select select {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-fence-monitor .timing {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .timing b {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-fence-monitor .timing strong {
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] app-fence-monitor .timing small {
+  border-left-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .legend {
+  color: #475569 !important;
+}
+
+/* Detail Sidebar */
+html[data-theme='light'] app-fence-monitor aside.detail {
+  background: #f8fafc !important;
+  border-left: 1px solid #cbd5e1 !important;
+}
+
+html[data-theme='light'] app-fence-monitor aside.detail h3 {
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] app-fence-monitor .section-heading {
+  border-bottom-color: #cbd5e1 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .section-heading > b {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-fence-monitor .section-heading span {
+  background-color: #dcfce7 !important;
+  background: #dcfce7 !important;
+  border: 1px solid #86efac !important;
+  color: #15803d !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .section-heading span.warning {
+  background-color: #fef9c3 !important;
+  background: #fef9c3 !important;
+  border-color: #fde047 !important;
+  color: #a16207 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .section-heading span.critical {
+  background-color: #fee2e2 !important;
+  background: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+  color: #b91c1c !important;
+}
+
+html[data-theme='light'] app-fence-monitor .section-heading span.offline {
+  background-color: #f3f4f6 !important;
+  background: #f3f4f6 !important;
+  border-color: #e5e7eb !important;
+  color: #4b5563 !important;
+}
+
+html[data-theme='light'] app-fence-monitor aside.detail dt {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-fence-monitor aside.detail dd {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-fence-monitor aside.detail dd.voltage {
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] app-fence-monitor .battery-level {
+  border-top-color: #cbd5e1 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .battery-level > div {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .battery-level b {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-fence-monitor .battery-level > i {
+  background: #cbd5e1 !important;
+}
+
+/* Telemetry Cards Deck Outside Scroller */
+html[data-theme='light'] app-fence-monitor .readings-deck {
+  background: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .reading-card-outside {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-top: 3px solid #16a34a !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-fence-monitor .reading-card-outside.warning {
+  border-top-color: #d97706 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .reading-card-outside.critical {
+  border-top-color: #dc2626 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .reading-card-outside.offline {
+  border-top-color: #64748b !important;
+}
+
+html[data-theme='light'] app-fence-monitor .reading-card-outside.is-selected,
+html[data-theme='light'] app-fence-monitor .reading-card-outside:hover {
+  background: #f8fafc !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.18) !important;
+}
+
+html[data-theme='light'] app-fence-monitor .reading-card-outside .card-header strong {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-fence-monitor .reading-card-outside .card-header small {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .reading-card-outside .card-val strong {
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] app-fence-monitor .reading-card-outside.warning .card-val strong {
+  color: #d97706 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .reading-card-outside.critical .card-val strong {
+  color: #dc2626 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .reading-card-outside.offline .card-val strong {
+  color: #64748b !important;
+}
+
+html[data-theme='light'] app-fence-monitor .reading-card-outside .card-val em {
+  color: #475569 !important;
+}
+
+/* Reading badges inside outside deck */
+html[data-theme='light'] app-fence-monitor .reading-card-outside .state-pill {
+  background: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+
+html[data-theme='light'] app-fence-monitor .reading-card-outside.warning .state-pill {
+  background: #fef3c7 !important;
+  border-color: #fde68a !important;
+  color: #b45309 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .reading-card-outside.critical .state-pill {
+  background: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+  color: #dc2626 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .reading-card-outside.offline .state-pill {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+/* Status Filter Bar & Table Wrap */
+html[data-theme='light'] app-fence-monitor .status-filter {
+  background: #ffffff !important;
+  border-top: 1px solid #cbd5e1 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .status-filter h3 {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-fence-monitor .status-filter p,
+html[data-theme='light'] app-fence-monitor .status-filter label span {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .section-table-wrap {
+  background: #ffffff !important;
+  border-top: 1px solid #cbd5e1 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .table-heading {
+  border-bottom: 1px solid #cbd5e1 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .table-heading span {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-fence-monitor .table-heading h3 {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-fence-monitor .table-heading > b {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* ==========================================================================
+   Map Pages & Floating Map Legends Light Theme Overrides (Zero Dark Green)
+   ========================================================================== */
+
+/* Summary Stat Cards (Map Sidebar & KPI grids) */
+html[data-theme='light'] :is(.summary > div, .summary div, .stats article) {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] :is(.summary > div, .summary div, .stats article) :is(span, small) {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] :is(.summary > div, .summary div, .stats article) :is(b, strong) {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+html[data-theme='light'] :is(.summary > div, .summary div, .stats article).healthy b,
+html[data-theme='light'] :is(.summary > div, .summary div, .stats article).green b,
+html[data-theme='light'] :is(.summary > div, .summary div, .stats article).online b {
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] :is(.summary > div, .summary div, .stats article).warning b,
+html[data-theme='light'] :is(.summary > div, .summary div, .stats article).yellow b {
+  color: #d97706 !important;
+}
+
+html[data-theme='light'] :is(.summary > div, .summary div, .stats article).critical b,
+html[data-theme='light'] :is(.summary > div, .summary div, .stats article).red b,
+html[data-theme='light'] :is(.summary > div, .summary div, .stats article).offline b {
+  color: #dc2626 !important;
+}
+
+/* Floating Map Legend Box (Leaflet Overlay) */
+html[data-theme='light'] :is(.map-legend, .map-stage .map-legend, .leaflet-control .map-legend) {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12) !important;
+}
+
+html[data-theme='light'] :is(.map-legend, .map-stage .map-legend, .leaflet-control .map-legend) span {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] :is(.map-legend, .map-stage .map-legend) .healthy:before {
+  background-color: #16a34a !important;
+}
+
+html[data-theme='light'] :is(.map-legend, .map-stage .map-legend) .warning:before {
+  background-color: #d97706 !important;
+}
+
+html[data-theme='light'] :is(.map-legend, .map-stage .map-legend) .critical:before {
+  background-color: #dc2626 !important;
+}
+
+/* Map Workspaces, Stages & Sidebars */
+html[data-theme='light'] :is(.map-workspace, .map-panel) {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06) !important;
+}
+
+html[data-theme='light'] :is(.map-workspace aside, .map-panel aside, .map-content aside) {
+  background-color: #f8fafc !important;
+  border-left: 1px solid #cbd5e1 !important;
+}
+
+html[data-theme='light'] .map-stage {
+  border-color: #cbd5e1 !important;
+  background-color: #ffffff !important;
+}
+
+/* Fence List & Location List Item Buttons */
+html[data-theme='light'] :is(.fence-list > button, .location-list button) {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(.fence-list > button:hover, .location-list button:hover) {
+  background-color: #f1f5f9 !important;
+  border-color: #16a34a !important;
+}
+
+html[data-theme='light'] :is(.fence-list > button.active, .location-list button.active) {
+  background-color: #e0f2fe !important;
+  border-color: #16a34a !important;
+  box-shadow: inset 3px 0 0 #16a34a !important;
+}
+
+html[data-theme='light'] :is(.fence-list strong, .location-list span strong) {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] :is(.fence-list small, .location-list span small) {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] :is(.fence-list em, .location-list b) {
+  color: #16a34a !important;
+  font-weight: 700 !important;
+}
+
+/* Selection Details Panel */
+html[data-theme='light'] .selection-detail {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+}
+
+html[data-theme='light'] .selection-detail header span {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] .selection-detail h3 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] .selection-detail header > b {
+  background-color: #dcfce7 !important;
+  border: 1px solid #86efac !important;
+  color: #15803d !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] .selection-detail header > b.warning {
+  background-color: #fef3c7 !important;
+  border: 1px solid #fde68a !important;
+  color: #b45309 !important;
+}
+
+html[data-theme='light'] .selection-detail header > b.critical {
+  background-color: #fee2e2 !important;
+  border: 1px solid #fca5a5 !important;
+  color: #dc2626 !important;
+}
+
+html[data-theme='light'] .selection-detail dl {
+  border-top-color: #cbd5e1 !important;
+}
+
+html[data-theme='light'] .selection-detail dt {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] .selection-detail dd {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+/* List Heading Pills & Result Counts */
+html[data-theme='light'] .list-heading span {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] .list-heading h2 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] .list-heading > b {
+  background-color: #e2e8f0 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+/* Device Management & Drawers Light Overrides */
+html[data-theme='light'] :is(.register-drawer, .device-details, .assignment-drawer) {
+  background-color: #ffffff !important;
+  border-left: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: -12px 0 36px rgba(15, 23, 42, 0.12) !important;
+}
+
+html[data-theme='light'] :is(.register-drawer > header, .device-details > header, .assignment-drawer > header) {
+  background-color: #f8fafc !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+}
+
+html[data-theme='light'] :is(.register-drawer > footer, .device-details > footer, .assignment-drawer > footer) {
+  background-color: #ffffff !important;
+  border-top: 1px solid #cbd5e1 !important;
+}
+
+html[data-theme='light'] :is(.register-intro, .confirm-card, .detail-metrics article, .device-options button) {
+  background-color: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] .device-options button.selected {
+  background-color: #e0f2fe !important;
+  border-color: #16a34a !important;
+}
+
+html[data-theme='light'] .stat-icon {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] .device-icon {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #16a34a !important;
+}
+
+/* ==========================================================================
+   Historical Analysis Page Light Theme Overrides (Zero Dark Green)
+   ========================================================================== */
+html[data-theme='light'] app-historical-analysis {
+  background: transparent !important;
+}
+
+html[data-theme='light'] .analysis-hero {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] .analysis-hero .eyebrow {
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] .analysis-hero h1 {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] .analysis-hero p {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] .hero-meta > div {
+  border-right-color: #cbd5e1 !important;
+}
+
+html[data-theme='light'] .hero-meta span {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] .hero-meta strong {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] .hero-meta > b {
+  background: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+
+html[data-theme='light'] app-historical-analysis .notice {
+  background: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+
+html[data-theme='light'] app-historical-analysis .notice button {
+  color: #15803d !important;
+}
+
+/* Analysis Filters Subcomponent */
+html[data-theme='light'] .filter-panel {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-analysis-filters .filter-panel > header {
+  background-color: #f8fafc !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+}
+
+html[data-theme='light'] app-analysis-filters header strong {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-analysis-filters header small {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-analysis-filters .selects label > span {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] app-analysis-filters .selects select {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-analysis-filters .filter-footer {
+  border-top-color: #cbd5e1 !important;
+}
+
+html[data-theme='light'] app-analysis-filters .periods {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+html[data-theme='light'] app-analysis-filters .periods button {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-analysis-filters .periods button.active {
+  background: #e0f2fe !important;
+  color: #16a34a !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 6px rgba(22, 163, 74, 0.15) !important;
+}
+
+html[data-theme='light'] app-analysis-filters .compare {
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] app-analysis-filters .compare:hover {
+  background: #e2e8f0 !important;
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+}
+
+/* Analysis Summary KPI Cards Row (Key Operational Metrics) */
+html[data-theme='light'] app-analysis-summary .metric {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-analysis-summary .metric:hover {
+  border-color: #16a34a !important;
+}
+
+html[data-theme='light'] app-analysis-summary .metric-icon {
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] app-analysis-summary .metric em {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-analysis-summary .metric em.amber {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+}
+
+html[data-theme='light'] app-analysis-summary .metric em.red {
+  background: #fee2e2 !important;
+  color: #dc2626 !important;
+}
+
+html[data-theme='light'] app-analysis-summary .label {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] app-analysis-summary .value strong {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+html[data-theme='light'] app-analysis-summary .value small {
+  color: #64748b !important;
+}
+
+html[data-theme='light'] app-analysis-summary .metric > i {
+  background: #e2e8f0 !important;
+}
+
+/* Voltage Trend Chart Subcomponent */
+html[data-theme='light'] .chart-card {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-voltage-trend-chart .chart-card > header {
+  border-bottom-color: #e2e8f0 !important;
+}
+
+html[data-theme='light'] app-voltage-trend-chart h2 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-voltage-trend-chart p {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-voltage-trend-chart .chart-actions button {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-voltage-trend-chart .legend {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-voltage-trend-chart .metric-row {
+  background: #f8fafc !important;
+  border-top: 1px solid #e2e8f0 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+html[data-theme='light'] app-voltage-trend-chart .metric-row > div {
+  border-right-color: #cbd5e1 !important;
+}
+
+html[data-theme='light'] app-voltage-trend-chart .metric-row span {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-voltage-trend-chart .metric-row strong {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+html[data-theme='light'] app-voltage-trend-chart .metric-row > em {
+  background: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+
+html[data-theme='light'] app-voltage-trend-chart .grid {
+  stroke: #cbd5e1 !important;
+}
+
+html[data-theme='light'] app-voltage-trend-chart :is(.axis-y, .labels text) {
+  fill: #475569 !important;
+}
+
+/* Mini Analysis Charts (Battery Level & Voltage Drops) */
+html[data-theme='light'] app-mini-analysis-charts .mini-grid article {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-mini-analysis-charts .mini-grid header h3 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-mini-analysis-charts .mini-grid header small {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] app-mini-analysis-charts .mini-grid header > strong {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+html[data-theme='light'] app-mini-analysis-charts .insight b {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-mini-analysis-charts .mini-chart {
+  border-bottom-color: #e2e8f0 !important;
+}
+
+html[data-theme='light'] app-mini-analysis-charts .grid-line {
+  border-top-color: #cbd5e1 !important;
+}
+
+html[data-theme='light'] app-mini-analysis-charts .bars {
+  border-bottom-color: #e2e8f0 !important;
+  background: repeating-linear-gradient(to bottom, transparent 0, transparent 90px, #e2e8f0 91px) !important;
+}
+
+html[data-theme='light'] app-mini-analysis-charts .mini-grid footer {
+  color: #475569 !important;
+}
+
+/* Help & Support Page Overrides */
+html[data-theme='light'] app-help-support-page :is(.hero, .quick-grid article, .faq-card, .contact-card, .system-card) {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-help-support-page .hero h1 {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-help-support-page .hero > p {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-help-support-page .search {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-help-support-page .search input {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-help-support-page :is(.quick-grid h2, .faq-card h2, .contact-card h2, .system-card h3) {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-help-support-page :is(.quick-grid p, .contact-card > p, .faq-card > header > small) {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-help-support-page :is(.faq-card > header, .faq-list article) {
+  border-bottom-color: #e2e8f0 !important;
+}
+
+html[data-theme='light'] app-help-support-page .faq-list article > button:hover {
+  background: #f1f5f9 !important;
+}
+
+html[data-theme='light'] app-help-support-page :is(.contact-card dl div, .system-card > div) {
+  border-top-color: #e2e8f0 !important;
+}
+
+/* Virtual Fence Page Overrides */
+html[data-theme='light'] app-virtual-fence-page .page-intro {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-virtual-fence-page .page-heading h1 {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-virtual-fence-page .page-heading p {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-virtual-fence-page .page-tools button {
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* Fence Route Map Subcomponent (Virtual Fence & Operations Map) */
+html[data-theme='light'] :is(app-fence-route-map, .route-panel) {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06) !important;
+}
+
+html[data-theme='light'] app-fence-route-map .route-panel > header {
+  background-color: #f8fafc !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+}
+
+html[data-theme='light'] app-fence-route-map .route-panel h2 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-fence-route-map .route-panel p {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-fence-route-map .route-panel header span {
+  color: #16a34a !important;
+  font-weight: 700 !important;
+}
+
+/* Route Summary Stat Cards (Top 4 Cards in Route Map Header) */
+html[data-theme='light'] app-fence-route-map .route-summary b {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-top: 3px solid #16a34a !important;
+  color: #16a34a !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-fence-route-map .route-summary b.warning {
+  border-top-color: #d97706 !important;
+  color: #d97706 !important;
+}
+
+html[data-theme='light'] app-fence-route-map .route-summary b.critical {
+  border-top-color: #dc2626 !important;
+  color: #dc2626 !important;
+}
+
+html[data-theme='light'] app-fence-route-map .route-summary b.offline {
+  border-top-color: #64748b !important;
+  color: #64748b !important;
+}
+
+html[data-theme='light'] app-fence-route-map .route-summary small {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+/* Route Map Floating Legend Box & Note */
+html[data-theme='light'] app-fence-route-map .legend {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.12) !important;
+}
+
+html[data-theme='light'] app-fence-route-map .legend span {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] app-fence-route-map .legend .gw-badge {
+  background: #16a34a !important;
+  border-color: #dcfce7 !important;
+  color: #ffffff !important;
+}
+
+html[data-theme='light'] app-fence-route-map .map-note {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.1) !important;
+}
+
+/* Leaflet Section Map Label Tooltip */
+html[data-theme='light'] .fence-section-map-label {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 3px 9px rgba(15, 23, 42, 0.12) !important;
+}
+
+html[data-theme='light'] .fence-section-map-label:before {
+  border-top-color: #cbd5e1 !important;
+}
+
+/* ==========================================================================
+   Fence Management, Section Management & Table Actions Light Theme Overrides
+   ========================================================================== */
+
+/* Page Title Header Badge (e.g. FENCE MANAGEMENT badge) */
+html[data-theme='light'] :is(
+  header div[class*="bg-[#173d25]"],
+  header div[class*="bg-[#15391d]"],
+  header div[class*="bg-[#173d20]"],
+  .page-heading div[class*="bg-"]
+) {
+  background-color: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+  font-weight: 700 !important;
+}
+
+/* Actions Sticky Table Column & Edit Buttons */
+html[data-theme='light'] :is(.actions-column, th.actions-column, td.actions-column, th:last-child, td:last-child) {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: -1px 0 #cbd5e1 !important;
+}
+
+html[data-theme='light'] tbody tr:hover :is(.actions-column, td.actions-column) {
+  background-color: #f1f5f9 !important;
+}
+
+html[data-theme='light'] tbody tr:nth-child(even) :is(.actions-column, td.actions-column) {
+  background-color: #f8fafc !important;
+}
+
+html[data-theme='light'] :is(.edit-button, button.edit-button, .actions-column button) {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] :is(.edit-button:hover, button.edit-button:hover, .actions-column button:hover) {
+  background-color: #e2e8f0 !important;
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+}
+
+/* Table Health Status Badges (.health.healthy, .health.warning, etc.) */
+html[data-theme='light'] :is(.health.healthy, .health.green, .status-pill.healthy, .status-pill.online) {
+  background-color: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] :is(.health.warning, .health.yellow, .status-pill.warning) {
+  background-color: #fef3c7 !important;
+  border-color: #fde68a !important;
+  color: #b45309 !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] :is(.health.critical, .health.red, .health.offline, .status-pill.critical, .status-pill.offline) {
+  background-color: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+
+/* Table Section Wrappers & Inline Dark Background Containers */
+html[data-theme='light'] :is(
+  section[class*="bg-[#172a1c]"],
+  section[class*="bg-[#14271a]"],
+  section[class*="bg-[#192e1e]"],
+  div[class*="bg-[#1d4328]"],
+  div[class*="bg-[#172a1c]"],
+  div[class*="bg-[#1b3020]"]
+):not(app-fence-monitor .scroller *):not(.fence-track *) {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+}
+
+/* ==========================================================================
+   Reports Page Light Theme Overrides (Zero Dark Green)
+   ========================================================================== */
+html[data-theme='light'] :is(app-reports, app-report-template-selector, app-report-configuration, app-report-history) .panel {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] :is(app-reports, app-report-template-selector, app-report-configuration, app-report-history) h2 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+/* Report Template Selector (6 Template Selection Cards) */
+html[data-theme='light'] app-report-template-selector .templates button {
+  background-color: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-report-template-selector .templates button:hover {
+  background-color: #f1f5f9 !important;
+  border-color: #16a34a !important;
+}
+
+html[data-theme='light'] app-report-template-selector .templates button.selected {
+  background-color: #e0f2fe !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.15) !important;
+}
+
+html[data-theme='light'] app-report-template-selector .templates strong {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-report-template-selector .templates small {
+  color: #475569 !important;
+}
+
+/* Report Configuration Controls, Range Buttons & Preview Button */
+html[data-theme='light'] app-report-configuration :is(h3, .filters label, .custom label) {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] app-report-configuration :is(.filters select, .custom input) {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-report-configuration :is(.range button, .formats button) {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-report-configuration :is(.range .active, .formats .active) {
+  background-color: #16a34a !important;
+  border-color: #15803d !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-report-configuration .panel footer button {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-report-configuration .panel footer button:hover {
+  background-color: #e2e8f0 !important;
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] app-report-configuration .panel footer .generate {
+  background-color: #16a34a !important;
+  border-color: #15803d !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* Report History Table, READY Badges & Download Action Buttons */
+html[data-theme='light'] app-report-history table th {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-report-history table td {
+  background-color: #ffffff !important;
+  border-top-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-report-history table tr:hover td {
+  background-color: #f1f5f9 !important;
+}
+
+html[data-theme='light'] app-report-history b.ready {
+  background-color: #dcfce7 !important;
+  border: 1px solid #86efac !important;
+  color: #15803d !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-report-history b.queued,
+html[data-theme='light'] app-report-history b.generating {
+  background-color: #fef3c7 !important;
+  border: 1px solid #fde68a !important;
+  color: #b45309 !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-report-history b.failed {
+  background-color: #fee2e2 !important;
+  border: 1px solid #fca5a5 !important;
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-report-history button {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-report-history button:hover {
+  background-color: #e2e8f0 !important;
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+}
+
+/* ==========================================================================
+   Audit Logs Page Light Theme Overrides
+   ========================================================================== */
+html[data-theme='light'] app-audit-logs-page :is(.panel, .stats article, .drawer) {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-audit-logs-page .category {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-audit-logs-page .description {
+  background-color: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-audit-logs-page .changes .change-head {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+/* ==========================================================================
+   User Management Page Light Theme Overrides (Zero Dark Green)
+   ========================================================================== */
+html[data-theme='light'] :is(app-user-management, app-user-summary, app-user-table, app-user-toolbar, app-user-profile, app-user-create-drawer) main {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-user-management header h1 {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-user-management header p {
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] app-user-management header span {
+  background-color: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-user-management section {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05) !important;
+}
+
+/* User Summary Cards */
+html[data-theme='light'] app-user-summary .summary-card {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-user-summary .summary-card span {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] app-user-summary .summary-card strong {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+/* User Toolbar Search & Select Filters */
+html[data-theme='light'] app-user-toolbar section {
+  border-bottom-color: #cbd5e1 !important;
+}
+
+html[data-theme='light'] app-user-toolbar :is(input, select, .filter-select) {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-user-toolbar input::placeholder {
+  color: #64748b !important;
+}
+
+html[data-theme='light'] app-user-toolbar svg {
+  stroke: #64748b !important;
+}
+
+html[data-theme='light'] app-user-toolbar button {
+  background-color: #16a34a !important;
+  color: #ffffff !important;
+}
+
+/* User Table Elements, Roles, Statuses, Avatars & Pagination */
+html[data-theme='light'] app-user-table thead {
+  background-color: #f1f5f9 !important;
+}
+
+html[data-theme='light'] app-user-table thead th {
+  color: #0f172a !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-user-table tbody tr {
+  background-color: #ffffff !important;
+  border-top-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-user-table tbody tr:hover {
+  background-color: #f1f5f9 !important;
+}
+
+html[data-theme='light'] app-user-table tbody tr.bg-\[\#3d5138\],
+html[data-theme='light'] app-user-table tbody tr[class*="bg-[#3d5138]"] {
+  background-color: #e0f2fe !important;
+}
+
+html[data-theme='light'] app-user-table tbody tr td strong {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-user-table tbody tr td small,
+html[data-theme='light'] app-user-table tbody tr td:nth-child(3),
+html[data-theme='light'] app-user-table tbody tr td:nth-child(5),
+html[data-theme='light'] app-user-table tbody tr td:nth-child(6) {
+  color: #475569 !important;
+}
+
+/* Initials Avatar Circle */
+html[data-theme='light'] app-user-table span[class*="bg-[#31553a]"],
+html[data-theme='light'] app-user-table span.rounded-full {
+  background-color: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+  font-weight: 700 !important;
+}
+
+/* Table Role Badges */
+html[data-theme='light'] app-user-table span[class*="bg-[#63271d]"] {
+  background-color: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-user-table span[class*="bg-[#5b4b08]"] {
+  background-color: #fef3c7 !important;
+  border-color: #fde68a !important;
+  color: #b45309 !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-user-table span[class*="bg-[#205a31]"] {
+  background-color: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-user-table span[class*="bg-[#485149]"] {
+  background-color: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+  font-weight: 700 !important;
+}
+
+/* Table Status Pills */
+html[data-theme='light'] app-user-table span[class*="bg-[#245d34]"] {
+  background-color: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-user-table span[class*="bg-[#4c554d]"] {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #64748b !important;
+  font-weight: 700 !important;
+}
+
+/* Actions Column Button */
+html[data-theme='light'] app-user-table td button {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-user-table td button:hover {
+  background-color: #e2e8f0 !important;
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+}
+
+/* User Table Footer & Pagination */
+html[data-theme='light'] app-user-table footer {
+  background-color: #ffffff !important;
+  border-top-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-user-table footer span {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] app-user-table footer nav button {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-user-table footer nav button[class*="bg-[#2d673d]"] {
+  background-color: #e0f2fe !important;
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+  font-weight: 800 !important;
+}
+
+/* User Profile Panel & Subcomponents (Profile Summary, Personal Info, Assignment Summary, Notification Prefs, Security, Activity) */
+html[data-theme='light'] :is(
+  app-user-profile,
+  app-profile-summary,
+  app-personal-information,
+  app-assignment-summary,
+  app-notification-preferences,
+  app-security-settings,
+  app-activity-list,
+  app-change-password-drawer,
+  app-profile-edit-drawer
+) :is(aside, section, article, .card-base) {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06) !important;
+}
+
+html[data-theme='light'] :is(
+  app-user-profile,
+  app-profile-summary,
+  app-personal-information,
+  app-assignment-summary,
+  app-notification-preferences,
+  app-security-settings,
+  app-activity-list,
+  app-change-password-drawer,
+  app-profile-edit-drawer
+) :is(
+  div[class*="bg-[#142a19]"],
+  div[class*="bg-[#112316]"],
+  div[class*="bg-[#15391d]"],
+  div[class*="bg-[#164326]"],
+  div[class*="bg-[#1e4e29]"],
+  div[class*="bg-[#172a1c]"],
+  div[class*="bg-[#102318]"],
+  div[class*="bg-[#14291a]"],
+  div[class*="bg-[#183e22]"],
+  div[class*="bg-[#183c23]"],
+  section[class*="bg-[#142a19]"],
+  section[class*="bg-[#172a1c]"],
+  article[class*="bg-[#172a1c]"]
+):not(.drawer-overlay):not(.modal-overlay):not([class*="overlay"]):not([class*="backdrop"]) {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+html[data-theme='light'] :is(
+  app-user-profile,
+  app-profile-summary,
+  app-personal-information,
+  app-assignment-summary,
+  app-notification-preferences,
+  app-security-settings,
+  app-activity-list,
+  app-change-password-drawer,
+  app-profile-edit-drawer
+) :is(.card-header, .account-active-state, .detail-grid > div, header) {
+  border-color: #e2e8f0 !important;
+}
+
+html[data-theme='light'] :is(
+  app-user-profile,
+  app-profile-summary,
+  app-personal-information,
+  app-assignment-summary,
+  app-notification-preferences,
+  app-security-settings,
+  app-activity-list,
+  app-change-password-drawer,
+  app-profile-edit-drawer
+) :is(.card-header h2, h1, h2, h3, h4, .detail-value, header button, header h2) {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(
+  app-user-profile,
+  app-profile-summary,
+  app-personal-information,
+  app-assignment-summary,
+  app-notification-preferences,
+  app-security-settings,
+  app-activity-list,
+  app-change-password-drawer,
+  app-profile-edit-drawer
+) :is(.card-header p, p, span:not(.badge-verified):not(.badge-tag), small:not(.text-[#4ee672]), label, dt, .profile-label, header p) {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] :is(
+  app-user-profile,
+  app-profile-summary,
+  app-personal-information,
+  app-assignment-summary,
+  app-notification-preferences,
+  app-security-settings,
+  app-activity-list
+) .cover-gradient {
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1) !important;
+}
+
+html[data-theme='light'] :is(
+  app-user-profile,
+  app-profile-summary,
+  app-personal-information,
+  app-assignment-summary,
+  app-notification-preferences,
+  app-security-settings,
+  app-activity-list
+) .avatar-circle {
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #16a34a !important;
+  box-shadow: 0 0 0 2px #cbd5e1 !important;
+}
+
+html[data-theme='light'] :is(
+  app-user-profile,
+  app-profile-summary,
+  app-personal-information,
+  app-assignment-summary,
+  app-notification-preferences,
+  app-security-settings,
+  app-activity-list
+) .role-badge {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(
+  app-user-profile,
+  app-profile-summary,
+  app-personal-information,
+  app-assignment-summary,
+  app-notification-preferences,
+  app-security-settings,
+  app-activity-list
+) .toggle-item {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(
+  app-user-profile,
+  app-profile-summary,
+  app-personal-information,
+  app-assignment-summary,
+  app-notification-preferences,
+  app-security-settings,
+  app-activity-list
+) :is(.badge-tag, button[class*="bg-[#1d4528]"], button[class*="bg-[#397347]"]) {
+  background: #e0f2fe !important;
+  border-color: #93c5fd !important;
+  color: #0369a1 !important;
+}
+
+html[data-theme='light'] :is(
+  app-user-profile,
+  app-profile-summary,
+  app-personal-information,
+  app-assignment-summary,
+  app-notification-preferences,
+  app-security-settings,
+  app-activity-list
+) :is(.badge-verified, .status-notice) {
+  background: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+
+html[data-theme='light'] :is(
+  app-user-profile,
+  app-profile-summary,
+  app-personal-information,
+  app-assignment-summary,
+  app-notification-preferences,
+  app-security-settings,
+  app-activity-list
+) .badge-tag-muted {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-user-profile button.bg-\[\#43d36c\] {
+  background-color: #16a34a !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-user-profile button[class*="bg-[#223526]"] {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-user-profile button[class*="bg-[#4b271f]"] {
+  background-color: #fef3c7 !important;
+  border-color: #fde68a !important;
+  color: #b45309 !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-user-profile button.bg-red-950\/80 {
+  background-color: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+
+/* User Create / Edit Drawer */
+html[data-theme='light'] app-user-create-drawer aside {
+  background-color: #ffffff !important;
+  border-left-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: -12px 0 36px rgba(15, 23, 42, 0.12) !important;
+}
+
+html[data-theme='light'] app-user-create-drawer header h2 {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-user-create-drawer header p,
+html[data-theme='light'] app-user-create-drawer :is(.field label, .field-label) {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] app-user-create-drawer header button {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-user-create-drawer .control {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-user-create-drawer .control::placeholder {
+  color: #64748b !important;
+}
+
+html[data-theme='light'] app-user-create-drawer footer button[type="button"] {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-user-create-drawer footer button[type="submit"] {
+  background-color: #16a34a !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+/* Dashboard 3D Monitor Carousel Arrows (< & >) Light Theme Overrides */
+html[data-theme='light'] :is(.arrow, .arrow.left, .arrow.right, app-fence-monitor .arrow) {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12) !important;
+}
+
+html[data-theme='light'] :is(.arrow:hover, .arrow.left:hover, .arrow.right:hover, app-fence-monitor .arrow:hover) {
+  background-color: #f1f5f9 !important;
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+}
+
+/* Fence Map Filter Panel Buttons & Result Count Pills */
+html[data-theme='light'] :is(.filter-panel > button, .filter-panel button, app-map-page .filter-panel > button) {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] :is(.filter-panel > button:hover, .filter-panel button:hover, app-map-page .filter-panel > button:hover) {
+  background-color: #e2e8f0 !important;
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] :is(.result-count, app-map-page .result-count) {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+
+html[data-theme='light'] :is(.result-count b, app-map-page .result-count b) {
+  color: #16a34a !important;
+  font-weight: 800 !important;
+}
+
+html[data-theme='light'] :is(.result-count span, app-map-page .result-count span) {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+/* ==========================================================================
+   Section Management Page Light Theme Overrides (Zero Dark Green)
+   ========================================================================== */
+html[data-theme='light'] :is(app-section-management, app-section-overview, app-section-toolbar, app-section-table, app-section-registration-drawer, app-section-edit-modal, app-section-bulk-add-modal) main {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-section-management header h1 {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-section-management header p {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-section-management header div[class*="bg-[#173d25]"] {
+  background-color: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-section-overview section {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-section-overview select {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-section-overview dt {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] app-section-overview dd {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+html[data-theme='light'] app-section-management section[class*="bg-[#172a1c]"] {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05) !important;
+}
+
+/* Toolbar Controls & Buttons */
+html[data-theme='light'] app-section-toolbar :is(input, select, .control) {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-section-toolbar input::placeholder {
+  color: #64748b !important;
+}
+
+html[data-theme='light'] app-section-toolbar button.secondary {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-section-toolbar button.secondary:hover {
+  background-color: #e2e8f0 !important;
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] app-section-toolbar button.primary {
+  background-color: #16a34a !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-section-toolbar button.primary:hover {
+  background-color: #15803d !important;
+}
+
+/* Table Elements, Status Badges & Edit Buttons */
+html[data-theme='light'] app-section-table thead th {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-section-table tbody tr {
+  background-color: #ffffff !important;
+  border-bottom-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-section-table tbody tr:hover {
+  background-color: #f1f5f9 !important;
+}
+
+html[data-theme='light'] app-section-table .code {
+  color: #16a34a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-section-table .badge.healthy {
+  background-color: #dcfce7 !important;
+  border: 1px solid #86efac !important;
+  color: #15803d !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-section-table .badge.warning {
+  background-color: #fef3c7 !important;
+  border: 1px solid #fde68a !important;
+  color: #b45309 !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-section-table .badge.critical {
+  background-color: #fee2e2 !important;
+  border: 1px solid #fca5a5 !important;
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-section-table .badge.offline {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #64748b !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-section-table .battery i {
+  background-color: #e2e8f0 !important;
+}
+
+html[data-theme='light'] app-section-table .edit {
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-section-table .edit:hover {
+  background-color: #e2e8f0 !important;
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+}
+
+/* ==========================================================================
+   Global Light Theme Overrides (Zero Dark Green Containers/Text Across All Pages)
+   ========================================================================== */
+html[data-theme='light'] :is(
+  app-configuration,
+  app-general-configuration-editor,
+  app-voltage-threshold-editor,
+  app-alert-rules-editor,
+  app-notification-settings-editor,
+  app-data-retention-editor,
+  app-security-policy-editor,
+  app-session-management-editor,
+  app-map-settings-editor,
+  app-system-health,
+  app-save-configuration-modal,
+  app-alerts,
+  app-alert-list,
+  app-incident-panel,
+  app-alert-summary,
+  app-notifications,
+  app-notification-feed,
+  app-notification-detail,
+  app-notification-summary,
+  app-device-management-page,
+  app-gateway-management-page,
+  app-help-support-page,
+  app-security-page,
+  app-audit-logs-page,
+  app-user-profile,
+  app-map-page
+) main {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(
+  app-configuration,
+  app-alerts,
+  app-notifications,
+  app-device-management-page,
+  app-gateway-management-page,
+  app-help-support-page,
+  app-security-page,
+  app-audit-logs-page,
+  app-user-profile,
+  app-map-page
+) .page > header h1 {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(
+  app-configuration,
+  app-alerts,
+  app-notifications,
+  app-device-management-page,
+  app-gateway-management-page,
+  app-help-support-page,
+  app-security-page,
+  app-audit-logs-page,
+  app-user-profile,
+  app-map-page
+) .page > header p {
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] :is(
+  app-configuration,
+  app-alerts,
+  app-notifications,
+  app-device-management-page,
+  app-gateway-management-page,
+  app-help-support-page,
+  app-security-page,
+  app-audit-logs-page,
+  app-user-profile,
+  app-map-page
+) .page > header span {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] :is(
+  app-configuration,
+  app-alerts,
+  app-notifications,
+  app-device-management-page,
+  app-gateway-management-page,
+  app-help-support-page,
+  app-security-page,
+  app-audit-logs-page,
+  app-user-profile,
+  app-map-page
+) .page > header b {
+  background: #dcfce7 !important;
+  border: 1px solid #86efac !important;
+  color: #15803d !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] :is(.notice, .threshold-note) {
+  background: #dcfce7 !important;
+  border: 1px solid #86efac !important;
+  color: #15803d !important;
+}
+
+html[data-theme='light'] :is(.notice, .threshold-note) :is(p, strong, button) {
+  color: #15803d !important;
+}
+
+
+
+
+
+/* Central Scroller Viewport Remains Dark Digital Twin (#0f2014) */
+html[data-theme='light'] app-fence-monitor .scroller {
+  background: #0f2014 !important;
+  border-color: #234228 !important;
+}
+
 /* Bright primary actions use dark copy for consistent contrast across pages. */
 button[class*="bg-[#43d36c]"],
 button[class*="bg-[#4ee672]"],
@@ -383,6 +2839,82 @@ code,
 .fence-map-popup strong { font-size: 11px; }.fence-map-popup span { margin-top: 4px; color: #8d9a8a; font-size: 9px; }.fence-map-popup b { margin-top: 10px; color: #51e477; font: 700 15px monospace; }.fence-map-popup em { margin-top: 5px; color: #b2bdb0; font-size: 8px; font-style: normal; text-transform: uppercase; }
 @keyframes map-marker-pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.22); opacity: .82; } }
 
+/* Leaflet Map Light Theme Overrides (Zero Dark Green Map Canvas) */
+html[data-theme='light'] .leaflet-container {
+  background: #f8fafc !important;
+}
+
+html[data-theme='light'] .leaflet-tile-pane {
+  filter: none !important;
+}
+
+html[data-theme='light'] .leaflet-control-zoom a {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] .leaflet-control-zoom a:hover {
+  background: #f1f5f9 !important;
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] .leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.85) !important;
+  color: #475569 !important;
+}
+
+html[data-theme='light'] .leaflet-control-attribution a {
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] .fence-location-label {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.12) !important;
+}
+
+html[data-theme='light'] .fence-location-label:before {
+  border-right-color: #cbd5e1 !important;
+}
+
+html[data-theme='light'] .leaflet-popup-content-wrapper,
+html[data-theme='light'] .leaflet-popup-tip {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12) !important;
+}
+
+html[data-theme='light'] .route-popup strong,
+html[data-theme='light'] .fence-map-popup strong {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] .route-popup span,
+html[data-theme='light'] .fence-map-popup span {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] .route-popup b,
+html[data-theme='light'] .fence-map-popup b {
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] .route-popup small,
+html[data-theme='light'] .fence-map-popup em {
+  color: #64748b !important;
+}
+
+html[data-theme='light'] ::-webkit-scrollbar-track {
+  background: #f1f5f9 !important;
+}
+
+html[data-theme='light'] ::-webkit-scrollbar-thumb {
+  background: #cbd5e1 !important;
+}
+
 /* Dashboard: force mini-analysis charts to stack as full-width rows */
 .mini-grid {
   grid-template-columns: 1fr !important;
@@ -434,5 +2966,73 @@ select:not(.no-custom-select) option {
   color: #e2ebe0 !important;
   padding: 8px 12px !important;
 }
+
+html[data-theme='light'] select:not(.no-custom-select) {
+  background-color: #ffffff !important;
+  border-color: #bcd0bf !important;
+  color: #122416 !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2315803d' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E") !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+}
+
+html[data-theme='light'] select:not(.no-custom-select):hover {
+  background-color: #f0f7f2 !important;
+  border-color: #15803d !important;
+  box-shadow: 0 4px 12px rgba(21, 128, 61, 0.15) !important;
+}
+
+html[data-theme='light'] select:not(.no-custom-select):focus {
+  background-color: #ffffff !important;
+  border-color: #15803d !important;
+  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.2) !important;
+}
+
+html[data-theme='light'] select:not(.no-custom-select) option {
+  background-color: #ffffff !important;
+  color: #122416 !important;
+}
+
+/*
+ * Application-Wide Modal & Drawer Close Button Centering
+ * Ensures all 'x' mark close buttons across all dialogs, drawers, and popups are perfectly centered horizontally and vertically.
+ */
+:is(
+  button[aria-label*="Close"],
+  button[aria-label*="close"],
+  button[title*="Close"],
+  button[title*="close"],
+  .close,
+  .details-close,
+  .register-close,
+  .modal-close
+) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  line-height: 0 !important;
+  text-align: center !important;
+}
+
+:is(
+  button[aria-label*="Close"],
+  button[aria-label*="close"],
+  button[title*="Close"],
+  button[title*="close"],
+  .close,
+  .details-close,
+  .register-close,
+  .modal-close
+) :is(span, i) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 20px !important;
+  transform: translateY(-1px) !important;
+}
+
 
 

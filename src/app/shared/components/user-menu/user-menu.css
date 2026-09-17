@@ -34,3 +34,112 @@
 .identity small,.menu-section button span small { font-size:calc(8px * var(--ui-text-scale, 1)); }
 .account strong { font-size:calc(11px * var(--ui-text-scale, 1)); }
 .account small { font-size:calc(7px * var(--ui-text-scale, 1)); }
+
+/* Light Theme Overrides */
+:host-context(html[data-theme='light']) .trigger,
+html[data-theme='light'] app-user-menu .trigger {
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .trigger:hover,
+html[data-theme='light'] app-user-menu .trigger:hover {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+:host-context(html[data-theme='light']) .avatar,
+html[data-theme='light'] app-user-menu .avatar {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #16a34a !important;
+}
+
+:host-context(html[data-theme='light']) .identity strong,
+html[data-theme='light'] app-user-menu .identity strong {
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .identity small,
+html[data-theme='light'] app-user-menu .identity small {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .dropdown,
+html[data-theme='light'] app-user-menu .dropdown {
+  background: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 12px 35px rgba(15, 23, 42, 0.12) !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .account,
+html[data-theme='light'] app-user-menu .account {
+  background: #f8fafc !important;
+  border-bottom-color: #e2e8f0 !important;
+}
+
+:host-context(html[data-theme='light']) .account strong,
+html[data-theme='light'] app-user-menu .account strong {
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .account span,
+html[data-theme='light'] app-user-menu .account span {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .account small,
+html[data-theme='light'] app-user-menu .account small {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+}
+
+:host-context(html[data-theme='light']) .menu-section,
+html[data-theme='light'] app-user-menu .menu-section {
+  border-bottom-color: #e2e8f0 !important;
+}
+
+:host-context(html[data-theme='light']) .menu-section button,
+html[data-theme='light'] app-user-menu .menu-section button {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .menu-section button span strong,
+html[data-theme='light'] app-user-menu .menu-section button span strong {
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .menu-section button span small,
+html[data-theme='light'] app-user-menu .menu-section button span small {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .menu-section button:hover,
+html[data-theme='light'] app-user-menu .menu-section button:hover,
+:host-context(html[data-theme='light']) .menu-section button:focus-visible,
+html[data-theme='light'] app-user-menu .menu-section button:focus-visible {
+  background-color: #f1f5f9 !important;
+  color: #16a34a !important;
+}
+
+:host-context(html[data-theme='light']) .menu-section button:hover span strong,
+html[data-theme='light'] app-user-menu .menu-section button:hover span strong {
+  color: #16a34a !important;
+}
+
+:host-context(html[data-theme='light']) .sign-out button,
+html[data-theme='light'] app-user-menu .sign-out button {
+  color: #dc2626 !important;
+}
+
+:host-context(html[data-theme='light']) .sign-out button span strong,
+html[data-theme='light'] app-user-menu .sign-out button span strong {
+  color: #dc2626 !important;
+}
+
+:host-context(html[data-theme='light']) .sign-out button:hover,
+html[data-theme='light'] app-user-menu .sign-out button:hover {
+  background-color: #fef2f2 !important;
+  color: #dc2626 !important;
+}
+
