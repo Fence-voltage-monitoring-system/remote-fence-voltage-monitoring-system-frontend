@@ -16,11 +16,14 @@
         <div class="mb-4 h-1 overflow-hidden rounded-full bg-[#1b3421]"><div class="h-full w-1/3 animate-pulse rounded-full bg-[#4ee672]"></div></div>
       }
       @if (notice) {
-        <div class="mb-4 flex items-center justify-between gap-3 rounded-xl border border-[#2d6b3a] bg-[#15391d] px-4 py-3 text-[9px] text-[#55e777]" role="status">
+        <div class="notice mb-4 flex items-center justify-between gap-3 rounded-xl px-4 py-3 text-xs" role="status">
           <span>{{ notice }}</span>
-          @if (usingPreview) {
-            <button class="rounded-md border border-[#2d6b3a] bg-[#1d4826] px-3 py-1 text-[8px] font-semibold text-[#55e777] hover:bg-[#255c30]" type="button" (click)="loadGateways()">Retry</button>
-          }
+          <div class="flex items-center gap-2">
+            @if (usingPreview) {
+              <button class="retry-btn rounded-md border border-[#2d6b3a] bg-[#1d4826] px-3 py-1 text-[10px] font-semibold hover:opacity-90" type="button" (click)="loadGateways()">Retry</button>
+            }
+            <button class="notice-dismiss text-current opacity-70 hover:opacity-100" type="button" aria-label="Dismiss notice" (click)="notice=''">×</button>
+          </div>
         </div>
       }
 
@@ -132,120 +135,124 @@
       </section>
     </main>
   </div>
-
-  @if (selected && !drawerOpen) {
-  <button class="backdrop" type="button" (click)="selected = undefined" aria-label="Close gateway details"></button>
-  <aside class="details-drawer" (click)="$event.stopPropagation()">
-    <header>
-      <div><span>Gateway record</span>
-        <h2>{{selected.name}}</h2>
-        <p>{{selected.id}} &middot; {{selected.serial}}</p>
-      </div><button class="close" type="button" (click)="selected = undefined"
-        aria-label="Close gateway details">&times;</button>
-    </header>
-    <div class="detail-status"><span [class]="'status-pill ' + selected.status"><i></i>{{selected.status}}</span><span
-        [class.unassigned]="!selected.fences.length">{{selected.fences.length ? 'Assigned to ' + selected.fences.length
-        : 'Unassigned'}}</span></div>
-    <section>
-      <h3>Fence assignments</h3>@if (selected.fences.length) {<div class="assigned-fences">@for (fence of
-        selected.fences; track fence) {<span>{{fence}}</span>}</div>} @else {<p class="no-assignment">Not assigned to a
-        fence</p>}<dl>
-        <div>
-          <dt>Connected monitors</dt>
-          <dd>{{selected.devices}}</dd>
-        </div>
-      </dl>
-    </section>
-    <section>
-      <h3>Gateway identity</h3>
-      <dl>
-        <div>
-          <dt>IMEI</dt>
-          <dd>{{selected.imei}}</dd>
-        </div>
-        <div>
-          <dt>Firmware</dt>
-          <dd>{{selected.firmware}}</dd>
-        </div>
-      </dl>
-    </section>
-    <section>
-      <h3>Physical Location</h3>
-      @if (selected.latitude && selected.longitude) {
-        <dl>
-          <div>
-            <dt>Latitude</dt>
-            <dd class="font-mono">{{selected.latitude}}</dd>
-          </div>
-          <div>
-            <dt>Longitude</dt>
-            <dd class="font-mono">{{selected.longitude}}</dd>
-          </div>
-        </dl>
-        <div style="margin-top: 10px;">
-          <a [href]="'https://www.openstreetmap.org/?mlat=' + selected.latitude + '&mlon=' + selected.longitude + '#map=15/' + selected.latitude + '/' + selected.longitude" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; font-size: 8px; font-weight: 600; color: #55e777; text-decoration: none; border: 1px solid #2d6b3a; background: #15391d; padding: 6px 10px; border-radius: 8px;">
-            <i data-lucide="map-pin"></i> View on OpenStreetMap
-          </a>
-        </div>
-      } @else {
-        <p class="no-assignment">No physical coordinates registered</p>
-      }
-    </section>
-    <section>
-      <h3>Current health</h3>
-      <div class="metrics">
-        <article><span>Signal</span><b>{{selected.signal}}%</b></article>
-        <article><span>Power</span><b>{{selected.power}}%</b></article>
-        <article><span>Last communication</span><b>{{selected.lastSeen}}</b></article>
-        <article><span>State</span><b>{{selected.enabled ? 'Active' : 'Disabled'}}</b></article>
-      </div>
-    </section>
-    <footer><button class="primary" type="button" (click)="openEdit(selected)">Edit gateway</button></footer>
-  </aside>
-  }
-
-  @if (drawerOpen) {
-  <button class="backdrop" type="button" (click)="closeDrawer()" aria-label="Close gateway form"></button>
-  <form class="form-drawer" (submit)="$event.preventDefault(); save()" (click)="$event.stopPropagation()">
-    <header>
-      <div><span>{{editing ? 'Update gateway' : 'New network gateway'}}</span>
-        <h2>{{editing ? 'Edit gateway' : 'Register gateway'}}</h2>
-        <p>{{editing ? 'Update the gateway identity and network information.' : 'Add gateway hardware to the monitoring
-          network.'}}</p>
-      </div><button class="close" type="button" (click)="closeDrawer()"
-        aria-label="Close gateway form" title="Close"><span aria-hidden="true">&times;</span></button>
-    </header>
-    <div class="form-body">
-      <div class="form-grid">
-        <label><span>Gateway name</span><input name="name" [(ngModel)]="form.name"
-            placeholder="e.g. Monaragala Main Gateway" [class.invalid]="submitted && !form.name.trim()"><small>Use a
-            clear location-based name.</small></label>
-        <label><span>Serial number</span><input name="serial" [(ngModel)]="form.serial" placeholder="e.g. GW-2026-1005"
-            [class.invalid]="submitted && !form.serial.trim()"></label>
-        <label><span>IMEI number</span><input name="imei" [(ngModel)]="form.imei" placeholder="15-digit cellular IMEI"
-            [class.invalid]="submitted && !form.imei.trim()"></label>
-        
-        <div class="map-picker-section">
-          <label><span>Physical Location (Interactive Map)</span><small style="color: #8fa890; margin-bottom: 6px; display: block;">Click on the map or drag the green pin to set physical coordinates.</small></label>
-          <div id="gatewayModalMap" class="modal-map-canvas"></div>
-          <div class="latlng-inputs">
-            <label><span>Latitude</span><input type="number" step="any" name="latitude" [(ngModel)]="form.latitude" (change)="onLatLngInputChange()" placeholder="e.g. 6.868100"></label>
-            <label><span>Longitude</span><input type="number" step="any" name="longitude" [(ngModel)]="form.longitude" (change)="onLatLngInputChange()" placeholder="e.g. 81.334200"></label>
-          </div>
-        </div>
-
-        <div class="note"><i data-lucide="check"></i><span><strong>Fence relationships are managed
-              separately</strong><small>Assign fences to this gateway from Fence Management. Sections inherit the
-              gateway through their parent fence.</small></span></div>
-      </div>
-      @if (errorMessage) {
-        <p class="form-error" style="color: #ff9a91; background: rgba(239, 106, 96, 0.15); border: 1px solid rgba(239, 106, 96, 0.3); padding: 8px 12px; border-radius: 8px; font-size: 11px; margin-top: 10px;">{{ errorMessage }}</p>
-      }
-      @if (submitted && (!form.name.trim() || !form.serial.trim() || !form.imei.trim())) {<p class="form-error">
-        Enter the gateway name, serial number, and IMEI.</p>}
-    </div>
-    <footer><button type="button" (click)="closeDrawer()">Cancel</button><button class="primary" type="button" (click)="save()" [disabled]="isSubmitting"><i
-          data-lucide="check"></i>{{editing ? 'Save changes' : 'Register gateway'}}</button></footer>
-  </form>
-  }
 </div>
+
+@if (selected && !drawerOpen) {
+  <div class="backdrop fixed inset-0 z-[2000] flex items-center justify-center p-4" (click)="selected = undefined" aria-hidden="true">
+    <aside class="details-drawer" (click)="$event.stopPropagation()">
+      <header>
+        <div><span>Gateway record</span>
+          <h2>{{selected.name}}</h2>
+          <p>{{selected.id}} &middot; {{selected.serial}}</p>
+        </div><button class="close" type="button" (click)="selected = undefined"
+          aria-label="Close gateway details">&times;</button>
+      </header>
+      <div class="details-body">
+        <div class="detail-status"><span [class]="'status-pill ' + selected.status"><i></i>{{selected.status}}</span><span
+            [class.unassigned]="!selected.fences.length">{{selected.fences.length ? 'Assigned to ' + selected.fences.length
+            : 'Unassigned'}}</span></div>
+        <section>
+          <h3>Fence assignments</h3>@if (selected.fences.length) {<div class="assigned-fences">@for (fence of
+            selected.fences; track fence) {<span>{{fence}}</span>}</div>} @else {<p class="no-assignment">Not assigned to a
+            fence</p>}<dl>
+            <div>
+              <dt>Connected monitors</dt>
+              <dd>{{selected.devices}}</dd>
+            </div>
+          </dl>
+        </section>
+        <section>
+          <h3>Gateway identity</h3>
+          <dl>
+            <div>
+              <dt>IMEI</dt>
+              <dd>{{selected.imei}}</dd>
+            </div>
+            <div>
+              <dt>Firmware</dt>
+              <dd>{{selected.firmware}}</dd>
+            </div>
+          </dl>
+        </section>
+        <section>
+          <h3>Physical Location</h3>
+          @if (selected.latitude && selected.longitude) {
+            <dl>
+              <div>
+                <dt>Latitude</dt>
+                <dd class="font-mono">{{selected.latitude}}</dd>
+              </div>
+              <div>
+                <dt>Longitude</dt>
+                <dd class="font-mono">{{selected.longitude}}</dd>
+              </div>
+            </dl>
+            <div style="margin-top: 10px;">
+              <a [href]="'https://www.openstreetmap.org/?mlat=' + selected.latitude + '&mlon=' + selected.longitude + '#map=15/' + selected.latitude + '/' + selected.longitude" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; font-size: 8px; font-weight: 600; color: #55e777; text-decoration: none; border: 1px solid #2d6b3a; background: #15391d; padding: 6px 10px; border-radius: 8px;">
+                <i data-lucide="map-pin"></i> View on OpenStreetMap
+              </a>
+            </div>
+          } @else {
+            <p class="no-assignment">No physical coordinates registered</p>
+          }
+        </section>
+        <section>
+          <h3>Current health</h3>
+          <div class="metrics">
+            <article><span>Signal</span><b>{{selected.signal}}%</b></article>
+            <article><span>Power</span><b>{{selected.power}}%</b></article>
+            <article><span>Last communication</span><b>{{selected.lastSeen}}</b></article>
+            <article><span>State</span><b>{{selected.enabled ? 'Active' : 'Disabled'}}</b></article>
+          </div>
+        </section>
+      </div>
+      <footer><button class="primary" type="button" (click)="openEdit(selected)">Edit gateway</button></footer>
+    </aside>
+  </div>
+}
+
+@if (drawerOpen) {
+  <div class="backdrop fixed inset-0 z-[2000] flex items-center justify-center p-4" (click)="closeDrawer()" aria-hidden="true">
+    <form class="form-drawer" (submit)="$event.preventDefault(); save()" (click)="$event.stopPropagation()">
+      <header>
+        <div><span>{{editing ? 'Update gateway' : 'New network gateway'}}</span>
+          <h2>{{editing ? 'Edit gateway' : 'Register gateway'}}</h2>
+          <p>{{editing ? 'Update the gateway identity and network information.' : 'Add gateway hardware to the monitoring
+            network.'}}</p>
+        </div><button class="close" type="button" (click)="closeDrawer()"
+          aria-label="Close gateway form" title="Close"><span aria-hidden="true">&times;</span></button>
+      </header>
+      <div class="form-body">
+        <div class="form-grid">
+          <label><span>Gateway name</span><input name="name" [(ngModel)]="form.name"
+              placeholder="e.g. Monaragala Main Gateway" [class.invalid]="submitted && !form.name.trim()"><small>Use a
+              clear location-based name.</small></label>
+          <label><span>Serial number</span><input name="serial" [(ngModel)]="form.serial" placeholder="e.g. GW-2026-1005"
+              [class.invalid]="submitted && !form.serial.trim()"></label>
+          <label><span>IMEI number</span><input name="imei" [(ngModel)]="form.imei" placeholder="15-digit cellular IMEI"
+              [class.invalid]="submitted && !form.imei.trim()"></label>
+          
+          <div class="map-picker-section">
+            <label><span>Physical Location (Interactive Map)</span><small style="color: #8fa890; margin-bottom: 6px; display: block;">Click on the map or drag the green pin to set physical coordinates.</small></label>
+            <div id="gatewayModalMap" class="modal-map-canvas"></div>
+            <div class="latlng-inputs">
+              <label><span>Latitude</span><input type="number" step="any" name="latitude" [(ngModel)]="form.latitude" (change)="onLatLngInputChange()" placeholder="e.g. 6.868100"></label>
+              <label><span>Longitude</span><input type="number" step="any" name="longitude" [(ngModel)]="form.longitude" (change)="onLatLngInputChange()" placeholder="e.g. 81.334200"></label>
+            </div>
+          </div>
+
+          <div class="note"><i data-lucide="check"></i><span><strong>Fence relationships are managed
+                separately</strong><small>Assign fences to this gateway from Fence Management. Sections inherit the
+                gateway through their parent fence.</small></span></div>
+        </div>
+        @if (errorMessage) {
+          <p class="form-error" style="color: #ff9a91; background: rgba(239, 106, 96, 0.15); border: 1px solid rgba(239, 106, 96, 0.3); padding: 8px 12px; border-radius: 8px; font-size: 11px; margin-top: 10px;">{{ errorMessage }}</p>
+        }
+        @if (submitted && (!form.name.trim() || !form.serial.trim() || !form.imei.trim())) {<p class="form-error">
+          Enter the gateway name, serial number, and IMEI.</p>}
+      </div>
+      <footer><button type="button" (click)="closeDrawer()">Cancel</button><button class="primary" type="button" (click)="save()" [disabled]="isSubmitting"><i
+            data-lucide="check"></i>{{editing ? 'Save changes' : 'Register gateway'}}</button></footer>
+    </form>
+  </div>
+}

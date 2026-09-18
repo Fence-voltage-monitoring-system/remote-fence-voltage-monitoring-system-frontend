@@ -1120,40 +1120,47 @@ td.device {
 }
 
 .drawer-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 2000;
-  border: 0;
-  background: rgba(3, 10, 5, 0.66);
-  backdrop-filter: blur(2px);
-  cursor: default;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1rem !important;
+  background: rgba(3, 10, 5, 0.75) !important;
+  backdrop-filter: blur(2px) !important;
 }
 
 .section-drawer {
-  position: fixed;
-  top: 0;
-  right: 0;
+  position: relative !important;
+  top: auto !important;
+  right: auto !important;
+  margin: auto !important;
+  transform: none !important;
   z-index: 2001;
   isolation: isolate;
   display: flex;
-  width: min(460px, 94vw);
-  height: 100dvh;
+  width: min(520px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
   flex-direction: column;
-  overflow-y: auto;
-  border-left: 1px solid #49604b;
-  background: #142619;
+  overflow: hidden;
+  border: 1px solid #405843;
+  border-radius: 1rem;
+  background: #172b1c;
   color: #e8f0e5;
-  box-shadow: -18px 0 55px rgba(0, 0, 0, 0.55);
-  animation: drawer-in 0.22s ease-out;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+  animation: modal-in 0.22s ease-out;
 }
 
-@keyframes drawer-in {
+@keyframes modal-in {
   from {
-    transform: translateX(100%);
+    opacity: 0;
+    transform: scale(0.96);
   }
 
   to {
-    transform: translateX(0);
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -1617,446 +1624,424 @@ td.device {
    tables, and drawers to daylight mode, while keeping the central fence
    scroller (#0f2014 / 3D wireframe mesh canvas) visually high-contrast.
    ========================================================================== */
-html[data-theme='light'] .panel,
-html[data-theme='light'] app-fence-monitor .panel {
+:host-context(html[data-theme='light']) .panel {
   background: #ffffff !important;
-  border: 1px solid #d1ded3 !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
 }
 
-html[data-theme='light'] .panel > header,
-html[data-theme='light'] app-fence-monitor .panel > header {
-  background: #f4f7f4 !important;
-  border-bottom: 1px solid #e2ede4 !important;
+:host-context(html[data-theme='light']) .panel > header {
+  background: #f8fafc !important;
+  border-bottom: 1px solid #cbd5e1 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .panel h2 {
-  color: #0f2415 !important;
+:host-context(html[data-theme='light']) .panel h2 {
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .panel header p {
-  color: #526856 !important;
+:host-context(html[data-theme='light']) .panel header p {
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .location-select span,
-html[data-theme='light'] app-fence-monitor .fence-select span {
-  color: #3b503f !important;
+:host-context(html[data-theme='light']) :is(.location-select span, .fence-select span) {
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .timing {
-  background: #eaf2eb !important;
-  border-color: #c0d4c3 !important;
-  color: #4a604b !important;
+:host-context(html[data-theme='light']) .timing {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .timing b {
-  color: #1e3823 !important;
+:host-context(html[data-theme='light']) .timing b {
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .timing strong {
-  color: #15803d !important;
+:host-context(html[data-theme='light']) .timing strong {
+  color: #16a34a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .timing small {
-  border-left-color: #c0d4c3 !important;
-  color: #4a604b !important;
+:host-context(html[data-theme='light']) .timing small {
+  border-left-color: #cbd5e1 !important;
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .legend {
-  color: #3b503f !important;
+:host-context(html[data-theme='light']) .legend {
+  color: #475569 !important;
 }
 
 /* Preserve dark 3D wireframe canvas background for central fence viewport */
-html[data-theme='light'] app-fence-monitor .scroller {
+:host-context(html[data-theme='light']) .scroller {
   background: #0f2014 !important;
   border-color: #234228 !important;
 }
 
 /* Telemetry Cards Deck Outside Scroller */
-html[data-theme='light'] app-fence-monitor .reading-card-outside {
+:host-context(html[data-theme='light']) .reading-card-outside {
   background: #ffffff !important;
-  border: 1px solid #bcd0bf !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06) !important;
 }
 
-html[data-theme='light'] app-fence-monitor .reading-card-outside.is-selected,
-html[data-theme='light'] app-fence-monitor .reading-card-outside:hover {
-  background: #f0f7f2 !important;
-  border-color: #15803d !important;
-  box-shadow: 0 4px 14px rgba(21, 128, 61, 0.15) !important;
+:host-context(html[data-theme='light']) :is(.reading-card-outside.is-selected, .reading-card-outside:hover) {
+  background: #f8fafc !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.15) !important;
 }
 
-html[data-theme='light'] app-fence-monitor .reading-card-outside .card-header strong {
-  color: #122416 !important;
+:host-context(html[data-theme='light']) .reading-card-outside .card-header strong {
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .reading-card-outside .card-header small {
-  color: #526856 !important;
+:host-context(html[data-theme='light']) .reading-card-outside .card-header small {
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .reading-card-outside .card-val strong {
-  color: #15803d !important;
+:host-context(html[data-theme='light']) .reading-card-outside .card-val strong {
+  color: #16a34a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .reading-card-outside.warning .card-val strong {
+:host-context(html[data-theme='light']) .reading-card-outside.warning .card-val strong {
   color: #d97706 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .reading-card-outside.critical .card-val strong {
+:host-context(html[data-theme='light']) .reading-card-outside.critical .card-val strong {
   color: #dc2626 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .reading-card-outside.offline .card-val strong {
-  color: #6b7280 !important;
+:host-context(html[data-theme='light']) .reading-card-outside.offline .card-val strong {
+  color: #64748b !important;
 }
 
-html[data-theme='light'] app-fence-monitor .reading-card-outside .card-val em {
-  color: #526856 !important;
+:host-context(html[data-theme='light']) .reading-card-outside .card-val em {
+  color: #475569 !important;
 }
 
 /* Detail Sidebar */
-html[data-theme='light'] app-fence-monitor .detail {
-  background: #f8faf8 !important;
-  border-left: 1px solid #d1ded3 !important;
+:host-context(html[data-theme='light']) .detail {
+  background: #f8fafc !important;
+  border-left: 1px solid #cbd5e1 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .detail h3 {
-  color: #15803d !important;
+:host-context(html[data-theme='light']) .detail h3 {
+  color: #16a34a !important;
 }
 
-:host-context(html[data-theme='light']) .section-heading,
-html[data-theme='light'] app-fence-monitor .section-heading {
-  border-bottom-color: #e2ede4 !important;
+:host-context(html[data-theme='light']) .section-heading {
+  border-bottom-color: #cbd5e1 !important;
 }
 
-:host-context(html[data-theme='light']) .section-heading > b,
-html[data-theme='light'] app-fence-monitor .section-heading > b {
-  color: #122416 !important;
+:host-context(html[data-theme='light']) .section-heading > b {
+  color: #0f172a !important;
 }
 
-:host-context(html[data-theme='light']) .section-heading span,
-html[data-theme='light'] app-fence-monitor .section-heading span {
+:host-context(html[data-theme='light']) .section-heading span {
   background: #dcfce7 !important;
   border-color: #86efac !important;
   color: #15803d !important;
   font-weight: 700 !important;
 }
 
-:host-context(html[data-theme='light']) .section-heading span.warning,
-html[data-theme='light'] app-fence-monitor .section-heading span.warning {
+:host-context(html[data-theme='light']) .section-heading span.warning {
   background: #fef9c3 !important;
   border-color: #fde047 !important;
   color: #a16207 !important;
 }
 
-:host-context(html[data-theme='light']) .section-heading span.critical,
-html[data-theme='light'] app-fence-monitor .section-heading span.critical {
+:host-context(html[data-theme='light']) .section-heading span.critical {
   background: #fee2e2 !important;
   border-color: #fca5a5 !important;
   color: #b91c1c !important;
 }
 
-:host-context(html[data-theme='light']) .section-heading span.offline,
-html[data-theme='light'] app-fence-monitor .section-heading span.offline {
+:host-context(html[data-theme='light']) .section-heading span.offline {
   background: #f3f4f6 !important;
   border-color: #e5e7eb !important;
   color: #4b5563 !important;
 }
 
-
-html[data-theme='light'] app-fence-monitor .detail dt {
-  color: #526856 !important;
+:host-context(html[data-theme='light']) .detail dt {
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .detail dd {
-  color: #122416 !important;
+:host-context(html[data-theme='light']) .detail dd {
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .detail dd.voltage {
-  color: #15803d !important;
+:host-context(html[data-theme='light']) .detail dd.voltage {
+  color: #16a34a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .battery-level {
-  border-top-color: #e2ede4 !important;
+:host-context(html[data-theme='light']) .battery-level {
+  border-top-color: #cbd5e1 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .battery-level > div {
-  color: #526856 !important;
+:host-context(html[data-theme='light']) .battery-level > div {
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .battery-level b {
-  color: #122416 !important;
+:host-context(html[data-theme='light']) .battery-level b {
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .battery-level > i {
-  background: #dbe6dc !important;
+:host-context(html[data-theme='light']) .battery-level > i {
+  background: #e2e8f0 !important;
 }
 
 /* Status Filter Bar */
-html[data-theme='light'] app-fence-monitor .status-filter {
+:host-context(html[data-theme='light']) .status-filter {
   background: #ffffff !important;
-  border-top: 1px solid #d1ded3 !important;
+  border-top: 1px solid #cbd5e1 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .status-filter h3 {
-  color: #0f2415 !important;
+:host-context(html[data-theme='light']) .status-filter h3 {
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .status-filter p,
-html[data-theme='light'] app-fence-monitor .status-filter label span {
-  color: #526856 !important;
+:host-context(html[data-theme='light']) :is(.status-filter p, .status-filter label span) {
+  color: #475569 !important;
 }
 
-/* Section Table Wrap & Data Rows */
-html[data-theme='light'] app-fence-monitor .section-table-wrap {
+:host-context(html[data-theme='light']) .section-table-wrap {
   background: #ffffff !important;
-  border-top: 1px solid #d1ded3 !important;
+  border-top: 1px solid #cbd5e1 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .table-heading {
-  border-bottom: 1px solid #e2ede4 !important;
+:host-context(html[data-theme='light']) .table-heading span {
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .table-heading span {
-  color: #526856 !important;
+:host-context(html[data-theme='light']) .table-heading h3 {
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .table-heading h3 {
-  color: #0f2415 !important;
+:host-context(html[data-theme='light']) .table-heading > b {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .table-heading > b {
-  background: #f0f5f1 !important;
-  border-color: #bcd0bf !important;
-  color: #1e3823 !important;
+:host-context(html[data-theme='light']) thead {
+  background: #f8fafc !important;
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.05) !important;
 }
 
-html[data-theme='light'] app-fence-monitor thead {
-  background: #f0f5f1 !important;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05) !important;
+:host-context(html[data-theme='light']) th {
+  border-bottom: 1px solid #cbd5e1 !important;
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor th {
-  border-bottom: 1px solid #d1ded3 !important;
-  color: #2e4432 !important;
+:host-context(html[data-theme='light']) td {
+  border-bottom: 1px solid #e2e8f0 !important;
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor td {
-  border-bottom: 1px solid #e2ede4 !important;
-  color: #122416 !important;
-}
-
-html[data-theme='light'] app-fence-monitor tbody tr {
+:host-context(html[data-theme='light']) tbody tr {
   background: #ffffff !important;
 }
 
-html[data-theme='light'] app-fence-monitor tbody tr:nth-child(even) {
-  background: #f8faf8 !important;
+:host-context(html[data-theme='light']) tbody tr:nth-child(even) {
+  background: #f8fafc !important;
 }
 
-html[data-theme='light'] app-fence-monitor tbody tr:hover {
-  background: #f0f7f2 !important;
+:host-context(html[data-theme='light']) tbody tr:hover {
+  background: #f1f5f9 !important;
 }
 
-html[data-theme='light'] app-fence-monitor tbody tr.selected-row {
-  background: #e6f4e8 !important;
-  box-shadow: inset 3px 0 0 #15803d !important;
+:host-context(html[data-theme='light']) tbody tr.selected-row {
+  background: #dcfce7 !important;
+  box-shadow: inset 3px 0 0 #16a34a !important;
 }
 
-html[data-theme='light'] app-fence-monitor td.device {
-  color: #15803d !important;
+:host-context(html[data-theme='light']) td.device {
+  color: #16a34a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .reading-value.healthy {
-  color: #15803d !important;
+:host-context(html[data-theme='light']) .reading-value.healthy {
+  color: #16a34a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .reading-value.warning {
+:host-context(html[data-theme='light']) .reading-value.warning {
   color: #d97706 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .reading-value.critical {
+:host-context(html[data-theme='light']) .reading-value.critical {
   color: #dc2626 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .reading-value.offline {
-  color: #6b7280 !important;
+:host-context(html[data-theme='light']) .reading-value.offline {
+  color: #64748b !important;
 }
 
-html[data-theme='light'] app-fence-monitor .mini-battery > i {
-  background: #d0ded2 !important;
+:host-context(html[data-theme='light']) .mini-battery > i {
+  background: #e2e8f0 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .mini-battery span {
-  color: #526856 !important;
+:host-context(html[data-theme='light']) .mini-battery span {
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .status-pill.healthy {
+:host-context(html[data-theme='light']) .status-pill.healthy {
   background: #dcfce7 !important;
   color: #15803d !important;
   border-color: #86efac !important;
 }
 
-html[data-theme='light'] app-fence-monitor .status-pill.warning {
+:host-context(html[data-theme='light']) .status-pill.warning {
   background: #fef9c3 !important;
   color: #a16207 !important;
   border-color: #fde047 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .status-pill.critical {
+:host-context(html[data-theme='light']) .status-pill.critical {
   background: #fee2e2 !important;
   color: #b91c1c !important;
   border-color: #fca5a5 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .status-pill.offline {
+:host-context(html[data-theme='light']) .status-pill.offline {
   background: #f3f4f6 !important;
   color: #4b5563 !important;
   border-color: #e5e7eb !important;
 }
 
 /* Section Drawer Modal */
-html[data-theme='light'] app-fence-monitor .section-drawer {
+:host-context(html[data-theme='light']) .section-drawer {
   background: #ffffff !important;
-  color: #122416 !important;
-  border-left-color: #d1ded3 !important;
-  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+  border-left-color: #cbd5e1 !important;
+  box-shadow: -10px 0 30px rgba(15, 23, 42, 0.1) !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-header {
-  background: #f4f7f4 !important;
-  border-bottom-color: #e2ede4 !important;
+:host-context(html[data-theme='light']) .drawer-header {
+  background: #f8fafc !important;
+  border-bottom-color: #cbd5e1 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-header h2 {
-  color: #0f2415 !important;
+:host-context(html[data-theme='light']) .drawer-header h2 {
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-header p {
-  color: #526856 !important;
+:host-context(html[data-theme='light']) .drawer-header p {
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-header button {
+:host-context(html[data-theme='light']) .drawer-header button {
   background: #ffffff !important;
-  border-color: #bcd0bf !important;
-  color: #3b503f !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-status {
-  background: #f8faf8 !important;
-  border-bottom-color: #e2ede4 !important;
+:host-context(html[data-theme='light']) .drawer-status {
+  background: #f8fafc !important;
+  border-bottom-color: #e2e8f0 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-status small {
-  color: #526856 !important;
+:host-context(html[data-theme='light']) .drawer-status small {
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .telemetry-cards article {
-  background: #f8faf8 !important;
-  border-color: #d1ded3 !important;
+:host-context(html[data-theme='light']) .telemetry-cards article {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .telemetry-cards article > span {
-  color: #526856 !important;
+:host-context(html[data-theme='light']) .telemetry-cards article > span {
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .telemetry-cards strong {
-  color: #122416 !important;
+:host-context(html[data-theme='light']) .telemetry-cards strong {
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .telemetry-cards strong small,
-html[data-theme='light'] app-fence-monitor .telemetry-cards em {
-  color: #526856 !important;
+:host-context(html[data-theme='light']) :is(.telemetry-cards strong small, .telemetry-cards em) {
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-trend,
-html[data-theme='light'] app-fence-monitor .drawer-meta,
-html[data-theme='light'] app-fence-monitor .drawer-events {
-  background: #f8faf8 !important;
-  border-color: #d1ded3 !important;
+:host-context(html[data-theme='light']) :is(.drawer-trend, .drawer-meta, .drawer-events) {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-trend b {
-  color: #122416 !important;
+:host-context(html[data-theme='light']) .drawer-trend b {
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-meta h3,
-html[data-theme='light'] app-fence-monitor .drawer-events h3 {
-  color: #15803d !important;
+:host-context(html[data-theme='light']) :is(.drawer-meta h3, .drawer-events h3) {
+  color: #16a34a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-meta dl > div {
-  border-bottom-color: #e2ede4 !important;
+:host-context(html[data-theme='light']) .drawer-meta dl > div {
+  border-bottom-color: #e2e8f0 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-meta dt {
-  color: #526856 !important;
+:host-context(html[data-theme='light']) .drawer-meta dt {
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-meta dd {
-  color: #122416 !important;
+:host-context(html[data-theme='light']) .drawer-meta dd {
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-events b {
-  color: #122416 !important;
+:host-context(html[data-theme='light']) .drawer-events b {
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-events small {
-  color: #526856 !important;
+:host-context(html[data-theme='light']) .drawer-events small {
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-actions {
-  background: #f4f7f4 !important;
-  border-top-color: #e2ede4 !important;
+:host-context(html[data-theme='light']) .drawer-actions {
+  background: #f8fafc !important;
+  border-top-color: #cbd5e1 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-actions a,
-html[data-theme='light'] app-fence-monitor .drawer-actions button {
+:host-context(html[data-theme='light']) .drawer-actions :is(a, button) {
   background: #ffffff !important;
-  border-color: #bcd0bf !important;
-  color: #122416 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .drawer-actions .primary {
-  background: #15803d !important;
-  border-color: #166534 !important;
+:host-context(html[data-theme='light']) .drawer-actions .primary {
+  background: #16a34a !important;
+  border-color: #15803d !important;
   color: #ffffff !important;
 }
 
 /* Filtered Results Grid */
-html[data-theme='light'] app-fence-monitor .filtered-results {
-  background: #f8faf8 !important;
-  border-top-color: #d1ded3 !important;
+:host-context(html[data-theme='light']) .filtered-results {
+  background: #f8fafc !important;
+  border-top-color: #cbd5e1 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .results-heading span {
-  color: #526856 !important;
+:host-context(html[data-theme='light']) .results-heading span {
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .results-heading h3 {
-  color: #0f2415 !important;
+:host-context(html[data-theme='light']) .results-heading h3 {
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .results-heading > b {
-  background: #f0f5f1 !important;
-  border-color: #bcd0bf !important;
-  color: #1e3823 !important;
+:host-context(html[data-theme='light']) .results-heading > b {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .result-grid > button {
+:host-context(html[data-theme='light']) .result-grid > button {
   background: #ffffff !important;
-  border-color: #d1ded3 !important;
-  color: #122416 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
 }
 
-html[data-theme='light'] app-fence-monitor .result-grid > button:hover {
-  background: #f0f7f2 !important;
+:host-context(html[data-theme='light']) .result-grid > button:hover {
+  background: #f1f5f9 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .result-grid dt {
-  color: #526856 !important;
+:host-context(html[data-theme='light']) .result-grid dt {
+  color: #475569 !important;
 }
 
-html[data-theme='light'] app-fence-monitor .result-grid dd {
-  color: #122416 !important;
+:host-context(html[data-theme='light']) .result-grid dd {
+  color: #0f172a !important;
 }

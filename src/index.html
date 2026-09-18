@@ -6,6 +6,27 @@
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script>
+    (function() {
+      try {
+        var raw = localStorage.getItem('dwc-appearance-preferences');
+        if (raw) {
+          var prefs = JSON.parse(raw);
+          var activeTheme = prefs.theme;
+          if (activeTheme === 'system') {
+            activeTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          if (activeTheme) document.documentElement.dataset['theme'] = activeTheme;
+          if (prefs.theme) document.documentElement.dataset['userThemeSetting'] = prefs.theme;
+          if (prefs.textSize) document.documentElement.dataset['textSize'] = prefs.textSize;
+          if (prefs.density) document.documentElement.dataset['density'] = prefs.density;
+          if (prefs.highContrast !== undefined) document.documentElement.dataset['highContrast'] = String(prefs.highContrast);
+          if (prefs.reducedMotion !== undefined) document.documentElement.dataset['reducedMotion'] = String(prefs.reducedMotion);
+          if (prefs.accent) document.documentElement.style.setProperty('--accent-color', prefs.accent);
+        }
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
   <app-root></app-root>

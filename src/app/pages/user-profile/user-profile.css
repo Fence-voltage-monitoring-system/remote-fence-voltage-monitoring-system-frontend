@@ -57,7 +57,10 @@
 }
 
 .badge-tag-muted {
-  @apply inline-flex items-center rounded-md border border-[#38513b] bg-[#112316] px-2.5 py-1 text-[8px] text-[#9bb098];
+  @apply inline-flex items-center justify-center rounded-md border border-[#38513b] bg-[#112316] px-2.5 py-1 text-[8px] text-[#9bb098];
+  height: 26px;
+  box-sizing: border-box;
+  line-height: 1;
 }
 
 /* Identity Card Styles */
@@ -75,7 +78,10 @@
 }
 
 .role-badge {
-  @apply mt-3 inline-flex rounded-md bg-[#183e22] px-3 py-1.5 text-[7px] font-semibold uppercase tracking-wide text-[#4be572];
+  @apply inline-flex items-center justify-center rounded-md border border-[#2d6b3a] bg-[#183e22] px-2.5 py-1 text-[8px] font-semibold uppercase tracking-wide text-[#4be572];
+  height: 26px;
+  box-sizing: border-box;
+  line-height: 1;
 }
 
 .account-active-state {
@@ -220,8 +226,9 @@ html[data-theme='light'] app-user-profile .avatar-circle {
 
 :host-context(html[data-theme='light']) .role-badge,
 html[data-theme='light'] app-user-profile .role-badge {
-  background: #f1f5f9 !important;
-  color: #0f172a !important;
+  background: #dcfce7 !important;
+  border: 1px solid #86efac !important;
+  color: #15803d !important;
 }
 
 :host-context(html[data-theme='light']) .toggle-item,

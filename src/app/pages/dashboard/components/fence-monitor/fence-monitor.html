@@ -104,21 +104,24 @@
     }
 
     @if (showSectionTable && drawerOpen) {
-      <button class="drawer-backdrop" type="button" (click)="closeSectionDetails()" aria-label="Close section details"></button>
-      <aside class="section-drawer" role="dialog" aria-modal="true" [attr.aria-label]="selected.id + ' details'">
-        <header class="drawer-header"><div><span>Section details</span><h2>{{selected.id}}</h2><p>{{selectedFence.name}}</p></div><button type="button" (click)="closeSectionDetails()" aria-label="Close section details">&times;</button></header>
-        <div class="drawer-status"><span class="status-pill" [class]="selected.state">&bull; {{selected.state}}</span><small>Updated {{selected.updated}}</small></div>
-        <section class="telemetry-cards" aria-label="Current telemetry">
-          <article><span>Voltage</span><strong [class]="selected.state">{{selected.voltage}} <small>kV</small></strong><em>{{selected.voltageDrop}} kV drop</em></article>
-          <article><span>Battery</span><strong>{{selected.battery}}<small>%</small></strong><em>{{selected.battery > 30 ? 'Normal level' : 'Low level'}}</em></article>
-          <article><span>Solar</span><strong>{{selected.solarCharging}}<small>%</small></strong><em>Charging input</em></article>
-          <article><span>Signal</span><strong>{{selected.signalStrength}}<small>dBm</small></strong><em>{{selected.signalStrength > -80 ? 'Good connection' : 'Weak connection'}}</em></article>
-        </section>
-        <section class="drawer-trend"><div><span>Voltage trend</span><b>Last 24 hours</b></div><svg viewBox="0 0 360 90" preserveAspectRatio="none" role="img" aria-label="24-hour voltage trend"><path d="M0 72H360M0 42H360M0 12H360"/><polyline [attr.points]="trendPoints" [class]="selected.state"/></svg><footer><span>24h ago</span><span>12h ago</span><span>Now</span></footer></section>
-        <section class="drawer-meta"><h3>Device and location</h3><dl><div><dt>Device ID</dt><dd>{{deviceId(selected)}}</dd></div><div><dt>Serial number</dt><dd>SN-{{deviceId(selected).slice(-7)}}</dd></div><div><dt>Gateway</dt><dd>{{selected.gateway}}</dd></div><div><dt>Fence zone</dt><dd>{{selectedFence.zone}}</dd></div><div><dt>GPS location</dt><dd>{{selected.latitude}}, {{selected.longitude}}</dd></div><div><dt>Update interval</dt><dd>{{selectedFence.updateIntervalMinutes}} minutes</dd></div></dl></section>
-        <section class="drawer-events"><h3>Recent activity</h3><div><i [class]="selected.state"></i><span><b>{{selected.state === 'critical' ? 'Critical voltage detected' : selected.state === 'offline' ? 'Communication interrupted' : 'Telemetry reading received'}}</b><small>{{selected.updated}}</small></span></div><div><i class="healthy"></i><span><b>Scheduled device check completed</b><small>15m ago</small></span></div></section>
-        <footer class="drawer-actions">@if (selected.state === 'critical' || selected.state === 'warning') {<button type="button" class="acknowledge" (click)="alertAcknowledged = true" [disabled]="alertAcknowledged">{{alertAcknowledged ? 'Alert acknowledged' : 'Acknowledge alert'}}</button>}<button type="button" (click)="viewSelectedOnMap()">View on map</button><a class="primary" href="/devices">Open device</a></footer>
-      </aside>
+      <div class="drawer-backdrop fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-[#030a05]/75 backdrop-blur-xs" (click)="closeSectionDetails()" aria-hidden="true">
+        <aside class="section-drawer relative z-[2001] my-auto flex max-h-[calc(100dvh-32px)] w-full max-w-[520px] flex-col overflow-hidden rounded-2xl border border-[#405843] bg-[#172b1c] shadow-[0_24px_70px_rgba(0,0,0,.55)]" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" [attr.aria-label]="selected.id + ' details'">
+          <header class="drawer-header shrink-0"><div><span>Section details</span><h2>{{selected.id}}</h2><p>{{selectedFence.name}}</p></div><button type="button" (click)="closeSectionDetails()" aria-label="Close section details">&times;</button></header>
+          <div class="drawer-body min-h-0 flex-1 overflow-y-auto">
+            <div class="drawer-status"><span class="status-pill" [class]="selected.state">&bull; {{selected.state}}</span><small>Updated {{selected.updated}}</small></div>
+            <section class="telemetry-cards" aria-label="Current telemetry">
+              <article><span>Voltage</span><strong [class]="selected.state">{{selected.voltage}} <small>kV</small></strong><em>{{selected.voltageDrop}} kV drop</em></article>
+              <article><span>Battery</span><strong>{{selected.battery}}<small>%</small></strong><em>{{selected.battery > 30 ? 'Normal level' : 'Low level'}}</em></article>
+              <article><span>Solar</span><strong>{{selected.solarCharging}}<small>%</small></strong><em>Charging input</em></article>
+              <article><span>Signal</span><strong>{{selected.signalStrength}}<small>dBm</small></strong><em>{{selected.signalStrength > -80 ? 'Good connection' : 'Weak connection'}}</em></article>
+            </section>
+            <section class="drawer-trend"><div><span>Voltage trend</span><b>Last 24 hours</b></div><svg viewBox="0 0 360 90" preserveAspectRatio="none" role="img" aria-label="24-hour voltage trend"><path d="M0 72H360M0 42H360M0 12H360"/><polyline [attr.points]="trendPoints" [class]="selected.state"/></svg><footer><span>24h ago</span><span>12h ago</span><span>Now</span></footer></section>
+            <section class="drawer-meta"><h3>Device and location</h3><dl><div><dt>Device ID</dt><dd>{{deviceId(selected)}}</dd></div><div><dt>Serial number</dt><dd>SN-{{deviceId(selected).slice(-7)}}</dd></div><div><dt>Gateway</dt><dd>{{selected.gateway}}</dd></div><div><dt>Fence zone</dt><dd>{{selectedFence.zone}}</dd></div><div><dt>GPS location</dt><dd>{{selected.latitude}}, {{selected.longitude}}</dd></div><div><dt>Update interval</dt><dd>{{selectedFence.updateIntervalMinutes}} minutes</dd></div></dl></section>
+            <section class="drawer-events"><h3>Recent activity</h3><div><i [class]="selected.state"></i><span><b>{{selected.state === 'critical' ? 'Critical voltage detected' : selected.state === 'offline' ? 'Communication interrupted' : 'Telemetry reading received'}}</b><small>{{selected.updated}}</small></span></div><div><i class="healthy"></i><span><b>Scheduled device check completed</b><small>15m ago</small></span></div></section>
+          </div>
+          <footer class="drawer-actions shrink-0">@if (selected.state === 'critical' || selected.state === 'warning') {<button type="button" class="acknowledge" (click)="alertAcknowledged = true" [disabled]="alertAcknowledged">{{alertAcknowledged ? 'Alert acknowledged' : 'Acknowledge alert'}}</button>}<button type="button" (click)="viewSelectedOnMap()">View on map</button><a class="primary" href="/devices">Open device</a></footer>
+        </aside>
+      </div>
     }
   } @else {
     <div class="p-8 text-center text-emerald-300/60 bg-emerald-950/20 border border-emerald-500/20 rounded-xl my-4">

@@ -11,15 +11,31 @@ app-section-registration-drawer,
 app-section-edit-modal,
 app-section-bulk-add-modal,
 app-save-configuration-modal {
+  display: block;
   z-index: 2000 !important;
 }
 
+/* All backdrop overlays act as flexbox centering wrappers */
+.backdrop,
+app-section-bulk-add-modal .backdrop,
+app-section-edit-modal .backdrop,
+app-section-registration-drawer .backdrop,
+app-fence-registration-drawer .backdrop,
+app-fence-edit-drawer .backdrop,
 app-device-management-page .register-backdrop,
 app-device-management-page .drawer-backdrop,
 app-gateway-management-page .backdrop,
 app-audit-logs-page .backdrop,
 app-historical-analysis .range-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
   z-index: 2000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+  pointer-events: auto !important;
 }
 
 app-device-management-page .register-drawer,
@@ -37,29 +53,158 @@ app-system-health .modal {
   z-index: 2000 !important;
 }
 
-/* Use a consistent centred-dialog layout instead of page-edge drawers. */
+/* Use a consistent centred-dialog layout inside flex backdrop overlays. */
 app-user-create-drawer aside[role='dialog'],
 app-profile-edit-drawer .edit-drawer,
+app-change-password-drawer .edit-drawer,
 app-device-management-page .register-drawer,
 app-device-management-page .device-details,
 app-device-management-page .assignment-drawer,
 app-gateway-management-page .details-drawer,
 app-gateway-management-page .form-drawer,
 app-audit-logs-page .drawer,
-app-fence-monitor .section-drawer {
-  top: 50% !important;
-  left: 50% !important;
+app-fence-monitor .section-drawer,
+app-section-bulk-add-modal .modal,
+app-section-edit-modal .modal,
+app-section-registration-drawer .drawer,
+app-fence-registration-drawer .drawer,
+app-fence-edit-drawer .drawer,
+.details-drawer,
+.form-drawer,
+.register-drawer,
+.device-details,
+.assignment-drawer,
+.drawer {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
   right: auto !important;
   bottom: auto !important;
+  margin: auto !important;
+  transform: none !important;
   width: min(var(--dialog-width, 520px), calc(100vw - 32px)) !important;
   height: auto !important;
   max-height: calc(100dvh - 32px) !important;
-  overflow-y: auto !important;
-  transform: translate(-50%, -50%) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  pointer-events: auto !important;
+  z-index: 2001 !important;
   border: 1px solid #49604b !important;
   border-radius: 16px !important;
   box-shadow: 0 24px 70px rgb(0 0 0 / 55%) !important;
   animation: app-centred-dialog-in .22s ease-out !important;
+  box-sizing: border-box !important;
+}
+
+/* Modal header stays fixed at top of modal card */
+app-user-create-drawer aside[role='dialog'] > header,
+app-profile-edit-drawer .edit-drawer > header,
+app-change-password-drawer .edit-drawer > header,
+app-device-management-page .register-drawer > header,
+app-device-management-page .device-details > header,
+app-device-management-page .assignment-drawer > header,
+app-gateway-management-page .details-drawer > header,
+app-gateway-management-page .form-drawer > header,
+app-audit-logs-page .drawer > header,
+app-fence-monitor .section-drawer > header,
+app-section-bulk-add-modal .modal > header,
+app-section-edit-modal .modal > header,
+app-section-registration-drawer .drawer > header,
+app-fence-registration-drawer .drawer > header,
+app-fence-edit-drawer .drawer > header,
+.details-drawer > header,
+.form-drawer > header,
+.register-drawer > header,
+.device-details > header,
+.assignment-drawer > header,
+.drawer > header,
+.incident-modal > header {
+  flex-shrink: 0 !important;
+}
+
+/* Modal footer stays fixed at bottom of modal card */
+app-user-create-drawer aside[role='dialog'] > footer,
+app-profile-edit-drawer .edit-drawer > footer,
+app-change-password-drawer .edit-drawer > footer,
+app-device-management-page .register-drawer > footer,
+app-device-management-page .device-details > footer,
+app-device-management-page .assignment-drawer > footer,
+app-gateway-management-page .details-drawer > footer,
+app-gateway-management-page .form-drawer > footer,
+app-audit-logs-page .drawer > footer,
+app-fence-monitor .section-drawer > footer,
+app-section-bulk-add-modal .modal > footer,
+app-section-edit-modal .modal > footer,
+app-section-registration-drawer .drawer > footer,
+app-fence-registration-drawer .drawer > footer,
+app-fence-edit-drawer .drawer > footer,
+.details-drawer > footer,
+.form-drawer > footer,
+.register-drawer > footer,
+.device-details > footer,
+.assignment-drawer > footer,
+.drawer > footer,
+.incident-modal > footer {
+  flex-shrink: 0 !important;
+}
+
+/* Modal form / body scrolls cleanly inside modal card */
+app-user-create-drawer aside[role='dialog'] > form,
+app-profile-edit-drawer .edit-drawer > form,
+app-change-password-drawer .edit-drawer > form,
+app-section-bulk-add-modal .modal > form,
+app-section-edit-modal .modal > form,
+app-section-registration-drawer .drawer > form,
+app-fence-registration-drawer .drawer > form,
+app-fence-edit-drawer .drawer > form,
+app-device-management-page .register-body,
+app-device-management-page .wizard-viewport,
+app-gateway-management-page .form-body,
+app-gateway-management-page .details-body,
+.register-body,
+.wizard-viewport,
+.form-body,
+.details-body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+}
+
+/* Application-Wide Dark Theme Modal Typography & Color Safeguards */
+html:not([data-theme='light']) :is(.details-drawer, .form-drawer, .register-drawer, .device-details, .assignment-drawer, .drawer, .modal, [role='dialog']) h2 {
+  color: #edf4e9 !important;
+}
+
+html:not([data-theme='light']) :is(.details-drawer, .form-drawer, .register-drawer, .device-details, .assignment-drawer, .drawer, .modal, [role='dialog']) :is(b, strong, dd, dt, .mono, .font-mono) {
+  color: #edf4e9 !important;
+}
+
+html:not([data-theme='light']) :is(.details-drawer, .form-drawer, .register-drawer, .device-details, .assignment-drawer, .drawer, .modal, [role='dialog']) :is(input, select, textarea) {
+  color: #ffffff !important;
+  background-color: #102318 !important;
+  border-color: #405943 !important;
+}
+
+html:not([data-theme='light']) :is(.details-drawer, .form-drawer, .register-drawer, .device-details, .assignment-drawer, .drawer, .modal, [role='dialog']) :is(input, select, textarea)::placeholder {
+  color: #8da08b !important;
+}
+
+html:not([data-theme='light']) :is(.details-drawer, .form-drawer, .register-drawer, .device-details, .assignment-drawer, .drawer, .modal, [role='dialog']) footer button:not(.primary):not(.save):not(.continue):not(.danger) {
+  background-color: #1a3020 !important;
+  border-color: #405943 !important;
+  color: #dbe5d8 !important;
+}
+
+html:not([data-theme='light']) :is(.details-drawer, .form-drawer, .register-drawer, .device-details, .assignment-drawer, .drawer, .modal, [role='dialog']) footer button:not(.primary):not(.save):not(.continue):not(.danger):hover {
+  border-color: #4ee672 !important;
+  color: #4ee672 !important;
+}
+
+html:not([data-theme='light']) :is(.details-drawer, .form-drawer, .register-drawer, .device-details, .assignment-drawer, .drawer, .modal, [role='dialog']) footer :is(.primary, .save, .continue) {
+  background-color: #43d568 !important;
+  border-color: #4ee672 !important;
+  color: #0b2511 !important;
 }
 
 app-user-create-drawer aside[role='dialog'] { --dialog-width: 480px; }
@@ -71,6 +216,21 @@ app-gateway-management-page .details-drawer,
 app-gateway-management-page .form-drawer { --dialog-width: 520px; }
 app-audit-logs-page .drawer { --dialog-width: 620px; }
 app-fence-monitor .section-drawer { --dialog-width: 500px; }
+app-section-bulk-add-modal .modal { --dialog-width: 960px; }
+app-section-edit-modal .modal { --dialog-width: 820px; }
+app-section-registration-drawer .drawer { --dialog-width: 820px; }
+app-fence-registration-drawer .drawer { --dialog-width: 860px; }
+app-fence-edit-drawer .drawer { --dialog-width: 860px; }
+
+app-section-bulk-add-modal .backdrop,
+app-section-edit-modal .backdrop,
+app-section-registration-drawer .backdrop,
+app-fence-registration-drawer .backdrop,
+app-fence-edit-drawer .backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2000 !important;
+}
 
 app-user-create-drawer aside[role='dialog'].is-closing,
 app-profile-edit-drawer .edit-drawer.closing,
@@ -80,7 +240,12 @@ app-device-management-page .assignment-drawer.is-closing,
 app-gateway-management-page .details-drawer.is-closing,
 app-gateway-management-page .form-drawer.is-closing,
 app-audit-logs-page .drawer.is-closing,
-app-fence-monitor .section-drawer.is-closing {
+app-fence-monitor .section-drawer.is-closing,
+app-section-bulk-add-modal .modal.is-closing,
+app-section-edit-modal .modal.is-closing,
+app-section-registration-drawer .drawer.is-closing,
+app-fence-registration-drawer .drawer.is-closing,
+app-fence-edit-drawer .drawer.is-closing {
   animation: app-centred-dialog-out .2s ease-in forwards !important;
 }
 
@@ -145,6 +310,7 @@ html[data-theme='light'] :is(
   app-audit-logs-page,
   app-user-management,
   app-user-profile,
+  app-current-user-profile,
   app-historical-analysis,
   app-alerts,
   app-notifications,
@@ -167,6 +333,47 @@ html[data-theme='light'] main {
   background: #f1f5f9 !important;
   background-image: none !important;
 }
+
+/* Page Shell & Top Header Real Position Alignment */
+html[data-theme='light'] :is(.page, .page-shell, .page-content) {
+  flex: 1 !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  margin: 0 !important;
+  background-color: #f1f5f9 !important;
+  background: #f1f5f9 !important;
+}
+
+/* Page Main Content Container Unified Max-Width & Centered Alignment across all pages */
+html[data-theme='light'] :is(
+  app-dashboard,
+  app-configuration,
+  app-device-management-page,
+  app-gateway-management-page,
+  app-fence-management,
+  app-section-management,
+  app-audit-logs-page,
+  app-user-management,
+  app-user-profile,
+  app-current-user-profile,
+  app-historical-analysis,
+  app-alerts,
+  app-notifications,
+  app-reports,
+  app-help-support-page,
+  app-security-page,
+  app-appearance-page,
+  app-map-page,
+  app-virtual-fence-page
+) :is(main, .profile-page-container) {
+  max-width: 1800px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+
 
 /* 2. Top Header Component */
 html[data-theme='light'] :is(app-header, app-header header) {
@@ -220,8 +427,319 @@ html[data-theme='light'] app-header .status {
   color: #15803d !important;
 }
 
+/* ==========================================================================
+   Unified Page Inner Header Banners Light Theme Overrides
+   Matching the exact size, padding (16px 20px), typography & badge styling
+   of the Fence Management page header banner across all 17 application pages.
+   ========================================================================== */
+
+/* 1. Outer Header Banner Card Container */
+html[data-theme='light'] :is(
+  app-user-profile .heading,
+  app-current-user-profile .heading,
+  app-user-management main > header,
+  app-fence-management main header,
+  app-section-management main header,
+  app-audit-logs-page .heading,
+  app-gateway-management-page .page-heading,
+  app-device-management-page .page-heading,
+  app-map-page .page-heading,
+  app-virtual-fence-page .page-intro,
+  app-configuration .page > header,
+  app-configuration main > header,
+  app-alerts .page > header,
+  app-alerts main > header,
+  app-notifications .page > header,
+  app-notifications main > header,
+  app-reports .page > header,
+  app-reports main > header,
+  app-security-page .heading,
+  app-appearance-page .heading,
+  app-help-support-page .hero,
+  app-historical-analysis .analysis-hero,
+  .page-intro
+):not(app-header header):not(.card header):not(.drawer header):not(.modal header):not(.panel > header):not(.route-panel header):not(.setting-card header):not(.device-panel header):not(.details-drawer header):not(.form-drawer header):not(.incident-modal-header):not(.activity > header):not(.toggles header) {
+  background-color: #ffffff !important;
+  background: #ffffff !important;
+  background-image: none !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04) !important;
+  padding: 16px 20px !important;
+  margin-bottom: 16px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+}
+
+/* 2. Left Text Container (Vertical Stacking) */
+html[data-theme='light'] :is(
+  app-user-profile .heading,
+  app-current-user-profile .heading,
+  app-user-management main > header,
+  app-fence-management main header,
+  app-section-management main header,
+  app-audit-logs-page .heading,
+  app-gateway-management-page .page-heading,
+  app-device-management-page .page-heading,
+  app-map-page .page-heading,
+  app-virtual-fence-page .page-intro,
+  app-configuration .page > header,
+  app-configuration main > header,
+  app-alerts .page > header,
+  app-alerts main > header,
+  app-notifications .page > header,
+  app-notifications main > header,
+  app-reports .page > header,
+  app-reports main > header,
+  app-security-page .heading,
+  app-appearance-page .heading,
+  app-help-support-page .hero,
+  app-historical-analysis .analysis-hero,
+  .page-intro
+) > :is(div:first-child, .page-heading, .hero-copy) {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  flex: 1 !important;
+}
+
+/* 3. Eyebrow Category Text */
+html[data-theme='light'] :is(
+  app-user-profile .heading,
+  app-current-user-profile .heading,
+  app-user-management main > header,
+  app-fence-management main header,
+  app-section-management main header,
+  app-audit-logs-page .heading,
+  app-gateway-management-page .page-heading,
+  app-device-management-page .page-heading,
+  app-map-page .page-heading,
+  app-virtual-fence-page .page-intro,
+  app-configuration .page > header,
+  app-configuration main > header,
+  app-alerts .page > header,
+  app-alerts main > header,
+  app-notifications .page > header,
+  app-notifications main > header,
+  app-reports .page > header,
+  app-reports main > header,
+  app-security-page .heading,
+  app-appearance-page .heading,
+  app-help-support-page .hero,
+  app-historical-analysis .analysis-hero,
+  .page-intro
+) :is(span, p:first-child, .eyebrow) {
+  color: #16a34a !important;
+  font-weight: 700 !important;
+  font-size: 9px !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 2px 0 !important;
+}
+
+/* 4. Page Title H1 */
+html[data-theme='light'] :is(
+  app-user-profile .heading,
+  app-current-user-profile .heading,
+  app-user-management main > header,
+  app-fence-management main header,
+  app-section-management main header,
+  app-audit-logs-page .heading,
+  app-gateway-management-page .page-heading,
+  app-device-management-page .page-heading,
+  app-map-page .page-heading,
+  app-virtual-fence-page .page-intro,
+  app-configuration .page > header,
+  app-configuration main > header,
+  app-alerts .page > header,
+  app-alerts main > header,
+  app-notifications .page > header,
+  app-notifications main > header,
+  app-reports .page > header,
+  app-reports main > header,
+  app-security-page .heading,
+  app-appearance-page .heading,
+  app-help-support-page .hero,
+  app-historical-analysis .analysis-hero,
+  .page-intro
+) h1 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  font-size: 20px !important;
+  margin: 0 0 2px 0 !important;
+  line-height: 1.25 !important;
+}
+
+/* 5. Subtitle / Description Text */
+html[data-theme='light'] :is(
+  app-user-profile .heading,
+  app-current-user-profile .heading,
+  app-user-management main > header,
+  app-fence-management main header,
+  app-section-management main header,
+  app-audit-logs-page .heading,
+  app-gateway-management-page .page-heading,
+  app-device-management-page .page-heading,
+  app-map-page .page-heading,
+  app-virtual-fence-page .page-intro,
+  app-configuration .page > header,
+  app-configuration main > header,
+  app-alerts .page > header,
+  app-alerts main > header,
+  app-notifications .page > header,
+  app-notifications main > header,
+  app-reports .page > header,
+  app-reports main > header,
+  app-security-page .heading,
+  app-appearance-page .heading,
+  app-help-support-page .hero,
+  app-historical-analysis .analysis-hero,
+  .page-intro
+) :is(p:not(:first-child), span:not(:first-child), .description) {
+  color: #475569 !important;
+  font-size: 10px !important;
+  font-weight: 400 !important;
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+
+/* 6. Right-Side Action Pills, Status Badges */
+html[data-theme='light'] :is(
+  app-user-profile .heading,
+  app-current-user-profile .heading,
+  app-user-management main > header,
+  app-fence-management main header,
+  app-section-management main header,
+  app-audit-logs-page .heading,
+  app-gateway-management-page .page-heading,
+  app-device-management-page .page-heading,
+  app-map-page .page-heading,
+  app-virtual-fence-page .page-intro,
+  app-configuration .page > header,
+  app-configuration main > header,
+  app-alerts .page > header,
+  app-alerts main > header,
+  app-notifications .page > header,
+  app-notifications main > header,
+  app-reports .page > header,
+  app-reports main > header,
+  app-security-page .heading,
+  app-appearance-page .heading,
+  app-help-support-page .hero,
+  app-historical-analysis .analysis-hero,
+  .page-intro
+) :is(b, span.rounded-md, div.rounded-lg):not(.stat-icon):not(.badge) {
+  background-color: #dcfce7 !important;
+  border: 1px solid #86efac !important;
+  color: #15803d !important;
+  font-weight: 700 !important;
+  font-size: 9px !important;
+  padding: 6px 12px !important;
+  border-radius: 8px !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+}
+
+/* 7. Primary Action Buttons */
+html[data-theme='light'] :is(
+  app-user-profile .heading,
+  app-current-user-profile .heading,
+  app-user-management main > header,
+  app-fence-management main header,
+  app-section-management main header,
+  app-audit-logs-page .heading,
+  app-gateway-management-page .page-heading,
+  app-device-management-page .page-heading,
+  app-map-page .page-heading,
+  app-virtual-fence-page .page-intro,
+  app-configuration .page > header,
+  app-configuration main > header,
+  app-alerts .page > header,
+  app-alerts main > header,
+  app-notifications .page > header,
+  app-notifications main > header,
+  app-reports .page > header,
+  app-reports main > header,
+  app-security-page .heading,
+  app-appearance-page .heading,
+  app-help-support-page .hero,
+  app-historical-analysis .analysis-hero,
+  .page-intro
+) :is(button.primary-btn, button.add, button.save, button.register-alert, button.primary, .heading-actions button.primary) {
+  height: 36px !important;
+  padding: 0 16px !important;
+  background-color: #16a34a !important;
+  border: 1px solid #15803d !important;
+  color: #ffffff !important;
+  font-size: 9px !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.2) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+}
+
+/* 8. Secondary Action Buttons */
+html[data-theme='light'] :is(
+  app-user-profile .heading,
+  app-current-user-profile .heading,
+  app-user-management main > header,
+  app-fence-management main header,
+  app-section-management main header,
+  app-audit-logs-page .heading,
+  app-gateway-management-page .page-heading,
+  app-device-management-page .page-heading,
+  app-map-page .page-heading,
+  app-virtual-fence-page .page-intro,
+  app-configuration .page > header,
+  app-configuration main > header,
+  app-alerts .page > header,
+  app-alerts main > header,
+  app-notifications .page > header,
+  app-notifications main > header,
+  app-reports .page > header,
+  app-reports main > header,
+  app-security-page .heading,
+  app-appearance-page .heading,
+  app-help-support-page .hero,
+  app-historical-analysis .analysis-hero,
+  .page-intro
+) :is(button.export, button.secondary, button.outline, .heading-actions button.secondary, button:not(.primary-btn):not(.add):not(.save):not(.register-alert):not(.primary)) {
+  height: 36px !important;
+  padding: 0 14px !important;
+  background-color: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-size: 9px !important;
+  font-weight: 600 !important;
+  border-radius: 10px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+}
+
+
+
+
+
 /* 3. Left Navigation Sidebar Component */
-html[data-theme='light'] :is(app-sidebar, aside):not(.detail):not(.section-drawer):not(.drawer):not([role='dialog']) {
+html[data-theme='light'] :is(app-sidebar, app-sidebar aside, aside.app-sidebar) {
   background-color: #ffffff !important;
   border-right: 1px solid #cbd5e1 !important;
   color: #0f172a !important;
@@ -253,14 +771,16 @@ html[data-theme='light'] app-sidebar .tooltip {
 /* 4. Cards, Editors, Fieldsets, Panels & Containers */
 html[data-theme='light'] :is(
   article,
-  section,
-  fieldset,
+  fieldset:not(.configuration-content),
   .panel,
   .card,
   .editor,
   .setting-card,
   .preview-card,
   .device-panel,
+  .gateway-panel,
+  .filter-panel,
+  .selection-detail,
   .incident-panel,
   .analysis-summary,
   .mini-analysis-charts,
@@ -273,12 +793,81 @@ html[data-theme='light'] :is(
   .assignment-drawer,
   .edit-drawer,
   [role='dialog']
-):not(app-fence-monitor .scroller *):not(.fence-track *) {
+):not(app-fence-monitor .scroller *):not(.fence-track *):not(.stats):not(.stats-grid):not(.metrics):not(.summary) {
   background-color: #ffffff !important;
   border-color: #cbd5e1 !important;
   color: #0f172a !important;
   box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03) !important;
 }
+
+/* Stats & Summary Grid Containers & Configuration Wrappers Light Theme Override (Transparent Wrappers) */
+html[data-theme='light'] :is(
+  .stats,
+  .stats-grid,
+  .summary-grid,
+  section.stats,
+  section.stats-grid,
+  fieldset.configuration-content,
+  app-configuration-page,
+  app-configuration-menu,
+  app-general-configuration-editor,
+  app-alert-rules-editor,
+  app-notification-settings-editor,
+  app-data-retention-editor,
+  app-security-policy-editor,
+  app-session-management-editor,
+  app-map-settings-editor,
+  app-system-health,
+  app-voltage-threshold-editor,
+  app-device-summary,
+  app-gateway-summary,
+  app-fence-summary,
+  app-user-summary,
+  app-alert-summary,
+  app-notification-summary,
+  app-analysis-summary,
+  app-assignment-summary,
+  app-profile-summary,
+  app-section-overview,
+  app-device-summary > section,
+  app-gateway-summary > section,
+  app-fence-summary > section,
+  app-user-summary > section,
+  app-alert-summary > section,
+  app-notification-summary > section,
+  app-analysis-summary > section,
+  app-assignment-summary > section,
+  app-profile-summary > section,
+  app-section-overview > section
+) {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+html[data-theme='light'] :is(
+  .stats,
+  .stats-grid,
+  app-device-summary,
+  app-gateway-summary,
+  app-fence-summary,
+  app-user-summary,
+  app-alert-summary,
+  app-notification-summary,
+  app-analysis-summary,
+  app-assignment-summary,
+  app-profile-summary,
+  app-section-overview
+) :is(article, .card, .summary-card, > div > article, section > article) {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04) !important;
+  color: #0f172a !important;
+}
+
 
 /* Global Light Theme Dialog & Modal Component Overrides */
 html[data-theme='light'] :is(.modal, .drawer, .details-drawer, .form-drawer, .register-drawer, .assignment-drawer, .edit-drawer, .incident-modal, [role='dialog']) {
@@ -313,6 +902,178 @@ html[data-theme='light'] :is(.modal, .drawer, .details-drawer, .form-drawer, .re
 html[data-theme='light'] :is(.modal, .drawer, .details-drawer, .form-drawer, .register-drawer, .assignment-drawer, .edit-drawer, .incident-modal, [role='dialog']) :is(button.secondary, button.cancel, button.outline, footer button:not(.primary):not(.save):not(.continue):not(.danger), .modal-actions button.secondary):hover {
   background: #e2e8f0 !important;
   color: #0f172a !important;
+}
+
+/* Global Light Theme Primary Action Buttons (.primary, .save, .continue, .confirm, .add) */
+html[data-theme='light'] :is(
+  button.primary,
+  button.save,
+  button.continue,
+  button.confirm,
+  button.add,
+  .primary-btn,
+  .app-primary-action,
+  .save,
+  .continue,
+  footer .primary,
+  footer .save,
+  footer .continue,
+  footer .confirm,
+  .modal-actions .primary,
+  .modal-actions .save
+) {
+  background: #16a34a !important;
+  border-color: #16a34a !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] :is(
+  button.primary,
+  button.save,
+  button.continue,
+  button.confirm,
+  button.add,
+  .primary-btn,
+  .app-primary-action,
+  .save,
+  .continue,
+  footer .primary,
+  footer .save,
+  footer .continue,
+  footer .confirm,
+  .modal-actions .primary,
+  .modal-actions .save
+):hover {
+  background: #15803d !important;
+  border-color: #15803d !important;
+  color: #ffffff !important;
+}
+
+html[data-theme='light'] :is(
+  button.primary,
+  button.save,
+  button.continue,
+  button.confirm,
+  button.add,
+  .primary-btn,
+  .app-primary-action,
+  .save,
+  .continue,
+  footer .primary,
+  footer .save,
+  footer .continue,
+  footer .confirm
+):disabled {
+  background: #e2e8f0 !important;
+  border-color: #cbd5e1 !important;
+  color: #94a3b8 !important;
+  opacity: 0.75 !important;
+}
+
+/* Global Light Theme Success Banners & Notices */
+html[data-theme='light'] :is(.confirm-note, .action-notice, .status-notice) {
+  background-color: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+
+html[data-theme='light'] :is(.confirm-note, .action-notice, .status-notice) :is(p, span, strong, i) {
+  color: #15803d !important;
+}
+
+/* Table Row Action Menu (.row-menu) Light Theme Overrides */
+html[data-theme='light'] :is(.row-menu, .action-cell .row-menu) {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15) !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(.row-menu, .action-cell .row-menu) button {
+  background: transparent !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(.row-menu, .action-cell .row-menu) button:hover {
+  background-color: #f1f5f9 !important;
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] :is(.row-menu, .action-cell .row-menu) button.danger {
+  color: #dc2626 !important;
+}
+
+html[data-theme='light'] :is(.row-menu, .action-cell .row-menu) button.danger:hover {
+  background-color: #fee2e2 !important;
+  color: #dc2626 !important;
+}
+
+/* Live Operational Data Card (.telemetry) Light Theme Overrides */
+html[data-theme='light'] :is(.telemetry, [class*='telemetry']) {
+  background-color: transparent !important;
+  border: none !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(.telemetry, [class*='telemetry']) > span {
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] :is(.telemetry, [class*='telemetry']) p {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] :is(.telemetry, [class*='telemetry']) strong {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(.telemetry, [class*='telemetry']) strong.healthy {
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] :is(.telemetry, [class*='telemetry']) strong.warning {
+  color: #d97706 !important;
+}
+
+html[data-theme='light'] :is(.telemetry, [class*='telemetry']) strong.critical {
+  color: #dc2626 !important;
+}
+
+html[data-theme='light'] :is(.telemetry, [class*='telemetry']) small {
+  color: #64748b !important;
+}
+
+/* Delete Action Buttons (.danger) & Warning Alerts (.delete-warning) Light Theme Overrides */
+html[data-theme='light'] :is(button.danger, .edit-footer .danger, .danger) {
+  background-color: #fee2e2 !important;
+  border: 1px solid #fca5a5 !important;
+  color: #dc2626 !important;
+}
+
+html[data-theme='light'] :is(button.danger, .edit-footer .danger, .danger):hover {
+  background-color: #fecaca !important;
+  color: #b91c1c !important;
+}
+
+html[data-theme='light'] .delete-warning {
+  background-color: #fff1f2 !important;
+  border: 1px solid #fecdd3 !important;
+  color: #9f1239 !important;
+}
+
+html[data-theme='light'] .delete-warning strong {
+  color: #9f1239 !important;
+}
+
+html[data-theme='light'] .delete-warning p {
+  color: #be123c !important;
+}
+
+html[data-theme='light'] .delete-warning button {
+  background-color: #ffffff !important;
+  border: 1px solid #fda4af !important;
+  color: #be123c !important;
 }
 
 
@@ -632,12 +1393,33 @@ html[data-theme='light'] button.register-alert {
   font-weight: 700 !important;
 }
 
-/* Modals & Backdrop */
-html[data-theme='light'] .drawer-backdrop,
-html[data-theme='light'] .backdrop,
-html[data-theme='light'] .register-backdrop,
-html[data-theme='light'] .modal-backdrop {
-  background-color: rgba(15, 23, 42, 0.4) !important;
+/* Modal Host Components & Backdrop Overlays */
+html[data-theme='light'] :is(
+  app-user-create-drawer,
+  app-profile-edit-drawer,
+  app-change-password-drawer,
+  app-fence-registration-drawer,
+  app-fence-edit-drawer,
+  app-section-registration-drawer,
+  app-section-edit-modal,
+  app-section-bulk-add-modal,
+  app-save-configuration-modal
+) {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+html[data-theme='light'] :is(
+  .drawer-backdrop,
+  .backdrop,
+  .register-backdrop,
+  .modal-backdrop,
+  .range-backdrop,
+  dialog::backdrop,
+  [class*="backdrop"]
+) {
+  background: rgba(15, 23, 42, 0.45) !important;
+  background-color: rgba(15, 23, 42, 0.45) !important;
   backdrop-filter: blur(3px) !important;
 }
 
@@ -901,37 +1683,44 @@ html[data-theme='light'] app-fence-monitor .table-heading > b {
    ========================================================================== */
 
 /* Summary Stat Cards (Map Sidebar & KPI grids) */
-html[data-theme='light'] :is(.summary > div, .summary div, .stats article) {
+html[data-theme='light'] :is(.summary > div, .summary > article, .stats article) {
   background-color: #ffffff !important;
   border: 1px solid #cbd5e1 !important;
   color: #0f172a !important;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05) !important;
 }
 
-html[data-theme='light'] :is(.summary > div, .summary div, .stats article) :is(span, small) {
+html[data-theme='light'] :is(.summary article > div, .stats article > div, .summary-card > div) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+html[data-theme='light'] :is(.summary > div, .summary > article, .stats article) :is(span, small) {
   color: #475569 !important;
   font-weight: 600 !important;
 }
 
-html[data-theme='light'] :is(.summary > div, .summary div, .stats article) :is(b, strong) {
+html[data-theme='light'] :is(.summary > div, .summary > article, .stats article) :is(b, strong) {
   color: #0f172a !important;
   font-weight: 800 !important;
 }
 
-html[data-theme='light'] :is(.summary > div, .summary div, .stats article).healthy b,
-html[data-theme='light'] :is(.summary > div, .summary div, .stats article).green b,
-html[data-theme='light'] :is(.summary > div, .summary div, .stats article).online b {
+html[data-theme='light'] :is(.summary > div, .summary > article, .stats article).healthy b,
+html[data-theme='light'] :is(.summary > div, .summary > article, .stats article).green b,
+html[data-theme='light'] :is(.summary > div, .summary > article, .stats article).online b {
   color: #16a34a !important;
 }
 
-html[data-theme='light'] :is(.summary > div, .summary div, .stats article).warning b,
-html[data-theme='light'] :is(.summary > div, .summary div, .stats article).yellow b {
+html[data-theme='light'] :is(.summary > div, .summary > article, .stats article).warning b,
+html[data-theme='light'] :is(.summary > div, .summary > article, .stats article).yellow b {
   color: #d97706 !important;
 }
 
-html[data-theme='light'] :is(.summary > div, .summary div, .stats article).critical b,
-html[data-theme='light'] :is(.summary > div, .summary div, .stats article).red b,
-html[data-theme='light'] :is(.summary > div, .summary div, .stats article).offline b {
+html[data-theme='light'] :is(.summary > div, .summary > article, .stats article).critical b,
+html[data-theme='light'] :is(.summary > div, .summary > article, .stats article).red b,
+html[data-theme='light'] :is(.summary > div, .summary > article, .stats article).offline b {
   color: #dc2626 !important;
 }
 
@@ -1221,6 +2010,15 @@ html[data-theme='light'] app-analysis-filters .periods button.active {
   box-shadow: 0 2px 6px rgba(22, 163, 74, 0.15) !important;
 }
 
+html[data-theme='light'] app-analysis-filters .actions button {
+  border-radius: 11px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding: 0 16px !important;
+  font-weight: 600 !important;
+}
+
 html[data-theme='light'] app-analysis-filters .compare {
   background: #f1f5f9 !important;
   border: 1px solid #cbd5e1 !important;
@@ -1232,6 +2030,17 @@ html[data-theme='light'] app-analysis-filters .compare:hover {
   background: #e2e8f0 !important;
   border-color: #16a34a !important;
   color: #16a34a !important;
+}
+
+html[data-theme='light'] app-analysis-filters .export {
+  background-color: #16a34a !important;
+  border: 1px solid #15803d !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-analysis-filters .export:hover {
+  background-color: #15803d !important;
 }
 
 /* Analysis Summary KPI Cards Row (Key Operational Metrics) */
@@ -1391,10 +2200,23 @@ html[data-theme='light'] app-mini-analysis-charts .mini-grid footer {
 }
 
 /* Help & Support Page Overrides */
+html[data-theme='light'] app-help-support-page :is(.support-column, .content-grid, .quick-grid) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
 html[data-theme='light'] app-help-support-page :is(.hero, .quick-grid article, .faq-card, .contact-card, .system-card) {
   background: #ffffff !important;
   border: 1px solid #cbd5e1 !important;
   box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-help-support-page .quick-grid article > i {
+  background: #f0fdf4 !important;
+  border: 1px solid #bbf7d0 !important;
+  color: #16a34a !important;
 }
 
 html[data-theme='light'] app-help-support-page .hero h1 {
@@ -1436,6 +2258,171 @@ html[data-theme='light'] app-help-support-page :is(.contact-card dl div, .system
   border-top-color: #e2e8f0 !important;
 }
 
+html[data-theme='light'] app-help-support-page :is(.contact-card dt, .system-card > div span) {
+  color: #64748b !important;
+}
+
+html[data-theme='light'] app-help-support-page :is(.contact-card dd, .system-card > div b) {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-help-support-page .contact-card > button {
+  background-color: #f8fafc !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] app-help-support-page .contact-card > button:hover {
+  background-color: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+}
+
+html[data-theme='light'] app-help-support-page .system-card header span {
+  background-color: #dcfce7 !important;
+  border: 1px solid #86efac !important;
+  color: #16a34a !important;
+  font-weight: 700 !important;
+}
+
+/* Notifications Page Overrides */
+html[data-theme='light'] app-notifications :is(.summary, app-notification-summary .summary, .layout) {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+html[data-theme='light'] app-notifications :is(.summary article, app-notification-summary article) {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04) !important;
+}
+
+html[data-theme='light'] app-notifications :is(.summary article span, app-notification-summary article span) {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] app-notifications :is(.summary article strong, app-notification-summary article strong) {
+  font-weight: 800 !important;
+}
+
+html[data-theme='light'] app-notifications :is(.feed, app-notification-feed .feed) {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03) !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-notifications :is(.feed > header, app-notification-feed .feed > header) {
+  border-bottom: 1px solid #e2e8f0 !important;
+  background-color: #f8fafc !important;
+}
+
+html[data-theme='light'] app-notifications :is(.feed nav button, app-notification-feed nav button) {
+  color: #64748b !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] app-notifications :is(.feed nav button.active, app-notification-feed nav button.active) {
+  color: #16a34a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-notifications :is(.feed nav button.active:after, app-notification-feed nav button.active:after) {
+  background-color: #16a34a !important;
+}
+
+html[data-theme='light'] app-notifications :is(.feed header > div button, app-notification-feed header > div button) {
+  border: 1px solid #cbd5e1 !important;
+  background-color: #ffffff !important;
+  color: #334155 !important;
+}
+
+html[data-theme='light'] app-notifications :is(.feed header > div button:hover, app-notification-feed header > div button:hover) {
+  background-color: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+}
+
+html[data-theme='light'] app-notifications :is(.item, app-notification-feed .item) {
+  border-bottom: 1px solid #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-notifications :is(.item:hover, .item.selected, app-notification-feed .item:hover, app-notification-feed .item.selected) {
+  background-color: #f8fafc !important;
+}
+
+html[data-theme='light'] app-notifications :is(.body strong, app-notification-feed .body strong) {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-notifications :is(.body p, app-notification-feed .body p) {
+  color: #475569 !important;
+}
+
+html[data-theme='light'] app-notifications :is(.body small, app-notification-feed .body small) {
+  color: #64748b !important;
+}
+
+html[data-theme='light'] app-notifications :is(.meta, app-notification-feed .meta) {
+  color: #64748b !important;
+}
+
+html[data-theme='light'] app-notifications :is(.empty, app-notification-feed .empty) {
+  color: #64748b !important;
+}
+
+/* Notification Detail Dialog Light Theme */
+html[data-theme='light'] app-notifications :is(dialog, app-notification-detail dialog) {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.15) !important;
+}
+
+html[data-theme='light'] app-notifications :is(dialog header, app-notification-detail header) {
+  color: #64748b !important;
+}
+
+html[data-theme='light'] app-notifications :is(dialog header button, app-notification-detail header button) {
+  border: 1px solid #cbd5e1 !important;
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-notifications :is(.title h2, app-notification-detail .title h2) {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-notifications :is(.message, app-notification-detail .message) {
+  border-bottom-color: #e2e8f0 !important;
+  color: #334155 !important;
+}
+
+html[data-theme='light'] app-notifications :is(dt, app-notification-detail dt) {
+  color: #64748b !important;
+}
+
+html[data-theme='light'] app-notifications :is(dd, app-notification-detail dd) {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-notifications :is(.channels span, app-notification-detail .channels span) {
+  border: 1px solid #cbd5e1 !important;
+  background-color: #f8fafc !important;
+  color: #64748b !important;
+}
+
+html[data-theme='light'] app-notifications :is(.channels span.on, app-notification-detail .channels span.on) {
+  border-color: #86efac !important;
+  background-color: #f0fdf4 !important;
+  color: #16a34a !important;
+}
+
 /* Virtual Fence Page Overrides */
 html[data-theme='light'] app-virtual-fence-page .page-intro {
   background: #ffffff !important;
@@ -1458,10 +2445,20 @@ html[data-theme='light'] app-virtual-fence-page .page-tools button {
 }
 
 /* Fence Route Map Subcomponent (Virtual Fence & Operations Map) */
-html[data-theme='light'] :is(app-fence-route-map, .route-panel) {
+html[data-theme='light'] app-fence-route-map {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+html[data-theme='light'] .route-panel {
   background-color: #ffffff !important;
   border: 1px solid #cbd5e1 !important;
+  border-radius: 14px !important;
   box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06) !important;
+  overflow: hidden !important;
 }
 
 html[data-theme='light'] app-fence-route-map .route-panel > header {
@@ -1720,21 +2717,34 @@ html[data-theme='light'] app-report-configuration .panel footer .generate {
 }
 
 /* Report History Table, READY Badges & Download Action Buttons */
+html[data-theme='light'] app-report-history .table {
+  width: 100% !important;
+}
+
+html[data-theme='light'] app-report-history table {
+  width: 100% !important;
+  table-layout: auto !important;
+}
+
 html[data-theme='light'] app-report-history table th {
   background-color: #f1f5f9 !important;
   color: #0f172a !important;
   border-color: #cbd5e1 !important;
   font-weight: 700 !important;
+  font-size: 10px !important;
+  padding: 10px 14px !important;
 }
 
 html[data-theme='light'] app-report-history table td {
   background-color: #ffffff !important;
   border-top-color: #e2e8f0 !important;
   color: #0f172a !important;
+  font-size: 11px !important;
+  padding: 10px 14px !important;
 }
 
 html[data-theme='light'] app-report-history table tr:hover td {
-  background-color: #f1f5f9 !important;
+  background-color: #f8fafc !important;
 }
 
 html[data-theme='light'] app-report-history b.ready {
@@ -1760,14 +2770,19 @@ html[data-theme='light'] app-report-history b.failed {
 }
 
 html[data-theme='light'] app-report-history button {
-  background-color: #f1f5f9 !important;
+  background-color: #f8fafc !important;
   border: 1px solid #cbd5e1 !important;
+  border-radius: 8px !important;
   color: #0f172a !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
+  padding: 6px 12px !important;
+  font-size: 10px !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
 }
 
 html[data-theme='light'] app-report-history button:hover {
-  background-color: #e2e8f0 !important;
+  background-color: #f1f5f9 !important;
   border-color: #16a34a !important;
   color: #16a34a !important;
 }
@@ -1816,17 +2831,11 @@ html[data-theme='light'] app-user-management header p {
   color: #16a34a !important;
 }
 
-html[data-theme='light'] app-user-management header span {
+html[data-theme='light'] app-user-management main > header .status span {
   background-color: #dcfce7 !important;
   border-color: #86efac !important;
   color: #15803d !important;
   font-weight: 700 !important;
-}
-
-html[data-theme='light'] app-user-management section {
-  background-color: #ffffff !important;
-  border-color: #cbd5e1 !important;
-  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05) !important;
 }
 
 /* User Summary Cards */
@@ -1953,6 +2962,37 @@ html[data-theme='light'] app-user-table span[class*="bg-[#245d34]"] {
   font-weight: 700 !important;
 }
 
+/* Voltage Threshold Editor Row Overrides (Flat Slate Rows, No Nested White Cards) */
+html[data-theme='light'] app-voltage-threshold-editor .cards article {
+  background-color: #f8fafc !important;
+  border-top: 1px solid #e2e8f0 !important;
+  border-right: 1px solid #e2e8f0 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  border-radius: 11px !important;
+  box-shadow: none !important;
+}
+
+html[data-theme='light'] app-voltage-threshold-editor .cards article.healthy {
+  border-left: 4px solid #16a34a !important;
+}
+html[data-theme='light'] app-voltage-threshold-editor .cards article.warning,
+html[data-theme='light'] app-voltage-threshold-editor .cards article.battery {
+  border-left: 4px solid #d97706 !important;
+}
+html[data-theme='light'] app-voltage-threshold-editor .cards article.critical {
+  border-left: 4px solid #dc2626 !important;
+}
+
+html[data-theme='light'] app-voltage-threshold-editor .cards input {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-voltage-threshold-editor .cards i {
+  background-color: #e2e8f0 !important;
+}
+
 html[data-theme='light'] app-user-table span[class*="bg-[#4c554d]"] {
   background-color: #f1f5f9 !important;
   border-color: #cbd5e1 !important;
@@ -2000,8 +3040,10 @@ html[data-theme='light'] app-user-table footer nav button[class*="bg-[#2d673d]"]
 }
 
 /* User Profile Panel & Subcomponents (Profile Summary, Personal Info, Assignment Summary, Notification Prefs, Security, Activity) */
+/* User Profile Panel & Subcomponents (Profile Summary, Personal Info, Assignment Summary, Notification Prefs, Security, Activity) */
 html[data-theme='light'] :is(
   app-user-profile,
+  app-current-user-profile,
   app-profile-summary,
   app-personal-information,
   app-assignment-summary,
@@ -2010,15 +3052,29 @@ html[data-theme='light'] :is(
   app-activity-list,
   app-change-password-drawer,
   app-profile-edit-drawer
-) :is(aside, section, article, .card-base) {
+) :is(aside, article, .card-base) {
   background-color: #ffffff !important;
   border: 1px solid #cbd5e1 !important;
   color: #0f172a !important;
   box-shadow: 0 4px 18px rgba(15, 23, 42, 0.06) !important;
 }
 
+html[data-theme='light'] :is(app-user-profile, app-current-user-profile) header span {
+  background: transparent !important;
+  border: none !important;
+  color: #64748b !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] :is(app-user-profile, app-current-user-profile) section {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 html[data-theme='light'] :is(
   app-user-profile,
+  app-current-user-profile,
   app-profile-summary,
   app-personal-information,
   app-assignment-summary,
@@ -2048,6 +3104,7 @@ html[data-theme='light'] :is(
 
 html[data-theme='light'] :is(
   app-user-profile,
+  app-current-user-profile,
   app-profile-summary,
   app-personal-information,
   app-assignment-summary,
@@ -2062,6 +3119,7 @@ html[data-theme='light'] :is(
 
 html[data-theme='light'] :is(
   app-user-profile,
+  app-current-user-profile,
   app-profile-summary,
   app-personal-information,
   app-assignment-summary,
@@ -2076,6 +3134,7 @@ html[data-theme='light'] :is(
 
 html[data-theme='light'] :is(
   app-user-profile,
+  app-current-user-profile,
   app-profile-summary,
   app-personal-information,
   app-assignment-summary,
@@ -2084,12 +3143,13 @@ html[data-theme='light'] :is(
   app-activity-list,
   app-change-password-drawer,
   app-profile-edit-drawer
-) :is(.card-header p, p, span:not(.badge-verified):not(.badge-tag), small:not(.text-[#4ee672]), label, dt, .profile-label, header p) {
+) :is(.card-header p, p, span:not(.badge-verified):not(.badge-tag), small, label, dt, .profile-label, header p) {
   color: #475569 !important;
 }
 
 html[data-theme='light'] :is(
   app-user-profile,
+  app-current-user-profile,
   app-profile-summary,
   app-personal-information,
   app-assignment-summary,
@@ -2102,6 +3162,7 @@ html[data-theme='light'] :is(
 
 html[data-theme='light'] :is(
   app-user-profile,
+  app-current-user-profile,
   app-profile-summary,
   app-personal-information,
   app-assignment-summary,
@@ -2117,6 +3178,7 @@ html[data-theme='light'] :is(
 
 html[data-theme='light'] :is(
   app-user-profile,
+  app-current-user-profile,
   app-profile-summary,
   app-personal-information,
   app-assignment-summary,
@@ -2124,12 +3186,14 @@ html[data-theme='light'] :is(
   app-security-settings,
   app-activity-list
 ) .role-badge {
-  background: #f1f5f9 !important;
-  color: #0f172a !important;
+  background: #dcfce7 !important;
+  border: 1px solid #86efac !important;
+  color: #15803d !important;
 }
 
 html[data-theme='light'] :is(
   app-user-profile,
+  app-current-user-profile,
   app-profile-summary,
   app-personal-information,
   app-assignment-summary,
@@ -2144,6 +3208,7 @@ html[data-theme='light'] :is(
 
 html[data-theme='light'] :is(
   app-user-profile,
+  app-current-user-profile,
   app-profile-summary,
   app-personal-information,
   app-assignment-summary,
@@ -2158,6 +3223,7 @@ html[data-theme='light'] :is(
 
 html[data-theme='light'] :is(
   app-user-profile,
+  app-current-user-profile,
   app-profile-summary,
   app-personal-information,
   app-assignment-summary,
@@ -2172,6 +3238,7 @@ html[data-theme='light'] :is(
 
 html[data-theme='light'] :is(
   app-user-profile,
+  app-current-user-profile,
   app-profile-summary,
   app-personal-information,
   app-assignment-summary,
@@ -2184,27 +3251,27 @@ html[data-theme='light'] :is(
   color: #475569 !important;
 }
 
-html[data-theme='light'] app-user-profile button.bg-\[\#43d36c\] {
+html[data-theme='light'] :is(app-user-profile, app-current-user-profile) button.bg-\[\#43d36c\] {
   background-color: #16a34a !important;
   color: #ffffff !important;
   font-weight: 700 !important;
 }
 
-html[data-theme='light'] app-user-profile button[class*="bg-[#223526]"] {
+html[data-theme='light'] :is(app-user-profile, app-current-user-profile) button[class*="bg-[#223526]"] {
   background-color: #f1f5f9 !important;
   border-color: #cbd5e1 !important;
   color: #0f172a !important;
   font-weight: 700 !important;
 }
 
-html[data-theme='light'] app-user-profile button[class*="bg-[#4b271f]"] {
+html[data-theme='light'] :is(app-user-profile, app-current-user-profile) button[class*="bg-[#4b271f]"] {
   background-color: #fef3c7 !important;
   border-color: #fde68a !important;
   color: #b45309 !important;
   font-weight: 700 !important;
 }
 
-html[data-theme='light'] app-user-profile button.bg-red-950\/80 {
+html[data-theme='light'] :is(app-user-profile, app-current-user-profile) button.bg-red-950\/80 {
   background-color: #fee2e2 !important;
   border-color: #fca5a5 !important;
   color: #dc2626 !important;
@@ -2483,6 +3550,7 @@ html[data-theme='light'] :is(
   app-security-page,
   app-audit-logs-page,
   app-user-profile,
+  app-current-user-profile,
   app-map-page
 ) main {
   background: #f8fafc !important;
@@ -2499,6 +3567,7 @@ html[data-theme='light'] :is(
   app-security-page,
   app-audit-logs-page,
   app-user-profile,
+  app-current-user-profile,
   app-map-page
 ) .page > header h1 {
   color: #0f172a !important;
@@ -2514,6 +3583,7 @@ html[data-theme='light'] :is(
   app-security-page,
   app-audit-logs-page,
   app-user-profile,
+  app-current-user-profile,
   app-map-page
 ) .page > header p {
   color: #16a34a !important;
@@ -2529,6 +3599,7 @@ html[data-theme='light'] :is(
   app-security-page,
   app-audit-logs-page,
   app-user-profile,
+  app-current-user-profile,
   app-map-page
 ) .page > header span {
   color: #475569 !important;
@@ -2544,6 +3615,7 @@ html[data-theme='light'] :is(
   app-security-page,
   app-audit-logs-page,
   app-user-profile,
+  app-current-user-profile,
   app-map-page
 ) .page > header b {
   background: #dcfce7 !important;
@@ -2552,14 +3624,29 @@ html[data-theme='light'] :is(
   font-weight: 700 !important;
 }
 
-html[data-theme='light'] :is(.notice, .threshold-note) {
+.notice,
+.status-notice {
+  background-color: #15391d;
+  border: 1px solid #2d6b3a;
+  color: #55e777;
+}
+
+html[data-theme='light'] :is(.notice, .status-notice, .threshold-note) {
+  background-color: #dcfce7 !important;
   background: #dcfce7 !important;
+  border-color: #86efac !important;
   border: 1px solid #86efac !important;
   color: #15803d !important;
 }
 
-html[data-theme='light'] :is(.notice, .threshold-note) :is(p, strong, button) {
+html[data-theme='light'] :is(.notice, .status-notice, .threshold-note) :is(p, span, strong, div, button) {
   color: #15803d !important;
+}
+
+html[data-theme='light'] :is(.notice, .status-notice, .threshold-note) button.retry-btn {
+  background-color: #bbf7d0 !important;
+  border: 1px solid #86efac !important;
+  color: #166534 !important;
 }
 
 
