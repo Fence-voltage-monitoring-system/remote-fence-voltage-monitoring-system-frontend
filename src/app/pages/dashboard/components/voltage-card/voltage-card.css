@@ -1,12 +1,171 @@
 @reference "../../../../../styles.css";
-article { @apply flex min-h-28 flex-col rounded-[14px] border border-[#465b42] border-t-[#47d968] bg-[#354831] px-5 py-[18px]; }
-article.danger { @apply border-t-[#ef4a3e]; }
-article.warning { @apply border-t-[#ffc01c]; }
+
+/* Base Card Layout & Position */
+article {
+  position: relative !important;
+  overflow: hidden !important;
+  @apply flex min-h-28 flex-col rounded-[14px] border border-[#465b42] bg-[#354831] px-5 py-[18px];
+}
+
+/* 4px Top Accent Bar via Pseudo-Element (100% Bulletproof Visual Rendering) */
+article::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 4px !important;
+  background-color: #10b981 !important;
+  z-index: 10 !important;
+}
+
+article.card-green::before { background-color: #10b981 !important; }
+article.card-blue::before { background-color: #4f46e5 !important; }
+article.card-active::before { background-color: #10b981 !important; }
+article.card-red::before, article.danger::before { background-color: #ef4444 !important; }
+article.card-warning::before, article.warning::before { background-color: #f59e0b !important; }
+
+/* Dark Theme Text & Icon Badges */
 .top { @apply flex justify-between text-[10px] uppercase tracking-[.06em] text-[#aab4a5]; }
 .top b { @apply text-[19px] text-[#43e16b]; }
-.danger .top b, .danger p { @apply text-[#ff4a3e]; }
-.warning .top b, .warning p { @apply text-[#ffc01c]; }
+
+.card-green .top b, .card-green p { @apply text-[#4add6b]; }
+.card-blue .top b, .card-blue p { @apply text-[#60a5fa]; }
+.card-active .top b, .card-active p, .card-active .metric strong { @apply text-[#4add6b]; }
+.card-red .top b, .card-red p, .danger .top b, .danger p { @apply text-[#ff4a3e]; }
+.card-warning .top b, .card-warning p, .warning .top b, .warning p { @apply text-[#ffc01c]; }
+
 .metric { @apply mt-2.5 flex items-baseline gap-[7px]; }
 .metric strong { @apply font-mono text-3xl font-bold text-white; }
 .metric small { @apply text-[10px] text-[#929e8f]; }
 p { @apply mt-auto mb-0 text-[9px] font-bold text-[#4add6b]; }
+
+/* Light Theme Styling */
+:host-context(html[data-theme='light']) article,
+html[data-theme='light'] app-voltage-card article {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .top span,
+html[data-theme='light'] app-voltage-card .top span {
+  color: #475569 !important;
+  font-weight: 700 !important;
+  font-size: 10px !important;
+  letter-spacing: 0.08em !important;
+}
+
+:host-context(html[data-theme='light']) .metric strong,
+html[data-theme='light'] app-voltage-card .metric strong {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+:host-context(html[data-theme='light']) .metric small,
+html[data-theme='light'] app-voltage-card .metric small {
+  color: #64748b !important;
+  font-weight: 600 !important;
+}
+
+:host-context(html[data-theme='light']) p,
+html[data-theme='light'] app-voltage-card p {
+  color: #64748b !important;
+  font-weight: 600 !important;
+}
+
+/* Light Theme Icon Badges */
+:host-context(html[data-theme='light']) article.card-green .top b,
+html[data-theme='light'] app-voltage-card article.card-green .top b {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 8px !important;
+  background-color: #e6f4ea !important;
+  border: 1px solid #bbf7d0 !important;
+  color: #10b981 !important;
+  font-size: 14px !important;
+}
+
+:host-context(html[data-theme='light']) article.card-blue .top b,
+html[data-theme='light'] app-voltage-card article.card-blue .top b {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 8px !important;
+  background-color: #eef2ff !important;
+  border: 1px solid #c7d2fe !important;
+  color: #4f46e5 !important;
+  font-size: 14px !important;
+}
+
+:host-context(html[data-theme='light']) article.card-active .top b,
+html[data-theme='light'] app-voltage-card article.card-active .top b {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 8px !important;
+  background-color: #e6f4ea !important;
+  border: 1px solid #bbf7d0 !important;
+  color: #10b981 !important;
+  font-size: 14px !important;
+}
+:host-context(html[data-theme='light']) article.card-active .metric strong,
+html[data-theme='light'] app-voltage-card article.card-active .metric strong,
+:host-context(html[data-theme='light']) article.card-active p,
+html[data-theme='light'] app-voltage-card article.card-active p {
+  color: #059669 !important;
+  font-weight: 800 !important;
+}
+
+:host-context(html[data-theme='light']) article.card-red .top b,
+html[data-theme='light'] app-voltage-card article.card-red .top b,
+:host-context(html[data-theme='light']) article.danger .top b,
+html[data-theme='light'] app-voltage-card article.danger .top b {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 8px !important;
+  background-color: #fef2f2 !important;
+  border: 1px solid #fecaca !important;
+  color: #ef4444 !important;
+  font-size: 14px !important;
+}
+
+:host-context(html[data-theme='light']) article.card-warning .top b,
+html[data-theme='light'] app-voltage-card article.card-warning .top b,
+:host-context(html[data-theme='light']) article.warning .top b,
+html[data-theme='light'] app-voltage-card article.warning .top b {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 8px !important;
+  background-color: #fffbeb !important;
+  border: 1px solid #fde68a !important;
+  color: #d97706 !important;
+  font-size: 14px !important;
+}
+
+.clear-badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 2px 8px !important;
+  border-radius: 9999px !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  background-color: #e6f4ea !important;
+  border: 1px solid #bbf7d0 !important;
+  color: #059669 !important;
+  margin-left: 6px !important;
+}

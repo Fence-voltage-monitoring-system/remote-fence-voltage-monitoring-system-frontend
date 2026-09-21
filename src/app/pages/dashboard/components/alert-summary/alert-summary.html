@@ -1,4 +1,12 @@
 <section>
-    <h2>Alert Summary</h2><small>{{device.sectionId}}</small>@for(r of rows;track r[0]){<div><span><i [class]="r[2]"></i>{{r[0]}}</span><strong
-            [class]="r[2]">{{r[1]}}</strong></div>}
+    <h2>Alert Summary</h2>
+    @if (device && device.sectionId) {
+      <small>{{device.sectionId.startsWith('SEC') || device.sectionId.startsWith('GTV') || device.sectionId.startsWith('GTW') ? device.sectionId : 'Section ' + device.sectionId}}</small>
+    }
+    @for(r of rows; track r[0]){
+      <div>
+        <span><i [class]="r[2]"></i>{{r[0]}}</span>
+        <strong [class]="r[2]">{{r[1]}}</strong>
+      </div>
+    }
 </section>

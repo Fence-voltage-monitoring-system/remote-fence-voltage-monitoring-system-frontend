@@ -5,7 +5,7 @@
   </header>
 
   <div class="settings-grid">
-    <fieldset>
+    <fieldset class="sec-green">
       <legend>System Identity</legend>
       <div class="fields two-columns">
         <label>System name<input [ngModel]="value.systemName" (ngModelChange)="update('systemName', $event)" /></label>
@@ -16,7 +16,7 @@
       </div>
     </fieldset>
 
-    <fieldset>
+    <fieldset class="sec-blue">
       <legend>Regional Settings</legend>
       <div class="fields three-columns">
         <label>Time zone<select [ngModel]="value.timezone" (ngModelChange)="update('timezone', $event)"><option value="Asia/Colombo">Asia/Colombo (UTC+05:30)</option><option value="UTC">UTC</option></select></label>
@@ -29,7 +29,7 @@
       </div>
     </fieldset>
 
-    <fieldset>
+    <fieldset class="sec-amber">
       <legend>Gateway Update Expectations</legend>
       <div class="fields three-columns">
         <label>Expected reporting interval (minutes)<input type="number" min="1" [ngModel]="value.expectedReportingIntervalMinutes" (ngModelChange)="update('expectedReportingIntervalMinutes', +$event)" /><small>Must match the interval configured on the gateway.</small></label>
@@ -41,7 +41,7 @@
       </div>
     </fieldset>
 
-    <fieldset>
+    <fieldset class="sec-purple">
       <legend>System Mode</legend>
       <div class="switches">
         <label><span><strong>Maintenance mode</strong><small>Display a maintenance notice and restrict normal operation.</small></span><input type="checkbox" [ngModel]="value.maintenanceMode" (ngModelChange)="update('maintenanceMode', $event)" /></label>

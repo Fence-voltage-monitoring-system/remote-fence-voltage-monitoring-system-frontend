@@ -26,3 +26,90 @@ aside { @apply bg-[#17291b] p-[18px]; }
 .location-list span strong, .location-list span small { @apply block; }.location-list span strong { @apply text-[9px]; }.location-list span small { @apply mt-1 text-[8px] text-[#849181]; }
 .location-list b { @apply font-mono text-[9px] font-normal text-[#aab7a7]; }
 @media(max-width:620px) { .map-panel>header { @apply items-start; }.legend { @apply flex-col gap-1; } aside { @apply p-3; } }
+
+/* Light Theme Styling */
+:host-context(html[data-theme='light']) .map-panel {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .map-panel > header {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+}
+
+:host-context(html[data-theme='light']) h2 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+:host-context(html[data-theme='light']) header p {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .legend {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+:host-context(html[data-theme='light']) .map-stage {
+  border-r-color: #cbd5e1 !important;
+}
+
+:host-context(html[data-theme='light']) aside {
+  background: #f8fafc !important;
+  border-left: 1px solid #e2e8f0 !important;
+}
+
+:host-context(html[data-theme='light']) .summary div {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+}
+
+:host-context(html[data-theme='light']) .summary strong {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+
+:host-context(html[data-theme='light']) .summary span {
+  color: #475569 !important;
+  font-weight: 700 !important;
+}
+
+:host-context(html[data-theme='light']) .summary .green { color: #16a34a !important; }
+:host-context(html[data-theme='light']) .summary .yellow { color: #d97706 !important; }
+:host-context(html[data-theme='light']) .summary .red { color: #dc2626 !important; }
+
+:host-context(html[data-theme='light']) .location-list button {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .location-list button:hover {
+  background: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+
+:host-context(html[data-theme='light']) .location-list button.active {
+  background: #f0fdf4 !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.1) !important;
+}
+
+:host-context(html[data-theme='light']) .location-list span strong {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+:host-context(html[data-theme='light']) .location-list span small {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .location-list b {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}

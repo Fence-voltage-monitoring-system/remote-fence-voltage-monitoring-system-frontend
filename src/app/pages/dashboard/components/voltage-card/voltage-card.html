@@ -1,5 +1,13 @@
-<article [class.danger]="data.tone === 'red'" [class.warning]="data.tone === 'warning'">
+<article [class]="'card-' + data.tone" [class.danger]="data.tone === 'red'" [class.warning]="data.tone === 'warning'">
     <div class="top"><span>{{data.label}}</span><b>{{data.icon}}</b></div>
-    <div class="metric"><strong>{{data.value}}</strong><small>{{data.unit}}</small></div>
+    <div class="metric">
+        <strong>{{data.value}}</strong>
+        @if (data.badge) {
+          <span class="clear-badge">{{data.badge}}</span>
+        }
+        @if (data.unit) {
+          <small>{{data.unit}}</small>
+        }
+    </div>
     <p>{{data.foot}}</p>
 </article>

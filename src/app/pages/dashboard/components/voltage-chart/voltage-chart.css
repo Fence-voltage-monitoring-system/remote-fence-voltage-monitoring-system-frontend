@@ -6,3 +6,25 @@ canvas { @apply block h-[185px] w-full; }
 .y { @apply absolute top-[6px] bottom-[49px] left-0 flex flex-col justify-between font-mono text-[8px] leading-none text-[#8a9786]; }
 .y span { @apply block; }
 .x { @apply absolute right-[5px] bottom-0 left-12 flex justify-between font-mono text-[8px] text-[#8a9786]; }
+
+/* Light Theme Styling */
+:host-context(html[data-theme='light']) section {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) h2 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+:host-context(html[data-theme='light']) section > p {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) :is(.y, .x) {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}

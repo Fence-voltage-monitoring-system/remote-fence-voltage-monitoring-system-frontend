@@ -1,7 +1,10 @@
 <div class="backdrop drawer-backdrop fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-[#07130a]/80 backdrop-blur-xs" [class.closing]="isClosing" (click)="!isSubmitting && requestClose()" aria-hidden="true">
-  <aside class="edit-drawer relative z-[2001] my-auto flex max-h-[calc(100dvh-32px)] w-full max-w-[480px] flex-col overflow-hidden rounded-2xl border border-[#38513b] bg-[#14291a] p-6 shadow-2xl" [class.closing]="isClosing" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="edit-profile-title">
+  <aside class="edit-drawer relative z-[2001] my-auto flex max-h-[calc(100dvh-32px)] w-full max-w-[480px] flex-col overflow-hidden rounded-2xl border border-[#38513b] bg-[#14291a] shadow-2xl" [class.closing]="isClosing" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="edit-profile-title">
+    <div class="modal-accent-bar"></div>
+    <div class="p-6 flex flex-col flex-1 min-h-0 overflow-hidden">
     <header class="mb-5 flex shrink-0 items-start justify-between border-b border-[#304735] pb-4">
       <div>
+        <span class="modal-category-badge">USER PROFILE</span>
         <h2 id="edit-profile-title" class="m-0 text-[15px] font-bold text-[#eef5ed]">Edit Profile</h2>
         <p class="mt-0.5 text-[9px] text-[#8fa08c]">Update your personal information</p>
       </div>
@@ -66,6 +69,7 @@
           </button>
         </footer>
       </form>
+    </div>
     </div>
   </aside>
 </div>

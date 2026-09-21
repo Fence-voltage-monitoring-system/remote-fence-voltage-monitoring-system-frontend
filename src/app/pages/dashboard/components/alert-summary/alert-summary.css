@@ -1,4 +1,5 @@
 @reference "../../../../../styles.css";
+
 section { @apply h-[285px] rounded-[14px] border border-[#4a5d45] bg-[#354831] p-[19px]; }
 h2 { @apply mt-0 mb-1 text-[11px]; } section>small { @apply mb-[14px] block font-mono text-[8px] text-[#82907f]; }
 div { @apply my-[18px] flex items-center justify-between text-[9px] text-[#ccd4c9]; }
@@ -8,3 +9,79 @@ i { @apply mr-2 inline-block size-[7px] rounded-full bg-[#4ce36f]; }
 .gray { @apply bg-[#849083] text-[#849083]; }
 .green { @apply bg-[#4ce36f] text-[#4ce36f]; }
 strong { @apply bg-transparent! font-mono text-xs font-bold; }
+
+/* Light Theme Styling */
+:host-context(html[data-theme='light']) section {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+  color: #0f172a !important;
+  padding: 16px !important;
+}
+
+:host-context(html[data-theme='light']) h2 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+:host-context(html[data-theme='light']) section > small {
+  color: #64748b !important;
+  font-weight: 600 !important;
+}
+
+:host-context(html[data-theme='light']) div {
+  color: #334155 !important;
+  font-weight: 600 !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  padding-bottom: 8px !important;
+  margin-top: 14px !important;
+  margin-bottom: 14px !important;
+}
+
+:host-context(html[data-theme='light']) i {
+  display: inline-block !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  margin-right: 8px !important;
+}
+
+:host-context(html[data-theme='light']) i.red {
+  background-color: #dc2626 !important;
+}
+
+:host-context(html[data-theme='light']) i.amber {
+  background-color: #d97706 !important;
+}
+
+:host-context(html[data-theme='light']) i.gray {
+  background-color: #64748b !important;
+}
+
+:host-context(html[data-theme='light']) i.green {
+  background-color: #16a34a !important;
+}
+
+:host-context(html[data-theme='light']) strong {
+  background: transparent !important;
+  background-color: transparent !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  padding-right: 4px !important;
+}
+
+:host-context(html[data-theme='light']) strong.red {
+  color: #dc2626 !important;
+}
+
+:host-context(html[data-theme='light']) strong.amber {
+  color: #d97706 !important;
+}
+
+:host-context(html[data-theme='light']) strong.gray {
+  color: #64748b !important;
+}
+
+:host-context(html[data-theme='light']) strong.green {
+  color: #16a34a !important;
+}

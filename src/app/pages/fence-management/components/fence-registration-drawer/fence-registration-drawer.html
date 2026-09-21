@@ -1,6 +1,8 @@
 <div class="backdrop fixed inset-0 z-[2000] flex items-center justify-center p-4 bg-[#020703]/75 backdrop-blur-[1px]" [class.is-closing]="isClosing" (click)="close()" aria-hidden="true">
-  <aside class="drawer scrollbar-hidden relative z-[2001] flex flex-col max-h-[calc(100dvh-2rem)] w-full max-w-[860px] overflow-hidden rounded-2xl border border-[#304632] bg-[#142a19] px-8 py-7 shadow-2xl" (click)="$event.stopPropagation()" [class.is-closing]="isClosing" role="dialog" aria-modal="true" aria-labelledby="register-fence-title">
-    <header class="mb-5 flex shrink-0 items-start justify-between"><div><h2 id="register-fence-title" class="m-0 text-lg font-extrabold text-white">Register Fence</h2><p class="mt-1 text-xs text-[#91a494]">Add a new monitored fence to the system</p></div><button class="grid size-8 place-items-center rounded-lg border border-[#425543] bg-[#273a2a] text-xl text-[#a5b1a5] hover:text-white" type="button" (click)="close()" aria-label="Close registration form">×</button></header>
+  <aside class="drawer scrollbar-hidden relative z-[2001] flex flex-col max-h-[calc(100dvh-2rem)] w-full max-w-[860px] overflow-hidden rounded-2xl border border-[#304632] bg-[#142a19] shadow-2xl" (click)="$event.stopPropagation()" [class.is-closing]="isClosing" role="dialog" aria-modal="true" aria-labelledby="register-fence-title">
+    <div class="modal-accent-bar"></div>
+    <div class="px-8 py-7 flex flex-col flex-1 min-h-0 overflow-hidden">
+    <header class="mb-5 flex shrink-0 items-start justify-between"><div><span class="modal-category-badge">NEW FENCE</span><h2 id="register-fence-title" class="m-0 text-lg font-extrabold text-white">Register Fence</h2><p class="mt-1 text-xs text-[#91a494]">Add a new monitored fence to the system</p></div><button class="grid size-8 place-items-center rounded-lg border border-[#425543] bg-[#273a2a] text-xl text-[#a5b1a5] hover:text-white" type="button" (click)="close()" aria-label="Close registration form">×</button></header>
     @if(authorityDescription){<p class="mb-4 shrink-0 text-xs text-[#91a494]">{{authorityDescription}}</p>}
     <form class="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto pr-1" [formGroup]="form" (ngSubmit)="submit()" novalidate>
       <div class="field"><label for="fence-name">Fence Name</label><input id="fence-name" class="control" formControlName="name" />@if (form.controls.name.touched && form.controls.name.invalid) { <small>Fence name is required.</small> }</div>
@@ -11,5 +13,6 @@
       @if(error){<p class="error" role="alert">{{error}}</p>}@if(saving){<p role="status">Saving...</p>}
       <footer class="mt-auto grid shrink-0 grid-cols-[.8fr_.8fr_1.35fr] gap-2 pt-2"><button class="secondary" type="button" [disabled]="isClosing||saving" (click)="close()">Cancel</button><button class="secondary" type="button" [disabled]="isClosing||saving" (click)="saveDraft()">Save Draft</button><button class="primary" type="submit" [disabled]="isClosing||saving">＋ Register Fence</button></footer>
     </form>
+    </div>
   </aside>
 </div>

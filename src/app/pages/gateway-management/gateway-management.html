@@ -139,9 +139,10 @@
 
 @if (selected && !drawerOpen) {
   <div class="backdrop fixed inset-0 z-[2000] flex items-center justify-center p-4" (click)="selected = undefined" aria-hidden="true">
-    <aside class="details-drawer" (click)="$event.stopPropagation()">
+    <aside class="details-drawer relative overflow-hidden" (click)="$event.stopPropagation()">
+      <div class="modal-accent-bar"></div>
       <header>
-        <div><span>Gateway record</span>
+        <div><span class="modal-category-badge">GATEWAY RECORD</span>
           <h2>{{selected.name}}</h2>
           <p>{{selected.id}} &middot; {{selected.serial}}</p>
         </div><button class="close" type="button" (click)="selected = undefined"
@@ -213,12 +214,12 @@
 
 @if (drawerOpen) {
   <div class="backdrop fixed inset-0 z-[2000] flex items-center justify-center p-4" (click)="closeDrawer()" aria-hidden="true">
-    <form class="form-drawer" (submit)="$event.preventDefault(); save()" (click)="$event.stopPropagation()">
+    <form class="form-drawer relative overflow-hidden" (submit)="$event.preventDefault(); save()" (click)="$event.stopPropagation()">
+      <div class="modal-accent-bar"></div>
       <header>
-        <div><span>{{editing ? 'Update gateway' : 'New network gateway'}}</span>
+        <div><span class="modal-category-badge">NETWORK GATEWAY</span>
           <h2>{{editing ? 'Edit gateway' : 'Register gateway'}}</h2>
-          <p>{{editing ? 'Update the gateway identity and network information.' : 'Add gateway hardware to the monitoring
-            network.'}}</p>
+          <p>{{editing ? 'Update the gateway identity and network information.' : 'Add gateway hardware to the monitoring network.'}}</p>
         </div><button class="close" type="button" (click)="closeDrawer()"
           aria-label="Close gateway form" title="Close"><span aria-hidden="true">&times;</span></button>
       </header>

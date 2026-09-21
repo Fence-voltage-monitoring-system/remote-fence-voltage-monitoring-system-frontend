@@ -1,8 +1,11 @@
 <div class="backdrop fixed inset-0 z-[2000] flex items-center justify-center p-4" (click)="closed.emit()" aria-hidden="true">
-  <aside class="drawer scrollbar-hidden flex w-full max-w-[480px] max-h-[calc(100dvh-32px)] flex-col overflow-hidden rounded-2xl border border-[#304632] bg-[#142a19] p-6 shadow-2xl" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="create-user-title">
+  <aside class="drawer scrollbar-hidden flex w-full max-w-[480px] max-h-[calc(100dvh-32px)] flex-col overflow-hidden rounded-2xl border border-[#304632] bg-[#142a19] shadow-2xl" (click)="$event.stopPropagation()" role="dialog" aria-modal="true" aria-labelledby="create-user-title">
+    <div class="modal-accent-bar"></div>
+    <div class="p-6 flex flex-col flex-1 min-h-0 overflow-hidden">
     <header class="mb-5 flex shrink-0 items-start justify-between">
       <div>
-        <h2 id="create-user-title" class="m-0 text-base font-extrabold">{{ editingUser ? 'Edit User' : 'Create User' }}</h2>
+        <span class="modal-category-badge">USER ACCOUNT</span>
+        <h2 id="create-user-title" class="m-0 text-base font-extrabold text-white">{{ editingUser ? 'Edit User' : 'Create User' }}</h2>
         <p class="mt-1 text-[11px] text-[#91a494]">{{ editingUser ? 'Modify an existing user account' : 'Add a new system user account' }}</p>
       </div>
       <button class="grid size-8 place-items-center rounded-lg border border-[#425543] bg-[#273a2a] text-xl text-[#a5b1a5] hover:text-white" type="button" (click)="closed.emit()" [attr.aria-label]="editingUser ? 'Close edit user form' : 'Close create user form'">×</button>
@@ -41,8 +44,9 @@
 
     <footer class="mt-4 grid grid-cols-[.8fr_1.4fr] gap-3 shrink-0 pt-4 border-t border-[#304632]">
       <button class="h-10 rounded-lg border border-[#38513b] bg-[#203824] text-xs font-semibold text-[#d6ddd4] hover:bg-[#304633]" type="button" [disabled]="isSubmitting" (click)="closed.emit()">Cancel</button>
-      <button class="h-10 rounded-lg bg-[#43d36c] text-xs font-bold text-[#071c0d] hover:bg-[#5be181] disabled:cursor-not-allowed disabled:opacity-60" type="submit" form="createUserForm" [disabled]="isSubmitting || isLoadingOptions || optionsLoadFailed">{{ isSubmitting ? (editingUser ? 'Saving…' : 'Creating…') : (editingUser ? 'Save changes' : '＋ Create User') }}</button>
+      <button class="primary h-10 rounded-lg bg-[#43d36c] text-xs font-bold text-[#071c0d] hover:bg-[#5be181] disabled:cursor-not-allowed" type="submit" form="createUserForm" [disabled]="isSubmitting || isLoadingOptions || optionsLoadFailed">{{ isSubmitting ? (editingUser ? 'Saving…' : 'Creating…') : (editingUser ? 'Save changes' : '＋ Create User') }}</button>
     </footer>
+    </div>
   </aside>
 </div>
 

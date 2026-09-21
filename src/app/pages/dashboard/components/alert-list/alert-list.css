@@ -12,3 +12,62 @@ article.healthy { @apply border-[#48df70]; }
 article strong, article small { @apply block text-[9px]; }
 article small, time { @apply mt-1 font-mono text-[8px] text-[#879484]; }
 time { @apply whitespace-nowrap; }
+
+/* Light Theme Styling */
+:host-context(html[data-theme='light']) section {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) h2 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+:host-context(html[data-theme='light']) header div > small {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) header span {
+  background: #fef2f2 !important;
+  border-color: #fecaca !important;
+  color: #dc2626 !important;
+  font-weight: 700 !important;
+}
+
+:host-context(html[data-theme='light']) article {
+  background: #fff5f5 !important;
+  border: 1px solid #fecaca !important;
+  border-left-width: 4px !important;
+  border-left-color: #dc2626 !important;
+}
+
+:host-context(html[data-theme='light']) article.warning {
+  border-left-color: #d97706 !important;
+  border-color: #fde68a !important;
+  background: #fffbeb !important;
+}
+
+:host-context(html[data-theme='light']) article.offline {
+  border-left-color: #64748b !important;
+  border-color: #e2e8f0 !important;
+  background: #f8fafc !important;
+}
+
+:host-context(html[data-theme='light']) article.healthy {
+  border-left-color: #16a34a !important;
+  border-color: #bbf7d0 !important;
+  background: #f0fdf4 !important;
+}
+
+:host-context(html[data-theme='light']) article strong {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+:host-context(html[data-theme='light']) :is(article small, time) {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}

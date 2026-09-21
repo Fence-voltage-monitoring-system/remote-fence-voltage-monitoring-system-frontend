@@ -61,8 +61,9 @@
 
 @if (selected && !dialogOpen && !assignmentOpen) {
   <div class="backdrop fixed inset-0 z-[2000] flex items-center justify-center p-4" (click)="selected = undefined" aria-hidden="true">
-    <aside class="device-details" aria-label="Device details" (click)="$event.stopPropagation()">
-      <header><div><span>Device record</span><h2>{{selected.name}}</h2><p>{{selected.id}} &middot; {{selected.serial}}</p></div><button class="details-close" type="button" (click)="selected = undefined" aria-label="Close device details"><span aria-hidden="true">&times;</span></button></header>
+    <aside class="device-details relative overflow-hidden" aria-label="Device details" (click)="$event.stopPropagation()">
+      <div class="modal-accent-bar"></div>
+      <header><div><span class="modal-category-badge">DEVICE RECORD</span><h2>{{selected.name}}</h2><p>{{selected.id}} &middot; {{selected.serial}}</p></div><button class="details-close" type="button" (click)="selected = undefined" aria-label="Close device details"><span aria-hidden="true">&times;</span></button></header>
       <div class="details-body">
         <div class="detail-status"><span class="status-pill" [class]="'status-pill ' + selected.status"><i></i>{{selected.status}}</span><span [class.unassigned]="!selected.section">{{selected.section ? 'Assigned' : 'Unassigned'}}</span></div>
         <section><h3>Assignment</h3><dl><div><dt>Fence</dt><dd>{{selected.fence || 'Not assigned'}}</dd></div><div><dt>Section</dt><dd>{{selected.section || 'Not assigned'}}</dd></div><div><dt>Device type</dt><dd>{{selected.type}}</dd></div></dl></section>
@@ -75,8 +76,9 @@
 
 @if (dialogOpen) {
   <div class="backdrop register-backdrop fixed inset-0 z-[2000] flex items-center justify-center p-4" (click)="dialogOpen = false" aria-hidden="true">
-    <form class="register-drawer" (submit)="$event.preventDefault(); save()" (click)="$event.stopPropagation()" aria-label="Register device">
-      <header><div><span>{{editing ? 'Update registry' : 'New field asset'}}</span><h2>{{editing ? 'Edit device' : 'Register device'}}</h2><p>{{editing ? 'Update the device record below.' : 'Add hardware to your unassigned device inventory.'}}</p></div><button class="register-close" type="button" (click)="dialogOpen = false" aria-label="Close device form" title="Close"><span aria-hidden="true">&times;</span></button></header>
+    <form class="register-drawer relative overflow-hidden" (submit)="$event.preventDefault(); save()" (click)="$event.stopPropagation()" aria-label="Register device">
+      <div class="modal-accent-bar"></div>
+      <header><div><span class="modal-category-badge">FIELD HARDWARE</span><h2>{{editing ? 'Edit device' : 'Register device'}}</h2><p>{{editing ? 'Update the device record below.' : 'Add hardware to your unassigned device inventory.'}}</p></div><button class="register-close" type="button" (click)="dialogOpen = false" aria-label="Close device form" title="Close"><span aria-hidden="true">&times;</span></button></header>
       <div class="register-body">
         <div class="register-intro"><span class="register-icon"><i data-lucide="cpu"></i></span><div><strong>Device identity</strong><small>Use the name and serial number printed on the field hardware.</small></div></div>
         <div class="form-grid">
@@ -96,8 +98,9 @@
 
 @if (assignmentOpen) {
   <div class="backdrop fixed inset-0 z-[2000] flex items-center justify-center p-4" (click)="closeAssignment()" aria-hidden="true">
-    <aside class="assignment-drawer" aria-label="Assign device" (click)="$event.stopPropagation()">
-      <header><div><h2>Assign Device</h2><p>3-step assignment wizard</p></div><button type="button" (click)="closeAssignment()" aria-label="Close assignment"><i data-lucide="x"></i></button></header>
+    <aside class="assignment-drawer relative overflow-hidden" aria-label="Assign device" (click)="$event.stopPropagation()">
+      <div class="modal-accent-bar"></div>
+      <header><div><span class="modal-category-badge">DEVICE ASSIGNMENT</span><h2>Assign Device</h2><p>3-step assignment wizard</p></div><button type="button" (click)="closeAssignment()" aria-label="Close assignment"><i data-lucide="x"></i></button></header>
       <div class="wizard-progress"><div [class.active]="wizardStep >= 1"><i></i><span>Step 1: Select Device</span></div><div [class.active]="wizardStep >= 2"><i></i><span>Step 2: Select Location</span></div><div [class.active]="wizardStep >= 3"><i></i><span>Step 3: Confirm</span></div></div>
       <div class="wizard-viewport">
         @if (wizardStep === 1) {<section class="wizard-step slide-in"><h3>Select unassigned device</h3><div class="device-options">@for (device of unassignedDevices; track device.id) {<button type="button" [class.selected]="selectedUnassigned === device" (click)="selectedUnassigned = device"><strong>{{device.id}}</strong><span>{{device.serial}} &middot; Not assigned</span><small>{{device.type}}</small></button>}</div></section>}

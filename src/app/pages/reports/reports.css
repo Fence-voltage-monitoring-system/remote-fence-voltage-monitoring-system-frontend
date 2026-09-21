@@ -9,3 +9,9 @@
 :host-context(html[data-theme='light']) .notice, html[data-theme='light'] .notice { background: #dcfce7 !important; border-color: #86efac !important; color: #15803d !important; }
 :host-context(html[data-theme='light']) .notice button, html[data-theme='light'] .notice button { color: #15803d !important; }
 
+:host-context(html[data-theme='light']) nav, html[data-theme='light'] nav { color: #0f172a !important; }
+:host-context(html[data-theme='light']) nav span, html[data-theme='light'] nav span { color: #475569 !important; font-weight: 600 !important; }
+:host-context(html[data-theme='light']) nav button, html[data-theme='light'] nav button { background: #ffffff !important; border: 1px solid #cbd5e1 !important; color: #0f172a !important; font-weight: 700 !important; border-radius: 6px !important; padding: 4px 10px !important; }
+:host-context(html[data-theme='light']) nav button:hover:not(:disabled), html[data-theme='light'] nav button:hover:not(:disabled) { background: #f1f5f9 !important; border-color: #16a34a !important; color: #16a34a !important; }
+:host-context(html[data-theme='light']) nav button:disabled, html[data-theme='light'] nav button:disabled { background: #f8fafc !important; border-color: #e2e8f0 !important; color: #94a3b8 !important; opacity: 0.6 !important; }
+

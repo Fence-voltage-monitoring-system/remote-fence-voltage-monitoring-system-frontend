@@ -428,13 +428,15 @@ html[data-theme='light'] app-header .status {
 }
 
 /* ==========================================================================
-   Unified Page Inner Header Banners Light Theme Overrides
-   Matching the exact size, padding (16px 20px), typography & badge styling
-   of the Fence Management page header banner across all 17 application pages.
+   Unified Page Inner Header Banners (Dark & Light Theme Standardizer)
+   Matching the exact size, padding (16px 20px), radius (14px), border & layout
+   across all 17 application pages.
    ========================================================================== */
 
-/* 1. Outer Header Banner Card Container */
-html[data-theme='light'] :is(
+/* --------------------------------------------------------------------------
+   DARK THEME UNIFIED HEADER BANNERS
+   -------------------------------------------------------------------------- */
+html:not([data-theme='light']) :is(
   app-user-profile .heading,
   app-current-user-profile .heading,
   app-user-management main > header,
@@ -459,12 +461,12 @@ html[data-theme='light'] :is(
   app-historical-analysis .analysis-hero,
   .page-intro
 ):not(app-header header):not(.card header):not(.drawer header):not(.modal header):not(.panel > header):not(.route-panel header):not(.setting-card header):not(.device-panel header):not(.details-drawer header):not(.form-drawer header):not(.incident-modal-header):not(.activity > header):not(.toggles header) {
-  background-color: #ffffff !important;
-  background: #ffffff !important;
+  background-color: #172d1d !important;
+  background: #172d1d !important;
   background-image: none !important;
-  border: 1px solid #cbd5e1 !important;
+  border: 1px solid #37533d !important;
   border-radius: 14px !important;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
   padding: 16px 20px !important;
   margin-bottom: 16px !important;
   width: 100% !important;
@@ -475,8 +477,7 @@ html[data-theme='light'] :is(
   gap: 16px !important;
 }
 
-/* 2. Left Text Container (Vertical Stacking) */
-html[data-theme='light'] :is(
+html:not([data-theme='light']) :is(
   app-user-profile .heading,
   app-current-user-profile .heading,
   app-user-management main > header,
@@ -514,8 +515,7 @@ html[data-theme='light'] :is(
   flex: 1 !important;
 }
 
-/* 3. Eyebrow Category Text */
-html[data-theme='light'] :is(
+html:not([data-theme='light']) :is(
   app-user-profile .heading,
   app-current-user-profile .heading,
   app-user-management main > header,
@@ -540,7 +540,7 @@ html[data-theme='light'] :is(
   app-historical-analysis .analysis-hero,
   .page-intro
 ) :is(span, p:first-child, .eyebrow) {
-  color: #16a34a !important;
+  color: #4ee672 !important;
   font-weight: 700 !important;
   font-size: 9px !important;
   letter-spacing: 0.16em !important;
@@ -548,8 +548,7 @@ html[data-theme='light'] :is(
   margin: 0 0 2px 0 !important;
 }
 
-/* 4. Page Title H1 */
-html[data-theme='light'] :is(
+html:not([data-theme='light']) :is(
   app-user-profile .heading,
   app-current-user-profile .heading,
   app-user-management main > header,
@@ -574,15 +573,14 @@ html[data-theme='light'] :is(
   app-historical-analysis .analysis-hero,
   .page-intro
 ) h1 {
-  color: #0f172a !important;
+  color: #ffffff !important;
   font-weight: 700 !important;
   font-size: 20px !important;
   margin: 0 0 2px 0 !important;
   line-height: 1.25 !important;
 }
 
-/* 5. Subtitle / Description Text */
-html[data-theme='light'] :is(
+html:not([data-theme='light']) :is(
   app-user-profile .heading,
   app-current-user-profile .heading,
   app-user-management main > header,
@@ -607,12 +605,273 @@ html[data-theme='light'] :is(
   app-historical-analysis .analysis-hero,
   .page-intro
 ) :is(p:not(:first-child), span:not(:first-child), .description) {
-  color: #475569 !important;
+  color: #8fa08c !important;
   font-size: 10px !important;
   font-weight: 400 !important;
   margin: 0 !important;
   line-height: 1.4 !important;
 }
+
+/* --------------------------------------------------------------------------
+   LIGHT THEME UNIFIED HEADER BANNERS
+   -------------------------------------------------------------------------- */
+
+/* 1. Outer Header Banner Card Container */
+/* --------------------------------------------------------------------------
+   LIGHT THEME UNIFIED HEADER BANNERS (Option A: Left Accent + Soft Tint Gradient)
+   -------------------------------------------------------------------------- */
+
+/* 1. Outer Header Banner Card Container */
+html[data-theme='light'] :is(
+  app-user-profile .heading,
+  app-current-user-profile .heading,
+  app-user-management .page-heading,
+  app-user-management main > header,
+  app-fence-management .page-heading,
+  app-fence-management main header,
+  app-section-management main header,
+  app-audit-logs .heading,
+  app-audit-logs-page .heading,
+  app-gateway-management .page-heading,
+  app-gateway-management-page .page-heading,
+  app-device-management .page-heading,
+  app-device-management-page .page-heading,
+  app-map .page-heading,
+  app-map-page .page-heading,
+  app-virtual-fence-page .page-intro,
+  app-configuration .page-heading,
+  app-configuration .page > header,
+  app-configuration main > header,
+  app-alerts .page-heading,
+  app-alerts .page > header,
+  app-alerts main > header,
+  app-notifications .page-heading,
+  app-notifications .page > header,
+  app-notifications main > header,
+  app-reports header,
+  app-reports .page > header,
+  app-reports main > header,
+  app-security-page .heading,
+  app-appearance .page-heading,
+  app-appearance-page .heading,
+  app-help-support-page .hero,
+  app-historical-analysis .page-heading,
+  app-historical-analysis .analysis-hero,
+  .page-heading,
+  .page-intro
+):not(.page-intro *):not(.page-heading *):not(.heading *):not(app-header header):not(.card header):not(.drawer header):not(.modal header):not(.panel > header):not(.route-panel header):not(.setting-card header):not(.device-panel header):not(.details-drawer header):not(.form-drawer header):not(.incident-modal-header):not(.activity > header):not(.toggles header) {
+  background: linear-gradient(135deg, var(--banner-bg-start, #f0fdf4) 0%, #ffffff 100%) !important;
+  background-color: var(--banner-bg-start, #f0fdf4) !important;
+  border: 1px solid #cbd5e1 !important;
+  border-left: 5px solid var(--banner-accent, #10b981) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+  padding: 18px 24px !important;
+  margin-bottom: 20px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+}
+
+/* 2. Left Text Container (Vertical Stacking) */
+html[data-theme='light'] :is(
+  app-user-profile .heading,
+  app-current-user-profile .heading,
+  app-user-management .page-heading,
+  app-user-management main > header,
+  app-fence-management .page-heading,
+  app-fence-management main header,
+  app-section-management main header,
+  app-audit-logs .heading,
+  app-audit-logs-page .heading,
+  app-gateway-management .page-heading,
+  app-gateway-management-page .page-heading,
+  app-device-management .page-heading,
+  app-device-management-page .page-heading,
+  app-map .page-heading,
+  app-map-page .page-heading,
+  app-virtual-fence-page .page-intro,
+  app-configuration .page-heading,
+  app-configuration .page > header,
+  app-configuration main > header,
+  app-alerts .page-heading,
+  app-alerts .page > header,
+  app-alerts main > header,
+  app-notifications .page-heading,
+  app-notifications .page > header,
+  app-notifications main > header,
+  app-reports header,
+  app-reports .page > header,
+  app-reports main > header,
+  app-security-page .heading,
+  app-appearance .page-heading,
+  app-appearance-page .heading,
+  app-help-support-page .hero,
+  app-historical-analysis .page-heading,
+  app-historical-analysis .analysis-hero,
+  .page-heading,
+  .page-intro
+) > :is(div:first-child, .page-heading, .hero-copy) {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  text-align: left !important;
+  flex: 1 !important;
+}
+
+/* 3. Eyebrow Category Text */
+html[data-theme='light'] :is(
+  app-user-profile .heading,
+  app-current-user-profile .heading,
+  app-user-management .page-heading,
+  app-user-management main > header,
+  app-fence-management .page-heading,
+  app-fence-management main header,
+  app-section-management main header,
+  app-audit-logs .heading,
+  app-audit-logs-page .heading,
+  app-gateway-management .page-heading,
+  app-gateway-management-page .page-heading,
+  app-device-management .page-heading,
+  app-device-management-page .page-heading,
+  app-map .page-heading,
+  app-map-page .page-heading,
+  app-virtual-fence-page .page-intro,
+  app-configuration .page-heading,
+  app-configuration .page > header,
+  app-configuration main > header,
+  app-alerts .page-heading,
+  app-alerts .page > header,
+  app-alerts main > header,
+  app-notifications .page-heading,
+  app-notifications .page > header,
+  app-notifications main > header,
+  app-reports header,
+  app-reports .page > header,
+  app-reports main > header,
+  app-security-page .heading,
+  app-appearance .page-heading,
+  app-appearance-page .heading,
+  app-help-support-page .hero,
+  app-historical-analysis .page-heading,
+  app-historical-analysis .analysis-hero,
+  .page-heading,
+  .page-intro
+) :is(span, p:first-child, .eyebrow) {
+  color: var(--banner-accent, #10b981) !important;
+  font-weight: 800 !important;
+  font-size: 9px !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  margin: 0 0 2px 0 !important;
+  text-align: left !important;
+}
+
+/* 4. Page Title H1 */
+html[data-theme='light'] :is(
+  app-user-profile .heading,
+  app-current-user-profile .heading,
+  app-user-management .page-heading,
+  app-user-management main > header,
+  app-fence-management .page-heading,
+  app-fence-management main header,
+  app-section-management main header,
+  app-audit-logs .heading,
+  app-audit-logs-page .heading,
+  app-gateway-management .page-heading,
+  app-gateway-management-page .page-heading,
+  app-device-management .page-heading,
+  app-device-management-page .page-heading,
+  app-map .page-heading,
+  app-map-page .page-heading,
+  app-virtual-fence-page .page-intro,
+  app-configuration .page-heading,
+  app-configuration .page > header,
+  app-configuration main > header,
+  app-alerts .page-heading,
+  app-alerts .page > header,
+  app-alerts main > header,
+  app-notifications .page-heading,
+  app-notifications .page > header,
+  app-notifications main > header,
+  app-reports header,
+  app-reports .page > header,
+  app-reports main > header,
+  app-security-page .heading,
+  app-appearance .page-heading,
+  app-appearance-page .heading,
+  app-help-support-page .hero,
+  app-historical-analysis .page-heading,
+  app-historical-analysis .analysis-hero,
+  .page-heading,
+  .page-intro
+) h1 {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  font-size: 20px !important;
+  margin: 0 0 2px 0 !important;
+  line-height: 1.25 !important;
+  text-align: left !important;
+}
+
+/* 5. Subtitle / Description Text */
+html[data-theme='light'] :is(
+  app-user-profile .heading,
+  app-current-user-profile .heading,
+  app-user-management .page-heading,
+  app-user-management main > header,
+  app-fence-management .page-heading,
+  app-fence-management main header,
+  app-section-management main header,
+  app-audit-logs .heading,
+  app-audit-logs-page .heading,
+  app-gateway-management .page-heading,
+  app-gateway-management-page .page-heading,
+  app-device-management .page-heading,
+  app-device-management-page .page-heading,
+  app-map .page-heading,
+  app-map-page .page-heading,
+  app-virtual-fence-page .page-intro,
+  app-configuration .page-heading,
+  app-configuration .page > header,
+  app-configuration main > header,
+  app-alerts .page-heading,
+  app-alerts .page > header,
+  app-alerts main > header,
+  app-notifications .page-heading,
+  app-notifications .page > header,
+  app-notifications main > header,
+  app-reports header,
+  app-reports .page > header,
+  app-reports main > header,
+  app-security-page .heading,
+  app-appearance .page-heading,
+  app-appearance-page .heading,
+  app-help-support-page .hero,
+  app-historical-analysis .page-heading,
+  app-historical-analysis .analysis-hero,
+  .page-heading,
+  .page-intro
+) :is(p:not(:first-child), span:not(:first-child), .description) {
+  color: #475569 !important;
+  font-size: 10px !important;
+  font-weight: 400 !important;
+  margin: 0 !important;
+  line-height: 1.4 !important;
+  text-align: left !important;
+}
+
+
 
 /* 6. Right-Side Action Pills, Status Badges */
 html[data-theme='light'] :is(
@@ -860,13 +1119,292 @@ html[data-theme='light'] :is(
   app-assignment-summary,
   app-profile-summary,
   app-section-overview
-) :is(article, .card, .summary-card, > div > article, section > article) {
+) :is(article, .card, .summary-card, app-voltage-card article, > div > article, section > article) {
   background-color: #ffffff !important;
   border: 1px solid #cbd5e1 !important;
   border-radius: 14px !important;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04) !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
   color: #0f172a !important;
+  position: relative !important;
+  overflow: hidden !important;
 }
+
+html[data-theme='light'] :is(
+  .stats,
+  .stats-grid,
+  app-device-summary,
+  app-gateway-summary,
+  app-fence-summary,
+  app-user-summary,
+  app-alert-summary,
+  app-notification-summary,
+  app-analysis-summary,
+  app-assignment-summary,
+  app-profile-summary,
+  app-section-overview
+) :is(article, .card, .summary-card, app-voltage-card article, > div > article, section > article)::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 4px !important;
+  z-index: 10 !important;
+}
+
+/* -------------------------------------------------------------
+   PAGE 1: DASHBOARD SUMMARY CARDS (app-voltage-card)
+   ------------------------------------------------------------- */
+/* Card 1: TOTAL FENCES (Green Top Accent) */
+html[data-theme='light'] app-voltage-card article.card-green::before {
+  background-color: #10b981 !important;
+}
+html[data-theme='light'] app-voltage-card article.card-green .top b {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 8px !important;
+  background-color: #e6f4ea !important;
+  border: 1px solid #bbf7d0 !important;
+  color: #10b981 !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+
+/* Card 2: TOTAL DEVICES (Indigo / Blue Top Accent) */
+html[data-theme='light'] app-voltage-card article.card-blue::before {
+  background-color: #4f46e5 !important;
+}
+html[data-theme='light'] app-voltage-card article.card-blue .top b {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 8px !important;
+  background-color: #eef2ff !important;
+  border: 1px solid #c7d2fe !important;
+  color: #4f46e5 !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+
+/* Card 3: ACTIVE DEVICES (Green Accent + Green Number & Footer) */
+html[data-theme='light'] app-voltage-card article.card-active::before {
+  background-color: #10b981 !important;
+}
+html[data-theme='light'] app-voltage-card article.card-active .top b {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 8px !important;
+  background-color: #e6f4ea !important;
+  border: 1px solid #bbf7d0 !important;
+  color: #10b981 !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+html[data-theme='light'] app-voltage-card article.card-active .metric strong,
+html[data-theme='light'] app-voltage-card article.card-active p {
+  color: #059669 !important;
+  font-weight: 800 !important;
+}
+
+/* Card 4: CRITICAL ALERTS (Red Accent) */
+html[data-theme='light'] app-voltage-card article.card-red::before,
+html[data-theme='light'] app-voltage-card article.danger::before {
+  background-color: #ef4444 !important;
+}
+html[data-theme='light'] app-voltage-card article.card-red .top b,
+html[data-theme='light'] app-voltage-card article.danger .top b {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 8px !important;
+  background-color: #fef2f2 !important;
+  border: 1px solid #fecaca !important;
+  color: #ef4444 !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+
+/* Card 5: LOW VOLTAGE (Amber Accent) */
+html[data-theme='light'] app-voltage-card article.card-warning::before,
+html[data-theme='light'] app-voltage-card article.warning::before {
+  background-color: #f59e0b !important;
+}
+html[data-theme='light'] app-voltage-card article.card-warning .top b,
+html[data-theme='light'] app-voltage-card article.warning .top b {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 8px !important;
+  background-color: #fffbeb !important;
+  border: 1px solid #fde68a !important;
+  color: #d97706 !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+}
+
+/* -------------------------------------------------------------
+   PAGE 2: ALERTS PAGE SUMMARY (app-alert-summary)
+   ------------------------------------------------------------- */
+/* -------------------------------------------------------------
+   PAGE 2: ALERTS PAGE SUMMARY (app-alerts app-alert-summary)
+   ------------------------------------------------------------- */
+html[data-theme='light'] app-alerts app-alert-summary section {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-columns: repeat(5, 1fr) !important;
+  gap: 12px !important;
+}
+@media (max-width: 800px) {
+  html[data-theme='light'] app-alerts app-alert-summary section {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+html[data-theme='light'] app-alerts app-alert-summary article {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  padding: 1rem !important;
+}
+html[data-theme='light'] app-alerts app-alert-summary article span {
+  color: #475569 !important;
+  font-weight: 700 !important;
+}
+html[data-theme='light'] app-alerts app-alert-summary article:nth-child(1)::before { background-color: #ef4444 !important; }
+html[data-theme='light'] app-alerts app-alert-summary article:nth-child(2)::before { background-color: #f59e0b !important; }
+html[data-theme='light'] app-alerts app-alert-summary article:nth-child(3)::before { background-color: #ef4444 !important; }
+html[data-theme='light'] app-alerts app-alert-summary article:nth-child(4)::before { background-color: #f59e0b !important; }
+html[data-theme='light'] app-alerts app-alert-summary article:nth-child(5)::before { background-color: #10b981 !important; }
+
+
+/* -------------------------------------------------------------
+   PAGE 3: FENCE MANAGEMENT SUMMARY (app-fence-summary)
+   ------------------------------------------------------------- */
+html[data-theme='light'] app-fence-summary .summary-card {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+html[data-theme='light'] app-fence-summary .summary-card span { color: #475569 !important; font-weight: 700 !important; }
+html[data-theme='light'] app-fence-summary .summary-card strong { color: #0f172a !important; font-weight: 800 !important; }
+html[data-theme='light'] app-fence-summary .summary-card small { color: #64748b !important; }
+
+html[data-theme='light'] app-fence-summary .summary-card:nth-child(1)::before { background-color: #10b981 !important; }
+html[data-theme='light'] app-fence-summary .summary-card:nth-child(2)::before { background-color: #10b981 !important; }
+html[data-theme='light'] app-fence-summary .summary-card:nth-child(3)::before { background-color: #f59e0b !important; }
+html[data-theme='light'] app-fence-summary .summary-card:nth-child(4)::before { background-color: #ef4444 !important; }
+html[data-theme='light'] app-fence-summary .summary-card:nth-child(5)::before { background-color: #4f46e5 !important; }
+
+html[data-theme='light'] app-fence-summary .summary-card strong.text-\[\#43d36c\] { color: #16a34a !important; }
+html[data-theme='light'] app-fence-summary .summary-card strong.text-\[\#ffb800\] { color: #d97706 !important; }
+html[data-theme='light'] app-fence-summary .summary-card strong.text-\[\#ff4338\] { color: #dc2626 !important; }
+
+/* -------------------------------------------------------------
+   PAGE 4, 5, 8: STATS GRID CARDS (.stats article across all pages)
+   ------------------------------------------------------------- */
+html[data-theme='light'] .stats article {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+html[data-theme='light'] .stats article span { color: #475569 !important; font-weight: 700 !important; }
+html[data-theme='light'] .stats article b { color: #0f172a !important; font-weight: 800 !important; }
+html[data-theme='light'] .stats article small { color: #64748b !important; }
+
+/* Default top accent colors by position (1 to 5) */
+html[data-theme='light'] .stats article:nth-child(1)::before { background-color: #4f46e5 !important; }
+html[data-theme='light'] .stats article:nth-child(1) .stat-icon { background: #eef2ff !important; border-color: #c7d2fe !important; color: #4f46e5 !important; }
+
+html[data-theme='light'] .stats article:nth-child(2)::before { background-color: #10b981 !important; }
+html[data-theme='light'] .stats article:nth-child(3)::before { background-color: #f59e0b !important; }
+html[data-theme='light'] .stats article:nth-child(4)::before { background-color: #ef4444 !important; }
+html[data-theme='light'] .stats article:nth-child(5)::before { background-color: #0284c7 !important; }
+
+/* Class-based specific overrides */
+html[data-theme='light'] .stats article.online::before { background-color: #10b981 !important; }
+html[data-theme='light'] .stats article.online .stat-icon { background: #e6f4ea !important; border-color: #bbf7d0 !important; color: #10b981 !important; }
+html[data-theme='light'] .stats article.online b { color: #16a34a !important; }
+
+html[data-theme='light'] .stats article.warning::before { background-color: #f59e0b !important; }
+html[data-theme='light'] .stats article.warning .stat-icon { background: #fffbeb !important; border-color: #fde68a !important; color: #d97706 !important; }
+html[data-theme='light'] .stats article.warning b { color: #d97706 !important; }
+
+html[data-theme='light'] .stats article.offline::before,
+html[data-theme='light'] .stats article.danger::before { background-color: #ef4444 !important; }
+html[data-theme='light'] .stats article.offline .stat-icon,
+html[data-theme='light'] .stats article.danger .stat-icon { background: #fef2f2 !important; border-color: #fecaca !important; color: #ef4444 !important; }
+html[data-theme='light'] .stats article.offline b,
+html[data-theme='light'] .stats article.danger b { color: #dc2626 !important; }
+
+html[data-theme='light'] .stats article.unassigned::before { background-color: #0284c7 !important; }
+html[data-theme='light'] .stats article.unassigned .stat-icon { background: #f0f9ff !important; border-color: #bae6fd !important; color: #0284c7 !important; }
+html[data-theme='light'] .stats article.unassigned b { color: #0284c7 !important; }
+
+
+/* -------------------------------------------------------------
+   PAGE 6: USER MANAGEMENT SUMMARY (app-user-summary)
+   ------------------------------------------------------------- */
+html[data-theme='light'] app-user-summary .summary-card {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+html[data-theme='light'] app-user-summary .summary-card span { color: #475569 !important; font-weight: 700 !important; }
+html[data-theme='light'] app-user-summary .summary-card strong { color: #0f172a !important; font-weight: 800 !important; }
+
+html[data-theme='light'] app-user-summary .summary-card:nth-child(1)::before { background-color: #10b981 !important; }
+html[data-theme='light'] app-user-summary .summary-card:nth-child(2)::before { background-color: #10b981 !important; }
+html[data-theme='light'] app-user-summary .summary-card:nth-child(3)::before { background-color: #f59e0b !important; }
+html[data-theme='light'] app-user-summary .summary-card:nth-child(4)::before { background-color: #0284c7 !important; }
+html[data-theme='light'] app-user-summary .summary-card:nth-child(5)::before { background-color: #059669 !important; }
+
+html[data-theme='light'] app-user-summary .summary-card strong.text-\[\#43d36c\] { color: #16a34a !important; }
+html[data-theme='light'] app-user-summary .summary-card strong.text-\[\#ffb800\] { color: #d97706 !important; }
+html[data-theme='light'] app-user-summary .summary-card strong.text-\[\#38bdf8\] { color: #0284c7 !important; }
+html[data-theme='light'] app-user-summary .summary-card strong.text-\[\#a7f3d0\] { color: #059669 !important; }
+
+/* -------------------------------------------------------------
+   PAGE 7: NOTIFICATIONS SUMMARY (app-notification-summary)
+   ------------------------------------------------------------- */
+html[data-theme='light'] app-notification-summary article {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+html[data-theme='light'] app-notification-summary article:nth-child(1)::before { background-color: #10b981 !important; }
+html[data-theme='light'] app-notification-summary article:nth-child(2)::before { background-color: #4f46e5 !important; }
+html[data-theme='light'] app-notification-summary article:nth-child(3)::before { background-color: #f59e0b !important; }
+html[data-theme='light'] app-notification-summary article:nth-child(4)::before { background-color: #ef4444 !important; }
+
 
 
 /* Global Light Theme Dialog & Modal Component Overrides */
@@ -1044,14 +1582,44 @@ html[data-theme='light'] :is(.telemetry, [class*='telemetry']) small {
   color: #64748b !important;
 }
 
+/* Option A Modal Accent Bar & Category Badge Global Rules */
+.modal-accent-bar {
+  height: 5px;
+  flex-shrink: 0;
+  background: linear-gradient(90deg, #16a34a, #0d9488, #2dd4bf);
+}
+.modal-category-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(22, 163, 74, 0.2);
+  color: #43d36c;
+  border: 1px solid rgba(67, 211, 108, 0.3);
+  margin-bottom: 6px;
+}
+
+html[data-theme='light'] .modal-accent-bar {
+  background: linear-gradient(90deg, #16a34a, #0d9488, #0ea5e9) !important;
+}
+
+html[data-theme='light'] .modal-category-badge {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+  border-color: #86efac !important;
+}
+
 /* Delete Action Buttons (.danger) & Warning Alerts (.delete-warning) Light Theme Overrides */
-html[data-theme='light'] :is(button.danger, .edit-footer .danger, .danger) {
+html[data-theme='light'] :is(button.danger, .edit-footer .danger, .modal-actions .danger, .row-menu .danger, button[class*='danger']) {
   background-color: #fee2e2 !important;
   border: 1px solid #fca5a5 !important;
   color: #dc2626 !important;
 }
 
-html[data-theme='light'] :is(button.danger, .edit-footer .danger, .danger):hover {
+html[data-theme='light'] :is(button.danger, .edit-footer .danger, .modal-actions .danger, .row-menu .danger, button[class*='danger']):hover {
   background-color: #fecaca !important;
   color: #b91c1c !important;
 }
@@ -1157,47 +1725,6 @@ html[data-theme='light'] :is(strong, b, .metric strong):not(app-fence-monitor .s
   color: #0f172a !important;
 }
 
-/* Voltage Cards Accent Styles */
-html[data-theme='light'] app-voltage-card article {
-  background-color: #ffffff !important;
-  border: 1px solid #cbd5e1 !important;
-  border-top: 3px solid #15803d !important;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05) !important;
-}
-
-html[data-theme='light'] app-voltage-card article.danger {
-  border-top-color: #dc2626 !important;
-}
-
-html[data-theme='light'] app-voltage-card article.warning {
-  border-top-color: #d97706 !important;
-}
-
-html[data-theme='light'] app-voltage-card .top b {
-  color: #15803d !important;
-}
-
-html[data-theme='light'] app-voltage-card article.danger .top b,
-html[data-theme='light'] app-voltage-card article.danger p {
-  color: #dc2626 !important;
-}
-
-html[data-theme='light'] app-voltage-card article.warning .top b,
-html[data-theme='light'] app-voltage-card article.warning p {
-  color: #d97706 !important;
-}
-
-html[data-theme='light'] app-voltage-card p {
-  color: #15803d !important;
-}
-
-html[data-theme='light'] app-voltage-card .metric strong {
-  color: #0f172a !important;
-}
-
-html[data-theme='light'] app-voltage-card .metric small {
-  color: #475569 !important;
-}
 
 /* Alert List Dashboard Card */
 html[data-theme='light'] app-alert-list section {
@@ -1271,30 +1798,83 @@ html[data-theme='light'] app-voltage-chart :is(.x, .y) {
 }
 
 /* Alert Summary Dashboard Card */
-html[data-theme='light'] app-alert-summary section {
+html[data-theme='light'] app-dashboard app-alert-summary section,
+html[data-theme='light'] .analytics-grid app-alert-summary section {
+  display: block !important;
   background-color: #ffffff !important;
   border: 1px solid #cbd5e1 !important;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  padding: 16px !important;
 }
 
-html[data-theme='light'] app-alert-summary h2 {
+html[data-theme='light'] app-dashboard app-alert-summary section::before,
+html[data-theme='light'] .analytics-grid app-alert-summary section::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 4px !important;
+  background-color: #10b981 !important;
+  z-index: 10 !important;
+}
+
+html[data-theme='light'] app-dashboard app-alert-summary h2,
+html[data-theme='light'] .analytics-grid app-alert-summary h2 {
   color: #0f172a !important;
   font-weight: 700 !important;
+  margin-top: 0 !important;
+  margin-bottom: 4px !important;
 }
 
-html[data-theme='light'] app-alert-summary section > small {
-  color: #475569 !important;
+html[data-theme='light'] app-dashboard app-alert-summary section > small,
+html[data-theme='light'] .analytics-grid app-alert-summary section > small {
+  color: #64748b !important;
+  font-weight: 600 !important;
 }
 
-html[data-theme='light'] app-alert-summary div {
+html[data-theme='light'] app-dashboard app-alert-summary div,
+html[data-theme='light'] .analytics-grid app-alert-summary div {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
   color: #334155 !important;
+  font-weight: 600 !important;
   border-bottom: 1px solid #f1f5f9 !important;
+  padding-bottom: 8px !important;
+  margin-top: 14px !important;
+  margin-bottom: 14px !important;
 }
 
-html[data-theme='light'] app-alert-summary strong {
-  color: #0f172a !important;
-  font-weight: 800 !important;
+html[data-theme='light'] app-dashboard app-alert-summary i,
+html[data-theme='light'] .analytics-grid app-alert-summary i {
+  display: inline-block !important;
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  margin-right: 8px !important;
 }
+
+html[data-theme='light'] app-dashboard app-alert-summary i.red,
+html[data-theme='light'] .analytics-grid app-alert-summary i.red { background-color: #dc2626 !important; }
+html[data-theme='light'] app-dashboard app-alert-summary i.amber,
+html[data-theme='light'] .analytics-grid app-alert-summary i.amber { background-color: #d97706 !important; }
+html[data-theme='light'] app-dashboard app-alert-summary i.gray,
+html[data-theme='light'] .analytics-grid app-alert-summary i.gray { background-color: #64748b !important; }
+html[data-theme='light'] app-dashboard app-alert-summary i.green,
+html[data-theme='light'] .analytics-grid app-alert-summary i.green { background-color: #16a34a !important; }
+
+html[data-theme='light'] app-dashboard app-alert-summary strong.red,
+html[data-theme='light'] .analytics-grid app-alert-summary strong.red { color: #dc2626 !important; font-weight: 800 !important; }
+html[data-theme='light'] app-dashboard app-alert-summary strong.amber,
+html[data-theme='light'] .analytics-grid app-alert-summary strong.amber { color: #d97706 !important; font-weight: 800 !important; }
+html[data-theme='light'] app-dashboard app-alert-summary strong.gray,
+html[data-theme='light'] .analytics-grid app-alert-summary strong.gray { color: #64748b !important; font-weight: 800 !important; }
+html[data-theme='light'] app-dashboard app-alert-summary strong.green,
+html[data-theme='light'] .analytics-grid app-alert-summary strong.green { color: #16a34a !important; font-weight: 800 !important; }
 
 /* Live State Pill (e.g. Fence Map Top Banner) */
 html[data-theme='light'] :is(.live-state, app-map-page .live-state) {
@@ -2044,40 +2624,42 @@ html[data-theme='light'] app-analysis-filters .export:hover {
 }
 
 /* Analysis Summary KPI Cards Row (Key Operational Metrics) */
+/* Analysis Summary KPI Cards Row (Key Operational Metrics) */
 html[data-theme='light'] app-analysis-summary .metric {
   background: #ffffff !important;
   border: 1px solid #cbd5e1 !important;
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05) !important;
+  position: relative !important;
+  overflow: hidden !important;
 }
 
-html[data-theme='light'] app-analysis-summary .metric:hover {
-  border-color: #16a34a !important;
+html[data-theme='light'] app-analysis-summary .metric::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 4px !important;
+  z-index: 10 !important;
 }
 
-html[data-theme='light'] app-analysis-summary .metric-icon {
-  background: #f1f5f9 !important;
-  border: 1px solid #cbd5e1 !important;
-  color: #16a34a !important;
-}
+html[data-theme='light'] app-analysis-summary .metric-0::before { background-color: #10b981 !important; }
+html[data-theme='light'] app-analysis-summary .metric-1::before { background-color: #4f46e5 !important; }
+html[data-theme='light'] app-analysis-summary .metric-2::before { background-color: #10b981 !important; }
+html[data-theme='light'] app-analysis-summary .metric-3::before { background-color: #06b6d4 !important; }
+html[data-theme='light'] app-analysis-summary .metric-4::before { background-color: #ef4444 !important; }
+html[data-theme='light'] app-analysis-summary .metric-5::before { background-color: #10b981 !important; }
 
-html[data-theme='light'] app-analysis-summary .metric em {
-  background: #f1f5f9 !important;
-  color: #475569 !important;
-}
-
-html[data-theme='light'] app-analysis-summary .metric em.amber {
-  background: #fef3c7 !important;
-  color: #b45309 !important;
-}
-
-html[data-theme='light'] app-analysis-summary .metric em.red {
-  background: #fee2e2 !important;
-  color: #dc2626 !important;
-}
+html[data-theme='light'] app-analysis-summary .metric-0 .metric-icon { background: #e6f4ea !important; border-color: #bbf7d0 !important; color: #10b981 !important; }
+html[data-theme='light'] app-analysis-summary .metric-1 .metric-icon { background: #eef2ff !important; border-color: #c7d2fe !important; color: #4f46e5 !important; }
+html[data-theme='light'] app-analysis-summary .metric-2 .metric-icon { background: #e6f4ea !important; border-color: #bbf7d0 !important; color: #10b981 !important; }
+html[data-theme='light'] app-analysis-summary .metric-3 .metric-icon { background: #ecfeff !important; border-color: #a5f3fc !important; color: #0891b2 !important; }
+html[data-theme='light'] app-analysis-summary .metric-4 .metric-icon { background: #fef2f2 !important; border-color: #fecaca !important; color: #ef4444 !important; }
+html[data-theme='light'] app-analysis-summary .metric-5 .metric-icon { background: #e6f4ea !important; border-color: #bbf7d0 !important; color: #10b981 !important; }
 
 html[data-theme='light'] app-analysis-summary .label {
   color: #475569 !important;
-  font-weight: 600 !important;
+  font-weight: 700 !important;
 }
 
 html[data-theme='light'] app-analysis-summary .value strong {
@@ -2092,6 +2674,12 @@ html[data-theme='light'] app-analysis-summary .value small {
 html[data-theme='light'] app-analysis-summary .metric > i {
   background: #e2e8f0 !important;
 }
+html[data-theme='light'] app-analysis-summary .metric-0 > i b,
+html[data-theme='light'] app-analysis-summary .metric-1 > i b,
+html[data-theme='light'] app-analysis-summary .metric-2 > i b,
+html[data-theme='light'] app-analysis-summary .metric-3 > i b,
+html[data-theme='light'] app-analysis-summary .metric-5 > i b { background: #10b981 !important; }
+html[data-theme='light'] app-analysis-summary .metric-4 > i b { background: #ef4444 !important; }
 
 /* Voltage Trend Chart Subcomponent */
 html[data-theme='light'] .chart-card {
@@ -2716,7 +3304,21 @@ html[data-theme='light'] app-report-configuration .panel footer .generate {
   font-weight: 700 !important;
 }
 
-/* Report History Table, READY Badges & Download Action Buttons */
+/* Report History Table, Panel, READY Badges, Download Action Buttons & Pagination */
+html[data-theme='light'] app-report-history .panel {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+}
+
+html[data-theme='light'] app-report-history .panel h2 {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
 html[data-theme='light'] app-report-history .table {
   width: 100% !important;
 }
@@ -2741,6 +3343,15 @@ html[data-theme='light'] app-report-history table td {
   color: #0f172a !important;
   font-size: 11px !important;
   padding: 10px 14px !important;
+}
+
+html[data-theme='light'] app-report-history table td strong {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-report-history table td code {
+  color: #475569 !important;
 }
 
 html[data-theme='light'] app-report-history table tr:hover td {
@@ -2785,6 +3396,44 @@ html[data-theme='light'] app-report-history button:hover {
   background-color: #f1f5f9 !important;
   border-color: #16a34a !important;
   color: #16a34a !important;
+}
+
+html[data-theme='light'] app-reports nav[aria-label="Report history pages"],
+html[data-theme='light'] app-reports .page > nav {
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] app-reports nav[aria-label="Report history pages"] span,
+html[data-theme='light'] app-reports .page > nav span {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] app-reports nav[aria-label="Report history pages"] button,
+html[data-theme='light'] app-reports .page > nav button {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+  padding: 6px 14px !important;
+  border-radius: 8px !important;
+  font-size: 10px !important;
+  cursor: pointer !important;
+}
+
+html[data-theme='light'] app-reports nav[aria-label="Report history pages"] button:hover:not(:disabled),
+html[data-theme='light'] app-reports .page > nav button:hover:not(:disabled) {
+  background-color: #f1f5f9 !important;
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+}
+
+html[data-theme='light'] app-reports nav[aria-label="Report history pages"] button:disabled,
+html[data-theme='light'] app-reports .page > nav button:disabled {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #94a3b8 !important;
+  opacity: 0.6 !important;
 }
 
 /* ==========================================================================
@@ -2855,6 +3504,19 @@ html[data-theme='light'] app-user-summary .summary-card strong {
   font-weight: 800 !important;
 }
 
+/* User Toolbar Primary Action Button */
+app-user-toolbar :is(button.add, button.create-user, button.primary) {
+  background-color: #45d869 !important;
+  border: 1px solid #4ee672 !important;
+  color: #0c2512 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 6px 18px rgba(70, 230, 112, 0.16) !important;
+}
+
+app-user-toolbar :is(button.add, button.create-user, button.primary):hover {
+  background-color: #62eb82 !important;
+}
+
 /* User Toolbar Search & Select Filters */
 html[data-theme='light'] app-user-toolbar section {
   border-bottom-color: #cbd5e1 !important;
@@ -2877,6 +3539,7 @@ html[data-theme='light'] app-user-toolbar svg {
 html[data-theme='light'] app-user-toolbar button {
   background-color: #16a34a !important;
   color: #ffffff !important;
+  border-color: #16a34a !important;
 }
 
 /* User Table Elements, Roles, Statuses, Avatars & Pagination */
@@ -4120,6 +4783,122 @@ html[data-theme='light'] select:not(.no-custom-select) option {
   font-size: 20px !important;
   transform: translateY(-1px) !important;
 }
+
+/*
+ * Application-Wide Main Page Banner Theme Colors (Option A)
+ * Adds 5px left accent border and soft gradient background tint per page domain in Light Theme.
+ */
+
+/* General Banner Base in Light Theme */
+html[data-theme='light'] :is(.page-heading, .heading, main > .page > header, app-fence-monitor > section.panel > header) {
+  background: linear-gradient(135deg, var(--banner-bg-start, #f0fdf4) 0%, #ffffff 100%) !important;
+  border: 1px solid #cbd5e1 !important;
+  border-left: 5px solid var(--banner-accent, #10b981) !important;
+  border-radius: 16px !important;
+  padding: 18px 24px !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+  margin-bottom: 20px !important;
+}
+
+html[data-theme='light'] :is(.page-heading, .heading, main > .page > header, app-fence-monitor > section.panel > header) :is(span, p:first-child) {
+  color: var(--banner-accent, #10b981) !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase !important;
+}
+
+html[data-theme='light'] :is(.page-heading, .heading, main > .page > header, app-fence-monitor > section.panel > header) :is(h1, h2) {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  margin-top: 2px !important;
+  margin-bottom: 4px !important;
+}
+
+html[data-theme='light'] :is(.page-heading, .heading, main > .page > header, app-fence-monitor > section.panel > header) p {
+  color: #475569 !important;
+  font-size: 11px !important;
+  margin: 0 !important;
+}
+
+/* 1. Dashboard & Fence Monitor Banner (Emerald Green) */
+html[data-theme='light'] app-fence-monitor > section.panel > header {
+  --banner-accent: #10b981;
+  --banner-bg-start: #f0fdf4;
+}
+
+/* 2. Alerts Page Banner (Coral Red) */
+html[data-theme='light'] app-alerts main > .page > header {
+  --banner-accent: #ef4444;
+  --banner-bg-start: #fef2f2;
+}
+
+/* 3. Fence Management Banner (Emerald Green) */
+html[data-theme='light'] app-fence-management .page-heading {
+  --banner-accent: #10b981;
+  --banner-bg-start: #f0fdf4;
+}
+
+/* 4. Device Management Banner (Sky Blue) */
+html[data-theme='light'] app-device-management .page-heading {
+  --banner-accent: #0284c7;
+  --banner-bg-start: #f0f9ff;
+}
+
+/* 5. Gateway Management Banner (Indigo) */
+html[data-theme='light'] app-gateway-management .page-heading {
+  --banner-accent: #4f46e5;
+  --banner-bg-start: #eef2ff;
+}
+
+/* 6. User Management Banner (Teal Mint) */
+html[data-theme='light'] app-user-management .page-heading {
+  --banner-accent: #059669;
+  --banner-bg-start: #ecfdf5;
+}
+
+/* 7. Historical Analysis Banner (Cyan) */
+html[data-theme='light'] app-historical-analysis .page-heading {
+  --banner-accent: #06b6d4;
+  --banner-bg-start: #ecfeff;
+}
+
+/* 8. Audit Logs Banner (Royal Purple) */
+html[data-theme='light'] app-audit-logs .heading {
+  --banner-accent: #8b5cf6;
+  --banner-bg-start: #f5f3ff;
+}
+
+/* 9. Notifications Banner (Amber) */
+html[data-theme='light'] app-notifications main > .page > header {
+  --banner-accent: #f59e0b;
+  --banner-bg-start: #fffbeb;
+}
+
+/* 10. Reports Banner (Blue) */
+html[data-theme='light'] app-reports header {
+  --banner-accent: #3b82f6;
+  --banner-bg-start: #eff6ff;
+}
+
+/* 11. Appearance Banner (Slate) */
+html[data-theme='light'] app-appearance .page-heading {
+  --banner-accent: #64748b;
+  --banner-bg-start: #f8fafc;
+}
+
+/* 12. Configuration Banner (Slate) */
+html[data-theme='light'] app-configuration .page-heading {
+  --banner-accent: #64748b;
+  --banner-bg-start: #f8fafc;
+}
+
+/* 13. User Profile Banner (Teal Mint) */
+html[data-theme='light'] app-user-profile .page-heading {
+  --banner-accent: #059669;
+  --banner-bg-start: #ecfdf5;
+}
+
 
 
 

@@ -24,7 +24,7 @@
 }
 
 .location-filters {
-  @apply ml-auto flex items-end gap-2 max-[760px]:order-3 max-[760px]:ml-0 max-[760px]:w-full max-[620px]:flex-wrap;
+  @apply flex items-end gap-2 ml-2 max-[760px]:order-3 max-[760px]:ml-0 max-[760px]:w-full max-[620px]:flex-wrap;
 }
 
 .location-select,
@@ -111,7 +111,8 @@
 }
 
 .legend {
-  @apply flex items-center gap-5 text-[8px] text-[#9da99a] max-[620px]:gap-[5px];
+  @apply ml-auto flex items-center gap-5 text-[8px] text-[#9da99a] max-[620px]:gap-[5px];
+  padding-right: 12px;
 }
 
 .legend span:before {
@@ -2044,4 +2045,26 @@ td.device {
 
 :host-context(html[data-theme='light']) .result-grid dd {
   color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .empty-fence-notice {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+}
+
+:host-context(html[data-theme='light']) .empty-fence-notice h3 {
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .empty-fence-notice p {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .empty-fence-notice a {
+  background-color: #16a34a !important;
+  color: #ffffff !important;
+}
+:host-context(html[data-theme='light']) .empty-fence-notice a:hover {
+  background-color: #15803d !important;
 }

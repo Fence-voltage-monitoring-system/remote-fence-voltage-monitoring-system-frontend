@@ -1,1 +1,19 @@
-<section><header><div><h2>Recent Alerts</h2><small>{{device.deviceId}}</small></div><span>{{criticalCount}} Critical</span></header><div class="list">@for(a of alerts;track a.title){<article [class]="a.tone"><div><strong>{{a.title}}</strong><small>{{a.reference}}</small></div><time>{{a.time}}</time></article>}</div></section>
+<section>
+  <header>
+    <div>
+      <h2>Recent Alerts</h2>
+      @if (device && (device.deviceId || device.sectionId)) {
+        <small>{{(device.deviceId && (device.deviceId.startsWith('GTW') || device.deviceId.startsWith('GTV') || device.deviceId.startsWith('SEC'))) ? device.deviceId : (device.sectionId ? 'Section ' + device.sectionId : 'Device ' + device.deviceId)}}</small>
+      }
+    </div>
+    <span>{{criticalCount}} Critical</span>
+  </header>
+  <div class="list">
+    @for(a of alerts; track a.title){
+      <article [class]="a.tone">
+        <div><strong>{{a.title}}</strong><small>{{a.reference}}</small></div>
+        <time>{{a.time}}</time>
+      </article>
+    }
+  </div>
+</section>
