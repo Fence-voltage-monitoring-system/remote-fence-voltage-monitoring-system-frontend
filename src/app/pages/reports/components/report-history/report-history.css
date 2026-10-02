@@ -1,14 +1,242 @@
-:host{display:block}.panel{border:1px solid #38513b;border-radius:12px;background:#172a1c;color:#dce5da}.panel h2{margin:0;padding:13px 15px;border-bottom:1px solid #465943;color:#f2f5f0;font-size:10px}.table{overflow:auto}.table::-webkit-scrollbar{display:none}table{width:100%;min-width:780px;border-collapse:collapse;font-size:7px}th{padding:9px 12px;text-align:left;color:#82917f;text-transform:uppercase}td{border-top:1px solid #465943;padding:9px 12px;color:#cbd4c8}td strong{color:#edf2eb}code{color:#96a493}b{display:inline-block;min-width:82px;border:1px solid #556653;border-radius:4px;padding:3px 6px;font:700 6px monospace}.ready{border-color:#3b8050;background:#31553a;color:#43d36c}.queued,.generating{border-color:#8a7326;background:#51451e;color:#ffbd19}.failed{border-color:#8e4438;background:#542b25;color:#ff756b}button{border:1px solid #596a55;border-radius:6px;background:#3c4f39;padding:5px 8px;color:#d6ded3;font-size:7px}button:disabled{opacity:.35}.empty{text-align:center;color:#8f9c8c}
+:host {
+  display: block;
+}
 
-:host-context(html[data-theme='light']) .panel, html[data-theme='light'] .panel { background: #ffffff !important; border: 1px solid #cbd5e1 !important; color: #0f172a !important; box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important; }
-:host-context(html[data-theme='light']) .panel h2, html[data-theme='light'] .panel h2 { color: #0f172a !important; border-bottom: 1px solid #cbd5e1 !important; font-weight: 700 !important; }
-:host-context(html[data-theme='light']) th, html[data-theme='light'] th { color: #475569 !important; background: #f1f5f9 !important; font-weight: 700 !important; }
-:host-context(html[data-theme='light']) td, html[data-theme='light'] td { border-top: 1px solid #e2e8f0 !important; color: #0f172a !important; background: #ffffff !important; }
-:host-context(html[data-theme='light']) td strong, html[data-theme='light'] td strong { color: #0f172a !important; font-weight: 700 !important; }
-:host-context(html[data-theme='light']) code, html[data-theme='light'] code { color: #475569 !important; }
-:host-context(html[data-theme='light']) b.ready, html[data-theme='light'] b.ready { background: #dcfce7 !important; border: 1px solid #86efac !important; color: #15803d !important; font-weight: 700 !important; }
-:host-context(html[data-theme='light']) b.queued, html[data-theme='light'] b.queued, :host-context(html[data-theme='light']) b.generating, html[data-theme='light'] b.generating { background: #fef3c7 !important; border: 1px solid #fde68a !important; color: #b45309 !important; font-weight: 700 !important; }
-:host-context(html[data-theme='light']) b.failed, html[data-theme='light'] b.failed { background: #fee2e2 !important; border: 1px solid #fca5a5 !important; color: #dc2626 !important; font-weight: 700 !important; }
-:host-context(html[data-theme='light']) button, html[data-theme='light'] button { background: #f1f5f9 !important; border: 1px solid #cbd5e1 !important; color: #0f172a !important; font-weight: 700 !important; }
-:host-context(html[data-theme='light']) button:hover, html[data-theme='light'] button:hover { background: #e2e8f0 !important; border-color: #16a34a !important; color: #16a34a !important; }
+.panel {
+  position: relative !important;
+  overflow: hidden !important;
+  border: 1px solid #38513b;
+  border-radius: 14px;
+  background: #172a1c;
+  color: #dce5da;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+}
 
+.panel::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  height: 3px !important;
+  background-color: #4ee672 !important;
+}
+
+.panel-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #344b38;
+}
+
+.panel h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.table {
+  width: 100% !important;
+  overflow-x: auto;
+}
+
+table {
+  width: 100% !important;
+  min-width: 900px;
+  border-collapse: collapse;
+  font-size: 9px;
+  table-layout: auto;
+}
+
+th {
+  padding: 12px 16px;
+  text-align: left;
+  color: #849482;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid #344b38;
+  background: #15271a;
+  white-space: nowrap;
+}
+
+td {
+  border-bottom: 1px solid #283e2c;
+  padding: 12px 16px;
+  color: #cbd4c8;
+  font-size: 10px;
+  vertical-align: middle;
+}
+
+td strong {
+  color: #edf2eb;
+  font-weight: 600;
+}
+
+code {
+  font-family: monospace;
+  color: #a2b2a0;
+  font-size: 10px;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+/* Status Badges */
+b {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 4px 10px !important;
+  border-radius: 6px !important;
+  font-size: 8px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  border: 1px solid #556653;
+}
+
+b.ready {
+  border-color: #3b8050 !important;
+  background: #1d4328 !important;
+  color: #43d36c !important;
+}
+
+b.queued, b.generating {
+  border-color: #8a7326 !important;
+  background: #463b19 !important;
+  color: #ffc000 !important;
+}
+
+b.failed {
+  border-color: #8e4438 !important;
+  background: #45241f !important;
+  color: #ff5249 !important;
+}
+
+button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #455d47;
+  border-radius: 8px;
+  background: #233a27;
+  padding: 6px 14px;
+  color: #d6ded3;
+  font-size: 9px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+button:hover:not(:disabled) {
+  border-color: #4ee672;
+  color: #4ee672;
+  background: #2a4630;
+}
+
+button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.empty {
+  text-align: center;
+  padding: 24px;
+  color: #8f9c8c;
+  font-size: 10px;
+}
+
+/* Light Theme Styling */
+:host-context(html[data-theme='light']) .panel,
+html[data-theme='light'] app-report-history .panel {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05) !important;
+}
+
+:host-context(html[data-theme='light']) .panel::before,
+html[data-theme='light'] app-report-history .panel::before {
+  background-color: #16a34a !important;
+}
+
+:host-context(html[data-theme='light']) .panel-header,
+html[data-theme='light'] app-report-history .panel-header {
+  border-bottom: 1px solid #e2e8f0 !important;
+  background: #ffffff !important;
+}
+
+:host-context(html[data-theme='light']) .panel h2,
+html[data-theme='light'] app-report-history .panel h2 {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+:host-context(html[data-theme='light']) th,
+html[data-theme='light'] app-report-history th {
+  color: #475569 !important;
+  background: #f1f5f9 !important;
+  font-weight: 700 !important;
+  border-bottom: 1px solid #cbd5e1 !important;
+}
+
+:host-context(html[data-theme='light']) td,
+html[data-theme='light'] app-report-history td {
+  border-bottom: 1px solid #e2e8f0 !important;
+  color: #0f172a !important;
+  background: #ffffff !important;
+}
+
+:host-context(html[data-theme='light']) td strong,
+html[data-theme='light'] app-report-history td strong {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+:host-context(html[data-theme='light']) code,
+html[data-theme='light'] app-report-history code {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) b.ready,
+html[data-theme='light'] app-report-history b.ready {
+  background: #dcfce7 !important;
+  border: 1px solid #86efac !important;
+  color: #15803d !important;
+  font-weight: 800 !important;
+}
+
+:host-context(html[data-theme='light']) b.queued,
+html[data-theme='light'] app-report-history b.queued,
+:host-context(html[data-theme='light']) b.generating,
+html[data-theme='light'] app-report-history b.generating {
+  background: #fef3c7 !important;
+  border: 1px solid #fde68a !important;
+  color: #b45309 !important;
+  font-weight: 800 !important;
+}
+
+:host-context(html[data-theme='light']) b.failed,
+html[data-theme='light'] app-report-history b.failed {
+  background: #fee2e2 !important;
+  border: 1px solid #fca5a5 !important;
+  color: #dc2626 !important;
+  font-weight: 800 !important;
+}
+
+:host-context(html[data-theme='light']) button,
+html[data-theme='light'] app-report-history button {
+  background: #f1f5f9 !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+:host-context(html[data-theme='light']) button:hover:not(:disabled),
+html[data-theme='light'] app-report-history button:hover:not(:disabled) {
+  background: #e2e8f0 !important;
+  border-color: #16a34a !important;
+  color: #16a34a !important;
+}

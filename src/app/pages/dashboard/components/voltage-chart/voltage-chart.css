@@ -9,8 +9,8 @@ canvas { @apply block h-[185px] w-full; }
 
 /* Light Theme Styling */
 :host-context(html[data-theme='light']) section {
-  background: #ffffff !important;
-  border: 1px solid #cbd5e1 !important;
+  background: #dcfce7 !important;
+  border: 1px solid #86efac !important;
   box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
   color: #0f172a !important;
 }
@@ -21,10 +21,12 @@ canvas { @apply block h-[185px] w-full; }
 }
 
 :host-context(html[data-theme='light']) section > p {
-  color: #475569 !important;
+  color: #047857 !important;
+  font-weight: 700 !important;
 }
 
 :host-context(html[data-theme='light']) :is(.y, .x) {
-  color: #475569 !important;
-  font-weight: 600 !important;
+  color: #334155 !important;
+  font-weight: 700 !important;
 }
+
