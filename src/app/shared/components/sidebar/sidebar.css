@@ -1,8 +1,54 @@
 @reference "../../../../styles.css";
-aside { @apply sticky top-0 z-[500] h-screen w-14 flex-none border-r border-[#213925] bg-[#102317] max-[720px]:w-11; }
-.logo { @apply h-[60px] w-full; }
-nav { @apply flex flex-col items-center gap-px; }
-button { @apply relative grid h-[38px] w-full cursor-pointer place-items-center border-0 border-l-2 border-transparent bg-transparent text-[#799076] hover:border-l-[#47e26c] hover:bg-[#16351e] hover:text-[#4ee672] focus-visible:outline-2 focus-visible:outline-[#4ee672] focus-visible:outline-offset-[-3px] max-[720px]:h-9; }
-button.active { @apply border-l-[#47e26c] bg-[#16351e] text-[#4ee672]; }
+
+/* Desktop Sidebar */
+.desktop-sidebar {
+  @apply sticky top-0 z-[500] h-screen w-14 flex-none border-r border-[#213925] bg-[#102317];
+}
+.desktop-sidebar .logo { @apply h-[60px] w-full; }
+.desktop-sidebar nav { @apply flex flex-col items-center gap-px; }
+.desktop-sidebar button { @apply relative grid h-[38px] w-full cursor-pointer place-items-center border-0 border-l-2 border-transparent bg-transparent text-[#799076] hover:border-l-[#47e26c] hover:bg-[#16351e] hover:text-[#4ee672] focus-visible:outline-2 focus-visible:outline-[#4ee672] focus-visible:outline-offset-[-3px]; }
+.desktop-sidebar button.active { @apply border-l-[#47e26c] bg-[#16351e] text-[#4ee672]; }
 .tooltip { @apply pointer-events-none absolute left-[calc(100%+10px)] z-20 w-max translate-x-[-4px] rounded-md border border-[#3a523d] bg-[#14291a] px-2.5 py-1.5 text-[10px] font-medium text-[#dce7d8] opacity-0 shadow-xl transition-all duration-150; }
-button:hover .tooltip, button:focus-visible .tooltip { @apply translate-x-0 opacity-100; }
+.desktop-sidebar button:hover .tooltip, .desktop-sidebar button:focus-visible .tooltip { @apply translate-x-0 opacity-100; }
+
+/* Mobile Drawer */
+.mobile-nav-link.active {
+  @apply bg-[#193a20] text-[#4ee672] font-semibold border-l-2 border-[#47e26c];
+}
+
+/* Light theme overrides */
+:host-context(html[data-theme='light']) .desktop-sidebar,
+html[data-theme='light'] .desktop-sidebar {
+  background-color: #f0fdf4 !important;
+  border-color: #d1fae5 !important;
+}
+
+:host-context(html[data-theme='light']) .mobile-drawer,
+html[data-theme='light'] .mobile-drawer {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+}
+
+:host-context(html[data-theme='light']) .mobile-drawer-header,
+html[data-theme='light'] .mobile-drawer-header {
+  border-color: #e2e8f0 !important;
+}
+
+:host-context(html[data-theme='light']) .mobile-nav-link,
+html[data-theme='light'] .mobile-nav-link {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .mobile-nav-link:hover,
+html[data-theme='light'] .mobile-nav-link:hover {
+  background-color: #f1f5f9 !important;
+  color: #16a34a !important;
+}
+
+:host-context(html[data-theme='light']) .mobile-nav-link.active,
+html[data-theme='light'] .mobile-nav-link.active {
+  background-color: #dcfce7 !important;
+  color: #15803d !important;
+  border-color: #16a34a !important;
+}

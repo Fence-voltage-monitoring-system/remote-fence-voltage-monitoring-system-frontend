@@ -1,6 +1,7 @@
 @reference "../../../../styles.css";
-header { @apply sticky top-0 z-1000 flex h-[60px] items-center gap-3 border-b border-[#233b27] bg-[#0f2314] px-[18px] shadow-[0_4px_14px_rgba(0,0,0,.22)] max-[620px]:h-14 max-[620px]:px-2.5; }
-.brand { @apply relative -ml-[66px] flex h-[56px] w-[250px] shrink-0 items-center gap-1.5 max-[980px]:w-[215px] max-[720px]:-ml-[54px] max-[620px]:w-[42px]; }
+header { @apply sticky top-0 z-1000 flex h-[60px] items-center gap-2.5 sm:gap-3 border-b border-[#233b27] bg-[#0f2314] px-3 sm:px-[18px] shadow-[0_4px_14px_rgba(0,0,0,.22)] max-[620px]:h-14; }
+.mobile-nav-toggle { @apply grid size-9 shrink-0 cursor-pointer place-items-center rounded-lg border border-[#315238] bg-[#142d1a] text-[#86e99c] transition-colors hover:bg-[#1a3d24] hover:text-[#4ee672] focus-visible:outline-2 focus-visible:outline-[#4ee672]; }
+.brand { @apply relative -ml-[66px] flex h-[56px] w-[250px] shrink-0 items-center gap-1.5 max-md:ml-0 max-[980px]:w-[215px] max-[620px]:w-[42px]; }
 .brand-logo { @apply block h-[50px] w-[41px] shrink-0; background: url('../../../assets/full_logo.png') center / contain no-repeat; }
 .brand-text { @apply block h-[50px] w-[195px] max-[980px]:w-[160px] max-[620px]:hidden; background-image: url('../../../assets/logo_text.png'); background-position: center; background-size: auto 145px; background-repeat: no-repeat; }
 .application-name { @apply flex min-w-[178px] shrink-0 flex-col justify-center border-x border-[#29432e] px-4 leading-[1.2] max-[1180px]:hidden; }
@@ -64,6 +65,12 @@ header { @apply sticky top-0 z-1000 flex h-[60px] items-center gap-3 border-b bo
 }
 
 :host-context(html[data-theme='light']) .status {
+  background-color: #dcfce7 !important;
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+
+:host-context(html[data-theme='light']) .mobile-nav-toggle {
   background-color: #dcfce7 !important;
   border-color: #86efac !important;
   color: #15803d !important;

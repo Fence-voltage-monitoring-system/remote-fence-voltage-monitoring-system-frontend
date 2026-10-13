@@ -261,3 +261,18 @@ html[data-theme='light'] app-user-profile .modal-panel {
   color: #0f172a !important;
 }
 
+@media (max-width: 600px) {
+  .profile-page-container {
+    padding: 12px !important;
+  }
+  .heading {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+  .primary-btn {
+    width: 100% !important;
+    text-align: center !important;
+  }
+}
+

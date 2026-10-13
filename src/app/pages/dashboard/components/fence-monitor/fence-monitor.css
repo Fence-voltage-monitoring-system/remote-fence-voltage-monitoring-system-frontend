@@ -77,12 +77,20 @@
   box-shadow: 0 0 0 3px rgba(78, 242, 120, 0.25), 0 4px 14px rgba(0, 0, 0, 0.5);
 }
 
+.location-select {
+  @apply max-[620px]:w-full;
+}
+
+.fence-select {
+  @apply max-[620px]:w-full;
+}
+
 .location-select select {
-  @apply min-w-[170px];
+  @apply min-w-[170px] max-[620px]:min-w-0 max-[620px]:w-full;
 }
 
 .fence-select select {
-  @apply min-w-[350px] max-[620px]:min-w-[250px];
+  @apply min-w-[320px] max-[620px]:min-w-0 max-[620px]:w-full;
 }
 
 .location-select option,
@@ -111,7 +119,7 @@
 }
 
 .legend {
-  @apply ml-auto flex items-center gap-5 text-[8px] text-[#9da99a] max-[620px]:gap-[5px];
+  @apply ml-auto flex items-center gap-5 text-[8px] text-[#9da99a] max-[620px]:ml-0 max-[620px]:w-full max-[620px]:flex-wrap max-[620px]:justify-between max-[620px]:gap-2 max-[620px]:pt-1;
   padding-right: 12px;
 }
 

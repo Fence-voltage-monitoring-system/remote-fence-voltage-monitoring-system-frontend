@@ -6,10 +6,12 @@ import { filter, Subscription, timer, merge, of, switchMap, catchError } from 'r
 import { UserMenuComponent } from '../user-menu/user-menu';
 import { NotificationService } from '../../../core/services/notification.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { NavigationService } from '../../../core/services/navigation.service';
 
 @Component({ selector: 'app-header', standalone: true, imports: [RouterLink, UserMenuComponent], templateUrl: './header.html', styleUrl: './header.css' })
 export class HeaderComponent implements AfterViewInit, OnDestroy {
   private readonly authService = inject(AuthService);
+  public readonly navService = inject(NavigationService);
   readonly currentTime = signal('');
   readonly currentDate = signal('');
   readonly pageName = signal('Live Dashboard');

@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ManagementAccessService } from '../../../core/services/management-access.service';
+import { NavigationService } from '../../../core/services/navigation.service';
 import {
   ChartNoAxesCombined,
   Columns3,
@@ -16,6 +17,7 @@ import {
   Settings,
   TriangleAlert,
   Users,
+  X,
   Zap,
 } from 'lucide';
 
@@ -34,6 +36,7 @@ interface NavigationItem {
 })
 export class SidebarComponent implements AfterViewInit {
   private readonly accessService = inject(ManagementAccessService);
+  public readonly navService = inject(NavigationService);
   activeItem = 'Dashboard';
 
   readonly items: NavigationItem[] = [
@@ -67,10 +70,37 @@ export class SidebarComponent implements AfterViewInit {
     });
   }
 
+  onItemClick(label: string): void {
+    this.activeItem = label;
+    this.navService.closeMobileNav();
+  }
+
   ngAfterViewInit(): void {
-    createIcons({
-      icons: { ChartNoAxesCombined, Columns3, Cpu, Fence, FileChartColumn, LayoutDashboard, Map, PanelTop, RadioTower, ScrollText, Settings, TriangleAlert, Users, Zap },
-      attrs: { 'stroke-width': 1.7, width: 17, height: 17 },
-    });
+    this.renderIcons();
+  }
+
+  renderIcons(): void {
+    setTimeout(() => {
+      createIcons({
+        icons: {
+          ChartNoAxesCombined,
+          Columns3,
+          Cpu,
+          Fence,
+          FileChartColumn,
+          LayoutDashboard,
+          Map,
+          PanelTop,
+          RadioTower,
+          ScrollText,
+          Settings,
+          TriangleAlert,
+          Users,
+          X,
+          Zap,
+        },
+        attrs: { 'stroke-width': 1.7, width: 17, height: 17 },
+      });
+    }, 0);
   }
 }
