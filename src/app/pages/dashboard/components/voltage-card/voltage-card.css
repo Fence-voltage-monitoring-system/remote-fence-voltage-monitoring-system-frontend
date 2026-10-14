@@ -26,7 +26,7 @@ article.card-red::before, article.danger::before { background-color: #ef4444 !im
 article.card-warning::before, article.warning::before { background-color: #f59e0b !important; }
 
 /* Dark Theme Text & Icon Badges */
-.top { @apply flex justify-between text-[10px] uppercase tracking-[.06em] text-[#aab4a5]; }
+.top { @apply flex justify-between text-[13px] uppercase tracking-[.06em] text-[#aab4a5]; }
 .top b { @apply text-[19px] text-[#43e16b]; }
 
 .card-green .top b, .card-green p { @apply text-[#4add6b]; }
@@ -37,8 +37,8 @@ article.card-warning::before, article.warning::before { background-color: #f59e0
 
 .metric { @apply mt-2.5 flex items-baseline gap-[7px]; }
 .metric strong { @apply font-mono text-3xl font-bold text-white; }
-.metric small { @apply text-[10px] text-[#929e8f]; }
-p { @apply mt-auto mb-0 text-[9px] font-bold text-[#4add6b]; }
+.metric small { @apply text-[13px] text-[#929e8f]; }
+p { @apply mt-auto mb-0 text-[13px] font-bold text-[#4add6b]; }
 
 /* Light Theme Styling */
 :host-context(html[data-theme='light']) article,
@@ -53,7 +53,7 @@ html[data-theme='light'] app-voltage-card article {
 html[data-theme='light'] app-voltage-card .top span {
   color: #475569 !important;
   font-weight: 700 !important;
-  font-size: 10px !important;
+  font-size: 13px !important;
   letter-spacing: 0.08em !important;
 }
 
@@ -162,7 +162,7 @@ html[data-theme='light'] app-voltage-card article.warning .top b {
   align-items: center !important;
   padding: 2px 8px !important;
   border-radius: 9999px !important;
-  font-size: 10px !important;
+  font-size: 13px !important;
   font-weight: 700 !important;
   background-color: #e6f4ea !important;
   border: 1px solid #bbf7d0 !important;

@@ -3,21 +3,21 @@
 section{position:relative;z-index:2001;width:min(520px, calc(100vw - 32px));max-height:calc(100dvh - 32px);margin:auto;border:1px solid #3a563e;border-radius:14px;background:#14291a;color:#edf4e9;box-shadow:0 24px 70px rgba(0, 0, 0, 0.65);overflow:hidden;display:flex;flex-direction:column}
 
 .modal-accent-bar{height:4px;flex-shrink:0;background:linear-gradient(90deg, #16a34a, #0d9488, #2dd4bf)}
-.modal-category-badge{display:inline-block;padding:3px 8px;border-radius:4px;font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:rgba(34, 197, 94, 0.15);color:#4ee672;border:1px solid rgba(78, 230, 114, 0.3);margin-bottom:8px}
+.modal-category-badge{display:inline-block;padding:3px 8px;border-radius:4px;font-size: 13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:rgba(34, 197, 94, 0.15);color:#4ee672;border:1px solid rgba(78, 230, 114, 0.3);margin-bottom:8px}
 
 header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
 h2{margin:0;color:#ffffff;font-size:16px;font-weight:700;line-height:1.25}
-header p{margin:4px 0 0;color:#9fae9d;font-size:11px;line-height:1.4}
+header p{margin:4px 0 0;color:#9fae9d;font-size: 14px;line-height:1.4}
 header button{background:transparent;border:none;color:#9fae9d;font-size:20px;line-height:1;cursor:pointer;padding:2px 6px;border-radius:4px;transition:all .15s ease}
 header button:hover{color:#ffffff;background:rgba(255, 255, 255, 0.1)}
 
-label{display:grid;gap:6px;color:#a3b8a1;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
-textarea{min-height:90px;border:1px solid #3b5440;border-radius:8px;background:#102318;padding:10px 12px;color:#edf3eb;font-size:11px;line-height:1.4;resize:vertical;transition:all .15s ease}
+label{display:grid;gap:6px;color:#a3b8a1;font-size: 13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+textarea{min-height:90px;border:1px solid #3b5440;border-radius:8px;background:#102318;padding:10px 12px;color:#edf3eb;font-size: 14px;line-height:1.4;resize:vertical;transition:all .15s ease}
 textarea::placeholder{color:#6b826d}
 textarea:focus{outline:none;border-color:#4ee672;box-shadow:0 0 0 3px rgba(78, 230, 114, 0.15)}
 
 footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
-footer button{height:36px;border-radius:8px;padding:0 16px;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s ease}
+footer button{height:36px;border-radius:8px;padding:0 16px;font-size: 14px;font-weight:700;cursor:pointer;transition:all .15s ease}
 .cancel{border:1px solid #3b5440;background:#1e3824;color:#dce6db}
 .cancel:hover{background:#27472e;border-color:#4ee672;color:#ffffff}
 .save{border:1px solid #16a34a;background:#22c55e;color:#051b0b}

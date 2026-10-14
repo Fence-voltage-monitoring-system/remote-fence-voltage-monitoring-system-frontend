@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject } from '@angular/core';
+import { AfterViewInit, Component, effect, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ManagementAccessService } from '../../../core/services/management-access.service';
 import { NavigationService } from '../../../core/services/navigation.service';
@@ -38,6 +38,14 @@ export class SidebarComponent implements AfterViewInit {
   private readonly accessService = inject(ManagementAccessService);
   public readonly navService = inject(NavigationService);
   activeItem = 'Dashboard';
+
+  constructor() {
+    effect(() => {
+      if (this.navService.isMobileNavOpen()) {
+        this.renderIcons();
+      }
+    });
+  }
 
   readonly items: NavigationItem[] = [
     { label: 'Dashboard', icon: 'layout-dashboard', route: '/dashboard' },
@@ -99,7 +107,7 @@ export class SidebarComponent implements AfterViewInit {
           X,
           Zap,
         },
-        attrs: { 'stroke-width': 1.7, width: 17, height: 17 },
+        attrs: { 'stroke-width': 1.85, width: 21, height: 21 },
       });
     }, 0);
   }

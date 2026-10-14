@@ -3,7 +3,7 @@
     class="visual-panel relative hidden min-h-dvh overflow-hidden border-r border-[#48d370]/15 bg-[linear-gradient(180deg,#071d0d_0%,#061a0c_63%,#020c05_100%)] md:block"
     aria-label="Department of Wildlife Conservation electric fence monitoring"
   >
-    <div class="absolute top-7 left-7 z-10 grid gap-2 font-mono text-[7px] leading-tight tracking-[.06em] text-[#31c658]/55" aria-hidden="true">
+    <div class="absolute top-7 left-7 z-10 grid gap-2 font-mono text-[11px] leading-tight tracking-[.06em] text-[#31c658]/55" aria-hidden="true">
       <span>FENCE-MONITOR-SL v2.4.1</span>
       <span>SECTOR: NATIONAL COVERAGE</span>
     </div>
@@ -27,9 +27,9 @@
 
     <div class="absolute inset-x-0 bottom-6 z-10 grid justify-items-center gap-2 text-center">
       <h1 class="m-0 text-[19px] font-extrabold">DWC · SRI LANKA</h1>
-      <p class="m-0 text-[11px] text-[#89988c]">Wildlife Conservation</p>
+      <p class="m-0 text-[14px] text-[#89988c]">Wildlife Conservation</p>
       <strong class="mt-1 text-xs text-[#c4cec5]">Remote Fence Voltage Monitoring System</strong>
-      <span class="text-[10px] text-[#35ce65]">National Remote Monitoring &amp; Alert Platform</span>
+      <span class="text-[13px] text-[#35ce65]">National Remote Monitoring &amp; Alert Platform</span>
     </div>
   </section>
 
@@ -42,14 +42,14 @@
           </svg>
         </div>
         <h2 class="mb-[7px] text-[15px] font-extrabold">Secure System Access</h2>
-        <p class="text-[10px] text-[#88a18d]">Remote Fence Voltage Monitoring System</p>
+        <p class="text-[13px] text-[#88a18d]">Remote Fence Voltage Monitoring System</p>
       </header>
 
       <form class="grid gap-[17px]" [formGroup]="loginForm" (ngSubmit)="submitLogin()" aria-label="Secure system login" novalidate>
         <div class="grid gap-2">
-          <label class="text-[9px] font-semibold tracking-[.12em] text-[#86ad8f] uppercase" for="email">Email address</label>
+          <label class="text-[13px] font-semibold tracking-[.12em] text-[#86ad8f] uppercase" for="email">Email address</label>
           <input
-            class="h-[35px] w-full rounded-[9px] border border-[#3d5742] bg-[#203725] px-3 text-[11px] text-[#e4ebe5] outline-none transition placeholder:text-[#8ba08f] focus:border-[#43d36c] focus:shadow-[0_0_0_3px_rgba(67,211,108,.12)]"
+            class="h-[35px] w-full rounded-[9px] border border-[#3d5742] bg-[#203725] px-3 text-[14px] text-[#e4ebe5] outline-none transition placeholder:text-[#8ba08f] focus:border-[#43d36c] focus:shadow-[0_0_0_3px_rgba(67,211,108,.12)]"
             id="email"
             formControlName="email"
             type="email"
@@ -59,17 +59,17 @@
             aria-describedby="email-error"
           />
           @if (emailControl.touched && emailControl.hasError('required')) {
-            <p id="email-error" class="m-0 text-[9px] text-[#ff9a91]" role="alert">Email address is required.</p>
+            <p id="email-error" class="m-0 text-[13px] text-[#ff9a91]" role="alert">Email address is required.</p>
           } @else if (emailControl.touched && emailControl.hasError('email')) {
-            <p id="email-error" class="m-0 text-[9px] text-[#ff9a91]" role="alert">Enter a valid email address.</p>
+            <p id="email-error" class="m-0 text-[13px] text-[#ff9a91]" role="alert">Enter a valid email address.</p>
           }
         </div>
 
         <div class="grid gap-2">
-          <label class="text-[9px] font-semibold tracking-[.12em] text-[#86ad8f] uppercase" for="password">Password</label>
+          <label class="text-[13px] font-semibold tracking-[.12em] text-[#86ad8f] uppercase" for="password">Password</label>
           <div class="relative">
             <input
-              class="h-[35px] w-full rounded-[9px] border border-[#3d5742] bg-[#203725] pr-10 pl-3 text-[11px] text-[#e4ebe5] outline-none transition placeholder:text-[#8ba08f] focus:border-[#43d36c] focus:shadow-[0_0_0_3px_rgba(67,211,108,.12)]"
+              class="h-[35px] w-full rounded-[9px] border border-[#3d5742] bg-[#203725] pr-10 pl-3 text-[14px] text-[#e4ebe5] outline-none transition placeholder:text-[#8ba08f] focus:border-[#43d36c] focus:shadow-[0_0_0_3px_rgba(67,211,108,.12)]"
               id="password"
               formControlName="password"
               [type]="passwordVisible ? 'text' : 'password'"
@@ -91,13 +91,13 @@
             </button>
           </div>
           @if (passwordControl.touched && passwordControl.hasError('required')) {
-            <p id="password-error" class="m-0 text-[9px] text-[#ff9a91]" role="alert">Password is required.</p>
+            <p id="password-error" class="m-0 text-[13px] text-[#ff9a91]" role="alert">Password is required.</p>
           } @else if (passwordControl.touched && passwordControl.hasError('minlength')) {
-            <p id="password-error" class="m-0 text-[9px] text-[#ff9a91]" role="alert">Password must contain at least 8 characters.</p>
+            <p id="password-error" class="m-0 text-[13px] text-[#ff9a91]" role="alert">Password must contain at least 8 characters.</p>
           }
         </div>
 
-        <div class="mt-px flex items-center justify-between text-[10px]">
+        <div class="mt-px flex items-center justify-between text-[13px]">
           <label class="flex cursor-pointer items-center gap-2">
             <input class="m-0 size-3 accent-[#43d36c]" type="checkbox" formControlName="rememberMe" />
             <span>Remember me</span>
@@ -106,11 +106,11 @@
         </div>
 
         @if (errorMessage) {
-          <p class="m-0 rounded-md border border-[#ef6a60]/40 bg-[#6e211c]/35 px-3 py-2 text-[9px] text-[#ffaaa3]" role="alert">{{ errorMessage }}</p>
+          <p class="m-0 rounded-md border border-[#ef6a60]/40 bg-[#6e211c]/35 px-3 py-2 text-[13px] text-[#ffaaa3]" role="alert">{{ errorMessage }}</p>
         }
 
         @if (successMessage) {
-          <p class="m-0 rounded-md border border-[#43d36c]/40 bg-[#174c28]/40 px-3 py-2 text-[9px] text-[#7ce59a]" role="status">{{ successMessage }}</p>
+          <p class="m-0 rounded-md border border-[#43d36c]/40 bg-[#174c28]/40 px-3 py-2 text-[13px] text-[#7ce59a]" role="status">{{ successMessage }}</p>
         }
 
         <button
@@ -125,7 +125,7 @@
         </button>
       </form>
 
-      <aside class="mt-[22px] flex min-h-[66px] items-start gap-2 rounded-lg border border-[#cfa800]/45 bg-[#5f5004]/30 px-[13px] py-3 text-[8px] leading-[1.55] text-[#91a094]">
+      <aside class="mt-[22px] flex min-h-[66px] items-start gap-2 rounded-lg border border-[#cfa800]/45 bg-[#5f5004]/30 px-[13px] py-3 text-[12px] leading-[1.55] text-[#91a094]">
         <svg class="w-[13px] shrink-0 fill-none stroke-[#edc600] stroke-[1.8]" viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="12" cy="12" r="9" />
           <path d="M12 7v6m0 3h.01" />
@@ -133,7 +133,7 @@
         <p class="m-0"><strong class="text-[#f0cc19]">Authorized personnel only.</strong> Unauthorized access is prohibited and subject to prosecution under Sri Lanka computer crime regulations.</p>
       </aside>
 
-      <footer class="mt-[19px] flex items-center justify-center gap-1.5 whitespace-nowrap text-[6px] text-[#7f9484] min-[390px]:gap-[11px] min-[390px]:text-[7px]">
+      <footer class="mt-[19px] flex items-center justify-center gap-1.5 whitespace-nowrap text-[11px] text-[#7f9484] min-[390px]:gap-[11px] min-[390px]:text-[11px]">
         <span class="flex items-center gap-1">
           <svg class="w-[11px] fill-none stroke-[#40bd63] stroke-[1.8]" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9a12 12 0 0 1 16 0M7 12a8 8 0 0 1 10 0m-7 3a4 4 0 0 1 4 0m-2 3h.01" /></svg>
           TLS 1.3 Encrypted

@@ -23,11 +23,11 @@
 .metric:hover{border-color:#4b6950;transform:translateY(-2px)}
 .metric-top{display:flex;align-items:center;justify-content:space-between}
 .metric-icon{display:grid;width:26px;height:26px;place-items:center;border:1px solid #38573f;border-radius:8px;background:#203a27;color:#59e77a;font:700 12px ui-monospace,monospace}
-.metric em{border-radius:99px;background:#203927;padding:3px 6px;font-size:5px;font-style:normal;text-transform:uppercase}
-.label{display:block;margin-top:12px;color:#849582;font-size:7px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.metric em{border-radius:99px;background:#203927;padding:3px 6px;font-size: 11px;font-style:normal;text-transform:uppercase}
+.label{display:block;margin-top:12px;color:#849582;font-size: 11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .value{display:flex;align-items:baseline;margin-top:3px}
 .value strong{font:700 21px ui-monospace,monospace;letter-spacing:-.04em}
-.value small{margin-left:4px;color:#758674;font-size:7px}
+.value small{margin-left:4px;color:#758674;font-size: 11px}
 .metric>i{display:block;height:3px;margin-top:9px;overflow:hidden;border-radius:99px;background:#2d4231}
 .metric>i b{display:block;height:100%;border-radius:inherit;background:#4ee672}
 .green{color:#4ee672}.amber{color:#f4bd2b}.red{color:#ff655d}.neutral{color:#d7dfd4}

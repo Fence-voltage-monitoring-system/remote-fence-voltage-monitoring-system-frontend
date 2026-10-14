@@ -1,5 +1,5 @@
 <!-- Desktop Persistent Icon Sidebar (Hidden on mobile < md) -->
-<aside class="desktop-sidebar hidden md:block">
+<aside class="desktop-sidebar">
   <div class="logo" role="img" aria-label="Remote fence monitoring"></div>
 
   <nav aria-label="Main navigation">
@@ -34,7 +34,7 @@
         <span class="block size-8 rounded-lg bg-[url('/assets/full_logo.png')] bg-contain bg-center bg-no-repeat"></span>
         <div class="leading-tight">
           <strong class="block text-xs font-bold text-[#edf4e9]">NERDC / DWC</strong>
-          <span class="block text-[10px] text-[#55e777]">Fence Monitor SL</span>
+          <span class="block text-[13px] text-[#55e777]">Fence Monitor SL</span>
         </div>
       </div>
       <button
@@ -60,14 +60,14 @@
             class="mobile-nav-link flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-medium text-[#9eb49f] transition-colors hover:bg-[#16351e] hover:text-[#4ee672]"
             (click)="onItemClick(item.label)"
           >
-            <i [attr.data-lucide]="item.icon" class="size-4 shrink-0"></i>
+            <i [attr.data-lucide]="item.icon" class="size-5 shrink-0"></i>
             <span class="truncate">{{ item.label }}</span>
           </a>
         }
       </div>
     </nav>
 
-    <div class="border-t border-[#234329] p-3 text-center text-[10px] text-[#6b826d]">
+    <div class="border-t border-[#234329] p-3 text-center text-[13px] text-[#6b826d]">
       <span>National Fence Monitoring &middot; v2.4.1</span>
     </div>
   </aside>

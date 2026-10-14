@@ -2,14 +2,47 @@
 
 /* Desktop Sidebar */
 .desktop-sidebar {
-  @apply sticky top-0 z-[500] h-screen w-14 flex-none border-r border-[#213925] bg-[#102317];
+  display: none !important;
+  @apply sticky top-0 z-[500] h-screen w-[68px] min-w-[68px] max-w-[68px] flex-none border-r border-[#213925] bg-[#102317];
+}
+@media (min-width: 769px) {
+  .desktop-sidebar {
+    display: block !important;
+  }
 }
 .desktop-sidebar .logo { @apply h-[60px] w-full; }
-.desktop-sidebar nav { @apply flex flex-col items-center gap-px; }
-.desktop-sidebar button { @apply relative grid h-[38px] w-full cursor-pointer place-items-center border-0 border-l-2 border-transparent bg-transparent text-[#799076] hover:border-l-[#47e26c] hover:bg-[#16351e] hover:text-[#4ee672] focus-visible:outline-2 focus-visible:outline-[#4ee672] focus-visible:outline-offset-[-3px]; }
-.desktop-sidebar button.active { @apply border-l-[#47e26c] bg-[#16351e] text-[#4ee672]; }
-.tooltip { @apply pointer-events-none absolute left-[calc(100%+10px)] z-20 w-max translate-x-[-4px] rounded-md border border-[#3a523d] bg-[#14291a] px-2.5 py-1.5 text-[10px] font-medium text-[#dce7d8] opacity-0 shadow-xl transition-all duration-150; }
-.desktop-sidebar button:hover .tooltip, .desktop-sidebar button:focus-visible .tooltip { @apply translate-x-0 opacity-100; }
+.desktop-sidebar nav {
+  @apply flex flex-col items-center gap-1 py-1.5 overflow-y-auto max-h-[calc(100vh-60px)];
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.desktop-sidebar nav::-webkit-scrollbar {
+  display: none;
+}
+.desktop-sidebar button {
+  @apply relative grid h-[46px] w-full cursor-pointer place-items-center border-0 border-l-[3.5px] border-transparent bg-transparent text-[#8ba288] transition-all duration-150 hover:border-l-[#47e26c] hover:bg-[#16351e] hover:text-[#4ee672] focus-visible:outline-2 focus-visible:outline-[#4ee672] focus-visible:outline-offset-[-3px];
+}
+.desktop-sidebar button.active {
+  @apply border-l-[#47e26c] bg-[#16351e] text-[#4ee672] font-semibold;
+}
+.desktop-sidebar button i,
+.desktop-sidebar button svg {
+  width: 21px !important;
+  height: 21px !important;
+  stroke-width: 1.85px !important;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+.desktop-sidebar button:hover i,
+.desktop-sidebar button:hover svg {
+  transform: scale(1.08);
+}
+.tooltip {
+  @apply pointer-events-none absolute left-[calc(100%+12px)] z-[600] w-max translate-x-[-4px] rounded-lg border border-[#3d5c41] bg-[#122818] px-3 py-1.5 text-[14px] font-semibold text-[#edf4e9] opacity-0 shadow-[0_10px_25px_rgba(0,0,0,0.5)] transition-all duration-150;
+}
+.desktop-sidebar button:hover .tooltip,
+.desktop-sidebar button:focus-visible .tooltip {
+  @apply translate-x-0 opacity-100;
+}
 
 /* Mobile Drawer */
 .mobile-nav-link.active {
@@ -21,6 +54,40 @@
 html[data-theme='light'] .desktop-sidebar {
   background-color: #f0fdf4 !important;
   border-color: #d1fae5 !important;
+}
+
+:host-context(html[data-theme='light']) .desktop-sidebar button,
+html[data-theme='light'] .desktop-sidebar button {
+  color: #475569 !important;
+}
+
+:host-context(html[data-theme='light']) .desktop-sidebar button:hover,
+html[data-theme='light'] .desktop-sidebar button:hover {
+  background-color: #e6f4ea !important;
+  color: #16a34a !important;
+  border-left-color: #16a34a !important;
+}
+
+:host-context(html[data-theme='light']) .desktop-sidebar button.active,
+html[data-theme='light'] .desktop-sidebar button.active {
+  background-color: #dcfce7 !important;
+  color: #15803d !important;
+  border-left-color: #16a34a !important;
+}
+
+:host-context(html[data-theme='light']) .desktop-sidebar button i,
+:host-context(html[data-theme='light']) .desktop-sidebar button svg,
+html[data-theme='light'] .desktop-sidebar button i,
+html[data-theme='light'] .desktop-sidebar button svg {
+  color: inherit !important;
+}
+
+:host-context(html[data-theme='light']) .tooltip,
+html[data-theme='light'] .tooltip {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1) !important;
 }
 
 :host-context(html[data-theme='light']) .mobile-drawer,

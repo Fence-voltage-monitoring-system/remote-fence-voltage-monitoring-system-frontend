@@ -1,13 +1,13 @@
 :host { position: fixed; inset: 0; z-index: 2000; display: block; }
 .field { display: grid; gap: .45rem; }
-.field label { color: #96b29b; font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
-.control, .form-input { width: 100%; height: 40px; box-sizing: border-box; border: 1px solid #38513b; border-radius: 9px; padding: 0 12px; color: #eef3ed; background: #203824; font: inherit; font-size: 12px; outline: none; transition: all .15s ease; }
+.field label { color: #96b29b; font-size: 13px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; }
+.control, .form-input { width: 100%; height: 40px; box-sizing: border-box; border: 1px solid #38513b; border-radius: 9px; padding: 0 12px; color: #eef3ed; background: #203824; font: inherit; font-size: 15px; outline: none; transition: all .15s ease; }
 .control:focus, .form-input:focus { border-color: #43d36c; box-shadow: 0 0 0 3px rgb(67 211 108 / 15%); }
-.error { margin: 0; color: #ff8e84; font-size: 9px; }
-.hint { margin: 0; color: #7f9082; font-size: 9px; }
+.error { margin: 0; color: #ff8e84; font-size: 13px; }
+.hint { margin: 0; color: #7f9082; font-size: 13px; }
 
 .modal-accent-bar{height:5px;flex-shrink:0;background:linear-gradient(90deg, #16a34a, #0d9488, #2dd4bf)}
-.modal-category-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:rgba(22, 163, 74, 0.2);color:#43d36c;border:1px solid rgba(67, 211, 108, 0.3);margin-bottom:6px}
+.modal-category-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size: 13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:rgba(22, 163, 74, 0.2);color:#43d36c;border:1px solid rgba(67, 211, 108, 0.3);margin-bottom:6px}
 
 .drawer-backdrop {
   animation: backdrop-in 180ms ease-out both;

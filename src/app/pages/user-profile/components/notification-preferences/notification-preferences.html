@@ -11,24 +11,24 @@
     <div class="grid gap-3 sm:grid-cols-3">
       <label class="toggle-item">
         <div>
-          <strong class="block text-[10px] font-semibold text-[#edf4e9]">Notification Sound</strong>
-          <small class="mt-0.5 block text-[8px] text-[#8fa08c]">Play sound for live alerts</small>
+          <strong class="block text-[13px] font-semibold text-[#edf4e9]">Notification Sound</strong>
+          <small class="mt-0.5 block text-[12px] text-[#8fa08c]">Play sound for live alerts</small>
         </div>
         <input type="checkbox" [(ngModel)]="draft.soundEnabled"/>
       </label>
 
       <label class="toggle-item">
         <div>
-          <strong class="block text-[10px] font-semibold text-[#edf4e9]">Desktop Notifications</strong>
-          <small class="mt-0.5 block text-[8px] text-[#8fa08c]">System notifications</small>
+          <strong class="block text-[13px] font-semibold text-[#edf4e9]">Desktop Notifications</strong>
+          <small class="mt-0.5 block text-[12px] text-[#8fa08c]">System notifications</small>
         </div>
         <input type="checkbox" [(ngModel)]="draft.desktopNotificationsEnabled"/>
       </label>
 
       <label class="toggle-item">
         <div>
-          <strong class="block text-[10px] font-semibold text-[#edf4e9]">Auto Mark as Read</strong>
-          <small class="mt-0.5 block text-[8px] text-[#8fa08c]">On opening detail panel</small>
+          <strong class="block text-[13px] font-semibold text-[#edf4e9]">Auto Mark as Read</strong>
+          <small class="mt-0.5 block text-[12px] text-[#8fa08c]">On opening detail panel</small>
         </div>
         <input type="checkbox" [(ngModel)]="draft.markAsReadOnOpen"/>
       </label>
@@ -37,19 +37,19 @@
     <div class="rounded-xl border border-[#304735] bg-[#112316] p-4">
       <label class="toggle-item border-0 bg-transparent p-0">
         <div>
-          <strong class="block text-[10px] font-semibold text-[#edf4e9]">Quiet Hours</strong>
-          <small class="mt-0.5 block text-[8px] text-[#8fa08c]">Silence non-critical notifications. Critical alerts always bypass quiet hours.</small>
+          <strong class="block text-[13px] font-semibold text-[#edf4e9]">Quiet Hours</strong>
+          <small class="mt-0.5 block text-[12px] text-[#8fa08c]">Silence non-critical notifications. Critical alerts always bypass quiet hours.</small>
         </div>
         <input type="checkbox" [(ngModel)]="draft.quietHoursEnabled"/>
       </label>
       
       @if (draft.quietHoursEnabled) {
         <div class="mt-3 flex flex-wrap items-center gap-4 border-t border-[#233828] pt-3">
-          <label class="flex items-center gap-2 text-[8px] uppercase tracking-wider text-[#81917f]">
+          <label class="flex items-center gap-2 text-[12px] uppercase tracking-wider text-[#81917f]">
             Start Time
             <input type="time" class="form-input !h-8 !w-32" [(ngModel)]="draft.quietHoursStart"/>
           </label>
-          <label class="flex items-center gap-2 text-[8px] uppercase tracking-wider text-[#81917f]">
+          <label class="flex items-center gap-2 text-[12px] uppercase tracking-wider text-[#81917f]">
             End Time
             <input type="time" class="form-input !h-8 !w-32" [(ngModel)]="draft.quietHoursEnd"/>
           </label>
@@ -61,13 +61,13 @@
       <div class="rounded-xl border border-[#304735] bg-[#112316] p-4">
         <label class="toggle-item border-0 bg-transparent p-0">
           <div>
-            <strong class="block text-[10px] font-semibold text-[#edf4e9]">Group Similar Alerts</strong>
-            <small class="mt-0.5 block text-[8px] text-[#8fa08c]">Combine repeated events from same fence</small>
+            <strong class="block text-[13px] font-semibold text-[#edf4e9]">Group Similar Alerts</strong>
+            <small class="mt-0.5 block text-[12px] text-[#8fa08c]">Combine repeated events from same fence</small>
           </div>
           <input type="checkbox" [(ngModel)]="draft.groupSimilarNotifications"/>
         </label>
         @if (draft.groupSimilarNotifications) {
-          <label class="mt-3 block border-t border-[#233828] pt-3 text-[8px] uppercase tracking-wider text-[#81917f]">
+          <label class="mt-3 block border-t border-[#233828] pt-3 text-[12px] uppercase tracking-wider text-[#81917f]">
             Grouping Window (minutes)
             <input type="number" min="1" class="form-input mt-1.5 !h-8 !w-full" [(ngModel)]="draft.groupingWindowMinutes"/>
           </label>
@@ -77,13 +77,13 @@
       <div class="rounded-xl border border-[#304735] bg-[#112316] p-4">
         <label class="toggle-item border-0 bg-transparent p-0">
           <div>
-            <strong class="block text-[10px] font-semibold text-[#edf4e9]">Notification Digest</strong>
-            <small class="mt-0.5 block text-[8px] text-[#8fa08c]">Receive periodic summary digests</small>
+            <strong class="block text-[13px] font-semibold text-[#edf4e9]">Notification Digest</strong>
+            <small class="mt-0.5 block text-[12px] text-[#8fa08c]">Receive periodic summary digests</small>
           </div>
           <input type="checkbox" [(ngModel)]="draft.digestEnabled"/>
         </label>
         @if (draft.digestEnabled) {
-          <label class="mt-3 block border-t border-[#233828] pt-3 text-[8px] uppercase tracking-wider text-[#81917f]">
+          <label class="mt-3 block border-t border-[#233828] pt-3 text-[12px] uppercase tracking-wider text-[#81917f]">
             Digest Interval (minutes)
             <input type="number" min="5" class="form-input mt-1.5 !h-8 !w-full" [(ngModel)]="draft.digestIntervalMinutes"/>
           </label>
@@ -93,10 +93,10 @@
   </div>
 
   <footer class="flex items-center justify-between border-t border-[#304735] p-4">
-    <small class="text-[8px] text-[#71836f]">Browser permissions managed separately. Critical alerts cannot be silenced.</small>
+    <small class="text-[12px] text-[#71836f]">Browser permissions managed separately. Critical alerts cannot be silenced.</small>
     <div class="flex gap-2">
-      <button type="button" class="cursor-pointer rounded-xl border border-[#405943] px-4 py-2 text-[9px] text-[#edf4e9] hover:bg-[#1f3827]" [disabled]="!dirty||isSaving" (click)="reset()">Cancel</button>
-      <button type="button" class="cursor-pointer rounded-xl border border-[#4ee672] bg-[#45d869] px-4 py-2 text-[9px] font-semibold text-[#0c2512] hover:bg-[#52e777] disabled:opacity-50" [disabled]="!dirty||!valid||isSaving" (click)="saved.emit(draft)">
+      <button type="button" class="cursor-pointer rounded-xl border border-[#405943] px-4 py-2 text-[13px] text-[#edf4e9] hover:bg-[#1f3827]" [disabled]="!dirty||isSaving" (click)="reset()">Cancel</button>
+      <button type="button" class="cursor-pointer rounded-xl border border-[#4ee672] bg-[#45d869] px-4 py-2 text-[13px] font-semibold text-[#0c2512] hover:bg-[#52e777] disabled:opacity-50" [disabled]="!dirty||!valid||isSaving" (click)="saved.emit(draft)">
         {{ isSaving ? 'Saving…' : 'Save Preferences' }}
       </button>
     </div>

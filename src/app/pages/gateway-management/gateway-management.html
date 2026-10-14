@@ -20,7 +20,7 @@
           <span>{{ notice }}</span>
           <div class="flex items-center gap-2">
             @if (usingPreview) {
-              <button class="retry-btn rounded-md border border-[#2d6b3a] bg-[#1d4826] px-3 py-1 text-[10px] font-semibold hover:opacity-90" type="button" (click)="loadGateways()">Retry</button>
+              <button class="retry-btn rounded-md border border-[#2d6b3a] bg-[#1d4826] px-3 py-1 text-[13px] font-semibold hover:opacity-90" type="button" (click)="loadGateways()">Retry</button>
             }
             <button class="notice-dismiss text-current opacity-70 hover:opacity-100" type="button" aria-label="Dismiss notice" (click)="notice=''">×</button>
           </div>
@@ -92,7 +92,7 @@
                       <small>{{gateway.id}} &middot; {{gateway.serial}}</small>
                       <em>IMEI {{gateway.imei}}</em>
                       @if (gateway.latitude && gateway.longitude) {
-                        <small style="color: #55e777; display: flex; items-center; gap: 3px; margin-top: 3px; font-size: 7px;">
+                        <small style="color: #55e777; display: flex; items-center; gap: 3px; margin-top: 3px; font-size: 11px;">
                           <i data-lucide="map-pin" style="width:10px;height:10px;"></i> {{gateway.latitude}}, {{gateway.longitude}}
                         </small>
                       }
@@ -189,7 +189,7 @@
               </div>
             </dl>
             <div style="margin-top: 10px;">
-              <a [href]="'https://www.openstreetmap.org/?mlat=' + selected.latitude + '&mlon=' + selected.longitude + '#map=15/' + selected.latitude + '/' + selected.longitude" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; font-size: 8px; font-weight: 600; color: #55e777; text-decoration: none; border: 1px solid #2d6b3a; background: #15391d; padding: 6px 10px; border-radius: 8px;">
+              <a [href]="'https://www.openstreetmap.org/?mlat=' + selected.latitude + '&mlon=' + selected.longitude + '#map=15/' + selected.latitude + '/' + selected.longitude" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: #55e777; text-decoration: none; border: 1px solid #2d6b3a; background: #15391d; padding: 6px 10px; border-radius: 8px;">
                 <i data-lucide="map-pin"></i> View on OpenStreetMap
               </a>
             </div>
@@ -247,7 +247,7 @@
                 gateway through their parent fence.</small></span></div>
         </div>
         @if (errorMessage) {
-          <p class="form-error" style="color: #ff9a91; background: rgba(239, 106, 96, 0.15); border: 1px solid rgba(239, 106, 96, 0.3); padding: 8px 12px; border-radius: 8px; font-size: 11px; margin-top: 10px;">{{ errorMessage }}</p>
+          <p class="form-error" style="color: #ff9a91; background: rgba(239, 106, 96, 0.15); border: 1px solid rgba(239, 106, 96, 0.3); padding: 8px 12px; border-radius: 8px; font-size: 14px; margin-top: 10px;">{{ errorMessage }}</p>
         }
         @if (submitted && (!form.name.trim() || !form.serial.trim() || !form.imei.trim())) {<p class="form-error">
           Enter the gateway name, serial number, and IMEI.</p>}

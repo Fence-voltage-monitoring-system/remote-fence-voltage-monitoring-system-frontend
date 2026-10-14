@@ -3,15 +3,15 @@
 .drawer.is-closing { animation:fence-modal-out .28s cubic-bezier(.4,0,1,1) forwards; }
 
 .modal-accent-bar{height:5px;flex-shrink:0;background:linear-gradient(90deg, #16a34a, #0d9488, #2dd4bf)}
-.modal-category-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:rgba(22, 163, 74, 0.2);color:#43d36c;border:1px solid rgba(67, 211, 108, 0.3);margin-bottom:6px}
+.modal-category-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size: 13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:rgba(22, 163, 74, 0.2);color:#43d36c;border:1px solid rgba(67, 211, 108, 0.3);margin-bottom:6px}
 
 .field { gap:.35rem; }
-.field label { font-size:9px; }
-.control { height:34px; border-radius:8px; padding:0 10px; font-size:11px; }
+.field label { font-size: 13px; }
+.control { height:34px; border-radius:8px; padding:0 10px; font-size: 14px; }
 textarea.control { min-height:62px; padding-top:8px; padding-bottom:8px; }
-.danger { height:40px; border:1px solid #8c4437; border-radius:9px; background:#4b2823; padding:0 14px; color:#ff766d; font-size:11px; font-weight:700; }
+.danger { height:40px; border:1px solid #8c4437; border-radius:9px; background:#4b2823; padding:0 14px; color:#ff766d; font-size: 14px; font-weight:700; }
 .delete-warning { display:flex; align-items:center; gap:10px; border:1px solid #8c4437; border-radius:9px; background:#3b211e; padding:8px 10px; }
-.delete-warning div { flex:1; }.delete-warning strong { color:#ff8e84; font-size:11px; }.delete-warning p { margin:3px 0 0; color:#bd8f8a; font-size:9px; }.delete-warning button { border:1px solid #6a4a45; border-radius:7px; padding:6px 9px; color:#d9c4c1; font-size:9px; }
+.delete-warning div { flex:1; }.delete-warning strong { color:#ff8e84; font-size: 14px; }.delete-warning p { margin:3px 0 0; color:#bd8f8a; font-size: 13px; }.delete-warning button { border:1px solid #6a4a45; border-radius:7px; padding:6px 9px; color:#d9c4c1; font-size: 13px; }
 .edit-footer { display:flex; align-items:center; justify-content:space-between; gap:12px; }.edit-footer>div { display:flex; gap:10px; }.edit-footer .secondary { min-width:92px; padding:0 16px; }.edit-footer .primary { min-width:132px; padding:0 18px; }
 @keyframes fence-modal-in { from { opacity:0; transform:scale(.96); } to { opacity:1; transform:scale(1); } }
 @keyframes fence-modal-out { from { opacity:1; transform:scale(1); } to { opacity:0; transform:scale(.96); } }

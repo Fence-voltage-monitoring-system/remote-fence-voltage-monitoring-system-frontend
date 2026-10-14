@@ -1,23 +1,41 @@
 @reference "../../../../styles.css";
 header { @apply sticky top-0 z-1000 flex h-[60px] items-center gap-2.5 sm:gap-3 border-b border-[#233b27] bg-[#0f2314] px-3 sm:px-[18px] shadow-[0_4px_14px_rgba(0,0,0,.22)] max-[620px]:h-14; }
-.mobile-nav-toggle { @apply grid size-9 shrink-0 cursor-pointer place-items-center rounded-lg border border-[#315238] bg-[#142d1a] text-[#86e99c] transition-colors hover:bg-[#1a3d24] hover:text-[#4ee672] focus-visible:outline-2 focus-visible:outline-[#4ee672]; }
-.brand { @apply relative -ml-[66px] flex h-[56px] w-[250px] shrink-0 items-center gap-1.5 max-md:ml-0 max-[980px]:w-[215px] max-[620px]:w-[42px]; }
-.brand-logo { @apply block h-[50px] w-[41px] shrink-0; background: url('../../../assets/full_logo.png') center / contain no-repeat; }
+.mobile-nav-toggle {
+  display: none !important;
+  @apply size-9 shrink-0 cursor-pointer place-items-center rounded-lg border border-[#315238] bg-[#142d1a] text-[#86e99c] transition-colors hover:bg-[#1a3d24] hover:text-[#4ee672] focus-visible:outline-2 focus-visible:outline-[#4ee672];
+}
+@media (max-width: 768px) {
+  .mobile-nav-toggle {
+    display: grid !important;
+  }
+}
+.brand {
+  position: relative;
+  margin-left: -73px;
+  @apply flex h-[56px] w-[265px] shrink-0 items-center gap-[24px] max-[980px]:w-[230px] max-[620px]:w-[42px];
+}
+@media (max-width: 768px) {
+  .brand {
+    margin-left: 0 !important;
+    gap: 0.5rem !important;
+  }
+}
+.brand-logo { @apply block h-[50px] w-[42px] shrink-0; background: url('../../../assets/full_logo.png') center / contain no-repeat; }
 .brand-text { @apply block h-[50px] w-[195px] max-[980px]:w-[160px] max-[620px]:hidden; background-image: url('../../../assets/logo_text.png'); background-position: center; background-size: auto 145px; background-repeat: no-repeat; }
 .application-name { @apply flex min-w-[178px] shrink-0 flex-col justify-center border-x border-[#29432e] px-4 leading-[1.2] max-[1180px]:hidden; }
-.application-name strong { @apply whitespace-nowrap text-[11px] font-semibold text-[#edf4e9]; }
-.application-name span { @apply mt-0.5 whitespace-nowrap text-[10px] text-[#7f9a79]; }
-.crumb { @apply m-auto rounded-md border border-[#314735] px-4 py-[7px] font-mono text-[10px] text-[#9ca99a] max-[980px]:hidden; }
-.status { @apply whitespace-nowrap rounded-[7px] border border-[#1d552a] bg-[#12361c] px-2.5 py-1.5 font-mono text-[9px] font-bold text-[#49ec71] max-[980px]:ml-auto max-[620px]:px-2 max-[620px]:text-[0]; }
+.application-name strong { @apply whitespace-nowrap text-[14px] font-semibold text-[#edf4e9]; }
+.application-name span { @apply mt-0.5 whitespace-nowrap text-[13px] text-[#7f9a79]; }
+.crumb { @apply m-auto rounded-md border border-[#314735] px-4 py-[7px] font-mono text-[13px] text-[#9ca99a] max-[980px]:hidden; }
+.status { @apply whitespace-nowrap rounded-[7px] border border-[#1d552a] bg-[#12361c] px-2.5 py-1.5 font-mono text-[13px] font-bold text-[#49ec71] max-[980px]:ml-auto max-[620px]:px-2 max-[620px]:text-[0]; }
 .status i { @apply inline-block size-1.5 rounded-full bg-[#46e86e] shadow-[0_0_7px_#46e86e]; }
-.status:after { @apply max-[620px]:text-[8px]; content: ''; }
+.status:after { @apply max-[620px]:text-[12px]; content: ''; }
 @media(max-width:620px) { .status:after { content: 'ONLINE'; } }
-.clock { @apply flex flex-col text-right font-mono text-[9px] text-[#81907d] max-[620px]:hidden; }
-.clock strong { @apply text-[13px] text-white; }
+.clock { @apply flex flex-col text-right font-mono text-[13px] text-[#81907d] max-[620px]:hidden; }
+.clock strong { @apply text-[16px] text-white; }
 .view-action { @apply grid size-8 shrink-0 cursor-pointer place-items-center rounded-full border border-transparent bg-transparent text-[#a8b5a4] transition-colors hover:border-[#315238] hover:bg-[#18321f] hover:text-[#4ee672] focus-visible:outline-2 focus-visible:outline-[#4ee672]; }
 .view-action svg { @apply size-[17px] fill-none stroke-current stroke-2; stroke-linecap: round; stroke-linejoin: round; }
 .bell { @apply relative grid size-8 cursor-pointer place-items-center rounded-full border border-transparent bg-transparent text-[#a8b5a4] transition-colors hover:border-[#315238] hover:bg-[#18321f] hover:text-[#4ee672] focus-visible:outline-2 focus-visible:outline-[#4ee672]; }
-.bell em { @apply absolute -top-0.5 right-0 grid size-[15px] place-items-center rounded-full bg-[#ed3f35] text-[8px] font-bold not-italic; }
+.bell em { @apply absolute -top-0.5 right-0 grid size-[15px] place-items-center rounded-full bg-[#ed3f35] text-[12px] font-bold not-italic; }
 
 :host-context(html[data-theme='light']) header {
   background-color: #f0fdf4 !important;

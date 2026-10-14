@@ -10,16 +10,16 @@
     <ol class="m-0 grid list-none p-0">
       @for (activity of activities; track activity.id) {
         <li class="grid grid-cols-[28px_1fr] gap-3 border-b border-[#304735] py-3 last:border-0">
-          <span class="grid size-7 place-items-center rounded-full bg-[#1b3b24] text-[10px] text-[#4ee672]">
+          <span class="grid size-7 place-items-center rounded-full bg-[#1b3b24] text-[13px] text-[#4ee672]">
             {{ activity.category === 'SECURITY' ? '●' : activity.category === 'ALERT' ? '!' : activity.category === 'FENCE' ? '⌁' : '•' }}
           </span>
           <div>
             <strong class="block text-[9.5px] font-medium text-[#edf4e9]">{{ activity.action }}</strong>
-            <time class="text-[8px] text-[#8fa08c]">{{ activity.occurredAt }}</time>
+            <time class="text-[12px] text-[#8fa08c]">{{ activity.occurredAt }}</time>
           </div>
         </li>
       } @empty {
-        <li class="py-8 text-center text-[9px] text-[#8fa08c]">No recent activity logged</li>
+        <li class="py-8 text-center text-[13px] text-[#8fa08c]">No recent activity logged</li>
       }
     </ol>
   </div>

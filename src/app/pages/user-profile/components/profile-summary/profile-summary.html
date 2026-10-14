@@ -6,7 +6,7 @@
     </div>
 
     <h2 class="mt-4 mb-1 text-[18px] font-bold text-[#eef5ed]">{{ profile.fullName }}</h2>
-    <p class="m-0 text-[9px] text-[#8ea08b]">{{ profile.email }}</p>
+    <p class="m-0 text-[13px] text-[#8ea08b]">{{ profile.email }}</p>
     
     <div class="mt-2 flex items-center justify-center gap-2">
       <span class="role-badge">{{ roleLabels[profile.role] || profile.role }}</span>
@@ -16,7 +16,7 @@
     <div class="account-active-state">
       <i></i>
       <div>
-        <b class="text-[9px] text-[#eef5ed]">Account active &middot; {{ profile.department }}</b>
+        <b class="text-[13px] text-[#eef5ed]">Account active &middot; {{ profile.department }}</b>
         <small class="mt-0.5 block text-[7.5px] text-[#7f8f7c]">Last sign-in: {{ profile.lastLoginAt }}</small>
       </div>
     </div>

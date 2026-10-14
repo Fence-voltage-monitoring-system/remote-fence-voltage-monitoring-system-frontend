@@ -7,11 +7,11 @@
 }
 
 .modal-accent-bar{height:5px;flex-shrink:0;background:linear-gradient(90deg, #16a34a, #0d9488, #2dd4bf)}
-.modal-category-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:rgba(22, 163, 74, 0.2);color:#43d36c;border:1px solid rgba(67, 211, 108, 0.3);margin-bottom:6px}
+.modal-category-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size: 13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;background:rgba(22, 163, 74, 0.2);color:#43d36c;border:1px solid rgba(67, 211, 108, 0.3);margin-bottom:6px}
 
 .field { gap: .35rem; }
-.field label { font-size: 9px; }
-.control { height: 34px; border-radius: 8px; padding: 0 10px; font-size: 11px; }
+.field label { font-size: 13px; }
+.control { height: 34px; border-radius: 8px; padding: 0 10px; font-size: 14px; }
 textarea.control { min-height: 62px; padding-top: 8px; padding-bottom: 8px; }
 @keyframes section-modal-in {
   from { opacity: 0; transform: translate(-50%, -46%) scale(.96); }

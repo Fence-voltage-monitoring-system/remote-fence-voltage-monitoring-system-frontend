@@ -6,7 +6,7 @@
       <div>
         <span class="modal-category-badge">USER PROFILE</span>
         <h2 id="edit-profile-title" class="m-0 text-[15px] font-bold text-[#eef5ed]">Edit Profile</h2>
-        <p class="mt-0.5 text-[9px] text-[#8fa08c]">Update your personal information</p>
+        <p class="mt-0.5 text-[13px] text-[#8fa08c]">Update your personal information</p>
       </div>
       <button class="grid size-7 cursor-pointer place-items-center rounded-lg border border-[#405943] bg-[#1a3020] text-lg text-[#8fa08c] hover:text-white" type="button" [disabled]="isSubmitting" (click)="requestClose()" aria-label="Close edit profile">×</button>
     </header>
@@ -15,8 +15,8 @@
       <div class="mb-5 flex items-center gap-3 rounded-xl border border-[#304735] bg-[#112316] p-4">
         <span class="grid size-10 place-items-center rounded-full border border-[#2d6b3a] bg-[#164326] text-sm font-bold text-[#50e974]">{{ profile.initials }}</span>
         <div>
-          <strong class="block text-[10px] text-[#edf4e9]">&#64;{{ profile.username }}</strong>
-          <span class="text-[8px] text-[#8fa08c]">{{ profile.staffId }}</span>
+          <strong class="block text-[13px] text-[#edf4e9]">&#64;{{ profile.username }}</strong>
+          <span class="text-[12px] text-[#8fa08c]">{{ profile.staffId }}</span>
         </div>
       </div>
 
@@ -25,7 +25,7 @@
           <label for="edit-full-name" class="text-[7.5px] font-semibold uppercase tracking-wider text-[#81917f]">Full Name</label>
           <input id="edit-full-name" class="form-input" formControlName="fullName" autocomplete="name" />
           @if (form.controls.fullName.touched && form.controls.fullName.invalid) {
-            <p class="m-0 text-[8px] text-[#ff756e]">Enter a name between 3 and 100 characters.</p>
+            <p class="m-0 text-[12px] text-[#ff756e]">Enter a name between 3 and 100 characters.</p>
           }
         </div>
 
@@ -33,7 +33,7 @@
           <label for="edit-contact" class="text-[7.5px] font-semibold uppercase tracking-wider text-[#81917f]">Contact Number</label>
           <input id="edit-contact" class="form-input" type="tel" formControlName="contactNumber" autocomplete="tel" />
           @if (form.controls.contactNumber.touched && form.controls.contactNumber.invalid) {
-            <p class="m-0 text-[8px] text-[#ff756e]">Enter a valid contact number.</p>
+            <p class="m-0 text-[12px] text-[#ff756e]">Enter a valid contact number.</p>
           }
         </div>
 
@@ -54,7 +54,7 @@
           </div>
         </div>
 
-        <div class="rounded-xl border border-[#304735] bg-[#112316] p-3 text-[8px] leading-4 text-[#8fa08c]">
+        <div class="rounded-xl border border-[#304735] bg-[#112316] p-3 text-[12px] leading-4 text-[#8fa08c]">
           Your role, status and operational assignments are managed by system administrators.
         </div>
 
@@ -63,8 +63,8 @@
         }
 
         <footer class="mt-2 flex shrink-0 justify-end gap-2 border-t border-[#304735] pt-4">
-          <button class="cursor-pointer rounded-xl border border-[#405943] px-4 py-2.5 text-[9px] text-[#edf4e9] hover:bg-[#1f3827]" type="button" [disabled]="isSubmitting" (click)="requestClose()">Cancel</button>
-          <button class="cursor-pointer rounded-xl border border-[#4ee672] bg-[#45d869] px-5 py-2.5 text-[9px] font-semibold text-[#0c2512] hover:bg-[#52e777] disabled:opacity-50" type="submit" [disabled]="isSubmitting || form.pristine">
+          <button class="cursor-pointer rounded-xl border border-[#405943] px-4 py-2.5 text-[13px] text-[#edf4e9] hover:bg-[#1f3827]" type="button" [disabled]="isSubmitting" (click)="requestClose()">Cancel</button>
+          <button class="cursor-pointer rounded-xl border border-[#4ee672] bg-[#45d869] px-5 py-2.5 text-[13px] font-semibold text-[#0c2512] hover:bg-[#52e777] disabled:opacity-50" type="submit" [disabled]="isSubmitting || form.pristine">
             {{ isSubmitting ? 'Saving…' : 'Save Changes' }}
           </button>
         </footer>

@@ -347,7 +347,7 @@ html[data-theme='light'] :is(.page, .page-shell, .page-content) {
 }
 
 /* Page Main Content Container Unified Max-Width & Centered Alignment across all pages */
-html[data-theme='light'] :is(
+:is(
   app-dashboard,
   app-configuration,
   app-device-management-page,
@@ -368,7 +368,7 @@ html[data-theme='light'] :is(
   app-map-page,
   app-virtual-fence-page
 ) :is(main, .profile-page-container) {
-  max-width: 1800px !important;
+  max-width: 1920px !important;
   margin-left: auto !important;
   margin-right: auto !important;
   width: 100% !important;
@@ -544,8 +544,8 @@ html:not([data-theme='light']) :is(
 ) :is(span, p:first-child, .eyebrow) {
   color: #4ee672 !important;
   font-weight: 700 !important;
-  font-size: 9px !important;
-  letter-spacing: 0.16em !important;
+  font-size: 12px !important;
+  letter-spacing: 0.14em !important;
   text-transform: uppercase !important;
   margin: 0 0 2px 0 !important;
 }
@@ -608,7 +608,7 @@ html:not([data-theme='light']) :is(
   .page-intro
 ) :is(p:not(:first-child), span:not(:first-child), .description) {
   color: #8fa08c !important;
-  font-size: 10px !important;
+  font-size: 13px !important;
   font-weight: 400 !important;
   margin: 0 !important;
   line-height: 1.4 !important;
@@ -904,7 +904,7 @@ html[data-theme='light'] :is(
   border: 1px solid #86efac !important;
   color: #15803d !important;
   font-weight: 700 !important;
-  font-size: 9px !important;
+  font-size: 12px !important;
   padding: 6px 12px !important;
   border-radius: 8px !important;
   letter-spacing: 0.1em !important;
@@ -942,7 +942,7 @@ html[data-theme='light'] :is(
   background-color: #16a34a !important;
   border: 1px solid #15803d !important;
   color: #ffffff !important;
-  font-size: 9px !important;
+  font-size: 13px !important;
   font-weight: 700 !important;
   border-radius: 10px !important;
   box-shadow: 0 2px 8px rgba(22, 163, 74, 0.2) !important;
@@ -984,7 +984,7 @@ html[data-theme='light'] :is(
   background-color: #f1f5f9 !important;
   border: 1px solid #cbd5e1 !important;
   color: #0f172a !important;
-  font-size: 9px !important;
+  font-size: 13px !important;
   font-weight: 600 !important;
   border-radius: 10px !important;
   display: inline-flex !important;
@@ -1593,7 +1593,7 @@ html[data-theme='light'] :is(.telemetry, [class*='telemetry']) small {
   display: inline-block;
   padding: 2px 8px;
   border-radius: 4px;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -2089,8 +2089,8 @@ html[data-theme='light'] app-fence-monitor .legend {
 
 html[data-theme='light'] app-fence-monitor .legend span {
   color: #475569 !important;
-  font-size: 8px !important;
-  font-weight: 500 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
   letter-spacing: normal !important;
   text-transform: none !important;
 }
@@ -4601,13 +4601,13 @@ code,
 .leaflet-tile-pane { filter: brightness(.56) saturate(.45) hue-rotate(75deg) contrast(1.12); }
 .leaflet-control-zoom a { background: #1d3222 !important; border-color: #415540 !important; color: #dce8d9 !important; }
 .leaflet-control-zoom a:hover { background: #29452f !important; color: #4de577 !important; }
-.leaflet-control-attribution { background: rgba(10, 25, 14, .78) !important; color: #829080 !important; font-size: 8px !important; }
+.leaflet-control-attribution { background: rgba(10, 25, 14, .78) !important; color: #829080 !important; font-size: 11px !important; }
 .leaflet-control-attribution a { color: #67b879 !important; }
 .fence-status-marker { transform-box: fill-box; transform-origin: center; animation: map-marker-pulse 2.4s ease-in-out infinite; }
 .fence-status-marker--healthy { filter: drop-shadow(0 0 6px #48e174) drop-shadow(0 0 12px rgba(72,225,116,.65)); }
 .fence-status-marker--warning { filter: drop-shadow(0 0 6px #ffc01c) drop-shadow(0 0 12px rgba(255,192,28,.7)); }
 .fence-status-marker--critical { filter: drop-shadow(0 0 6px #ff4941) drop-shadow(0 0 13px rgba(255,73,65,.75)); animation-duration: 1.3s; }
-.fence-location-label { padding: 5px 8px; border: 1px solid #3e5541; border-radius: 5px; background: rgba(13,31,18,.92); box-shadow: 0 5px 14px rgba(0,0,0,.35); color: #dce8d9; font-size: 9px; font-weight: 600; }
+.fence-location-label { padding: 5px 8px; border: 1px solid #3e5541; border-radius: 5px; background: rgba(13,31,18,.92); box-shadow: 0 5px 14px rgba(0,0,0,.35); color: #dce8d9; font-size: 12px; font-weight: 600; }
 .fence-location-label:before { border-right-color: #3e5541; }
 .fence-location-label--healthy { border-left: 2px solid #48e174; }
 .fence-location-label--warning { border-left: 2px solid #ffc01c; }
@@ -4617,11 +4617,11 @@ code,
 .leaflet-popup-content { margin: 12px 14px; }
 .route-popup { display: grid; min-width: 245px; grid-template-areas: "title name" "value updated"; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; column-gap: 7px; row-gap: 5px; }
 .route-popup strong { grid-area: title; color: #eef6ec; font-size: 11px; white-space: nowrap; }
-.route-popup span { grid-area: name; min-width: 0; color: #dce8d9; font-size: 10px; }
+.route-popup span { grid-area: name; min-width: 0; color: #dce8d9; font-size: 13px; }
 .route-popup b { grid-area: value; color: #51e477; font: 700 12px monospace; white-space: nowrap; }
-.route-popup small { grid-area: updated; color: #9caa99; font-size: 9px; }
+.route-popup small { grid-area: updated; color: #9caa99; font-size: 12px; }
 .fence-map-popup strong, .fence-map-popup span, .fence-map-popup b, .fence-map-popup em { display: block; }
-.fence-map-popup strong { font-size: 11px; }.fence-map-popup span { margin-top: 4px; color: #8d9a8a; font-size: 9px; }.fence-map-popup b { margin-top: 10px; color: #51e477; font: 700 15px monospace; }.fence-map-popup em { margin-top: 5px; color: #b2bdb0; font-size: 8px; font-style: normal; text-transform: uppercase; }
+.fence-map-popup strong { font-size: 11px; }.fence-map-popup span { margin-top: 4px; color: #8d9a8a; font-size: 12px; }.fence-map-popup b { margin-top: 10px; color: #51e477; font: 700 15px monospace; }.fence-map-popup em { margin-top: 5px; color: #b2bdb0; font-size: 11px; font-style: normal; text-transform: uppercase; }
 @keyframes map-marker-pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.22); opacity: .82; } }
 
 /* Leaflet Map Light Theme Overrides (Zero Dark Green Map Canvas) */
@@ -4837,9 +4837,9 @@ html[data-theme='light'] :is(.page-heading, .heading, main > .page > header, app
 
 html[data-theme='light'] :is(.page-heading, .heading, main > .page > header, app-fence-monitor > section.panel > header) :is(span, p:first-child):not(.legend *):not(.timing *) {
   color: var(--banner-accent, #10b981) !important;
-  font-size: 9px !important;
+  font-size: 12px !important;
   font-weight: 800 !important;
-  letter-spacing: 0.15em !important;
+  letter-spacing: 0.14em !important;
   text-transform: uppercase !important;
 }
 
@@ -4852,7 +4852,7 @@ html[data-theme='light'] :is(.page-heading, .heading, main > .page > header, app
 
 html[data-theme='light'] :is(.page-heading, .heading, main > .page > header, app-fence-monitor > section.panel > header) p {
   color: #475569 !important;
-  font-size: 11px !important;
+  font-size: 13px !important;
   margin: 0 !important;
 }
 
@@ -4934,6 +4934,56 @@ html[data-theme='light'] app-user-profile .page-heading {
   --banner-bg-start: #ecfdf5;
 }
 
+/* ==========================================================================
+   GLOBAL TYPOGRAPHY BOOST & ACCESSIBILITY LEGIBILITY ENHANCEMENTS
+   Ensures consistent, clear legibility across every screen, page, and component.
+   ========================================================================== */
 
+/* 1. Global Base Typography */
+html {
+  font-size: 15px;
+}
 
+body {
+  font-size: 13.5px;
+  line-height: 1.5;
+}
 
+/* 2. Global Minimum Legibility Floor for text elements */
+:is(
+  p, span, small, label, dt, dd, th, td, time, input, select, textarea, button, a
+) {
+  /* Prevent anything from dropping below 11px */
+  min-font-size: 11px;
+}
+
+/* 3. Automatic Font Scaling for Micro-Classes across all templates */
+[class*="text-[5px]"],
+[class*="text-[6px]"],
+[class*="text-[7px]"] {
+  font-size: 11px !important;
+}
+
+[class*="text-[8px]"] {
+  font-size: 12px !important;
+}
+
+[class*="text-[9px]"] {
+  font-size: 13px !important;
+}
+
+[class*="text-[10px]"] {
+  font-size: 13px !important;
+}
+
+[class*="text-[11px]"] {
+  font-size: 14px !important;
+}
+
+[class*="text-[12px]"] {
+  font-size: 15px !important;
+}
+
+[class*="text-[13px]"] {
+  font-size: 16px !important;
+}

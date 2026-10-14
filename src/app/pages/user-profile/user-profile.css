@@ -5,7 +5,7 @@
 }
 
 .profile-page-container {
-  @apply mx-auto max-w-[1500px] p-6 text-[#edf4e9];
+  @apply mx-auto max-w-[1920px] px-5 sm:px-6 pt-[18px] pb-7 max-[720px]:p-3 text-[#edf4e9];
 }
 
 .heading {
@@ -13,7 +13,7 @@
 }
 
 .heading > div > span {
-  @apply text-[8px] font-bold uppercase tracking-[.18em] text-[#4ee672];
+  @apply text-[12px] font-bold uppercase tracking-[.18em] text-[#4ee672];
 }
 
 .heading h1 {
@@ -21,15 +21,15 @@
 }
 
 .heading p {
-  @apply m-0 text-[9px] text-[#8fa08c];
+  @apply m-0 text-[13px] text-[#8fa08c];
 }
 
 .primary-btn {
-  @apply cursor-pointer rounded-xl border border-[#4ee672]! bg-[#45d869]! px-5 py-2.5 text-[9px] font-semibold text-[#0c2512]! transition-all hover:bg-[#52e777]!;
+  @apply cursor-pointer rounded-xl border border-[#4ee672]! bg-[#45d869]! px-5 py-2.5 text-[13px] font-semibold text-[#0c2512]! transition-all hover:bg-[#52e777]!;
 }
 
 .status-notice {
-  @apply mb-5 flex items-center justify-between gap-3 rounded-xl border border-[#2d6b3a] bg-[#15391d] px-4 py-3 text-[9px] text-[#55e777];
+  @apply mb-5 flex items-center justify-between gap-3 rounded-xl border border-[#2d6b3a] bg-[#15391d] px-4 py-3 text-[13px] text-[#55e777];
 }
 
 .card-base {
@@ -41,23 +41,23 @@
 }
 
 .card-header h2 {
-  @apply mt-0 mb-1 text-[13px] font-bold text-[#eef5ed];
+  @apply mt-0 mb-1 text-[16px] font-bold text-[#eef5ed];
 }
 
 .card-header p {
-  @apply m-0 text-[9px] text-[#8fa08c];
+  @apply m-0 text-[13px] text-[#8fa08c];
 }
 
 .badge-verified {
-  @apply rounded-full border border-[#2d6b3a] bg-[#15391d] px-3 py-1 text-[7px] font-semibold text-[#55e777];
+  @apply rounded-full border border-[#2d6b3a] bg-[#15391d] px-3 py-1 text-[11px] font-semibold text-[#55e777];
 }
 
 .badge-tag {
-  @apply inline-flex items-center gap-1.5 rounded-md border border-[#397347] bg-[#1d4528] px-2.5 py-1 text-[8px] font-medium text-[#51e474];
+  @apply inline-flex items-center gap-1.5 rounded-md border border-[#397347] bg-[#1d4528] px-2.5 py-1 text-[12px] font-medium text-[#51e474];
 }
 
 .badge-tag-muted {
-  @apply inline-flex items-center justify-center rounded-md border border-[#38513b] bg-[#112316] px-2.5 py-1 text-[8px] text-[#9bb098];
+  @apply inline-flex items-center justify-center rounded-md border border-[#38513b] bg-[#112316] px-2.5 py-1 text-[12px] text-[#9bb098];
   height: 26px;
   box-sizing: border-box;
   line-height: 1;
@@ -78,7 +78,7 @@
 }
 
 .role-badge {
-  @apply inline-flex items-center justify-center rounded-md border border-[#2d6b3a] bg-[#183e22] px-2.5 py-1 text-[8px] font-semibold uppercase tracking-wide text-[#4be572];
+  @apply inline-flex items-center justify-center rounded-md border border-[#2d6b3a] bg-[#183e22] px-2.5 py-1 text-[12px] font-semibold uppercase tracking-wide text-[#4be572];
   height: 26px;
   box-sizing: border-box;
   line-height: 1;
@@ -102,11 +102,11 @@
 }
 
 .detail-label {
-  @apply text-[7px] font-semibold uppercase tracking-wider text-[#81917f];
+  @apply text-[11px] font-semibold uppercase tracking-wider text-[#81917f];
 }
 
 .detail-value {
-  @apply mt-1 ml-0 text-[9px] font-medium text-[#edf4e9];
+  @apply mt-1 ml-0 text-[13px] font-medium text-[#edf4e9];
 }
 
 /* Toggle controls */
@@ -120,7 +120,7 @@
 
 /* Custom inputs */
 .form-input {
-  @apply w-full h-10 rounded-xl border border-[#405943] bg-[#102318] px-4 text-[9px] text-[#edf4e9] outline-none transition-colors focus:border-[#4ee672];
+  @apply w-full h-10 rounded-xl border border-[#405943] bg-[#102318] px-4 text-[13px] text-[#edf4e9] outline-none transition-colors focus:border-[#4ee672];
 }
 
 .form-input:disabled {

@@ -6,14 +6,14 @@
       <div>
         <span class="modal-category-badge">USER ACCOUNT</span>
         <h2 id="create-user-title" class="m-0 text-base font-extrabold text-white">{{ editingUser ? 'Edit User' : 'Create User' }}</h2>
-        <p class="mt-1 text-[11px] text-[#91a494]">{{ editingUser ? 'Modify an existing user account' : 'Add a new system user account' }}</p>
+        <p class="mt-1 text-[14px] text-[#91a494]">{{ editingUser ? 'Modify an existing user account' : 'Add a new system user account' }}</p>
       </div>
       <button class="grid size-8 place-items-center rounded-lg border border-[#425543] bg-[#273a2a] text-xl text-[#a5b1a5] hover:text-white" type="button" (click)="closed.emit()" [attr.aria-label]="editingUser ? 'Close edit user form' : 'Close create user form'">×</button>
     </header>
 
     <div class="details-body flex-1 overflow-y-auto pr-1">
-      @if (isLoadingOptions) { <p class="mb-4 rounded-lg border border-[#52624f] bg-[#243829] px-3 py-2 text-[10px] text-[#9caf9f]" role="status">Loading role and province options…</p> }
-      @if (optionsLoadFailed) { <div class="mb-4 flex items-center justify-between gap-3 rounded-lg border border-[#a84736]/50 bg-[#592820]/50 px-3 py-2"><p class="m-0 text-[10px] text-[#ffaaa2]">{{ apiError }}</p><button class="shrink-0 rounded-md border border-[#3e754b] bg-[#254b2f] px-3 py-1.5 text-[10px] font-semibold text-[#6ee38e]" type="button" (click)="loadCreateOptions()">Retry</button></div> }
+      @if (isLoadingOptions) { <p class="mb-4 rounded-lg border border-[#52624f] bg-[#243829] px-3 py-2 text-[13px] text-[#9caf9f]" role="status">Loading role and province options…</p> }
+      @if (optionsLoadFailed) { <div class="mb-4 flex items-center justify-between gap-3 rounded-lg border border-[#a84736]/50 bg-[#592820]/50 px-3 py-2"><p class="m-0 text-[13px] text-[#ffaaa2]">{{ apiError }}</p><button class="shrink-0 rounded-md border border-[#3e754b] bg-[#254b2f] px-3 py-1.5 text-[13px] font-semibold text-[#6ee38e]" type="button" (click)="loadCreateOptions()">Retry</button></div> }
       <form id="createUserForm" class="grid gap-[17px]" [formGroup]="form" (ngSubmit)="submit()" novalidate>
         <div class="field"><label for="new-full-name">Full Name</label><input id="new-full-name" class="control" formControlName="fullName" placeholder="Kasun Perera" />@if (form.controls.fullName.touched && form.controls.fullName.invalid) { <p class="error">Enter at least 3 characters.</p> }</div>
         <div class="field"><label for="new-username">Username</label><input id="new-username" class="control" [class.opacity-60]="!!editingUser" [class.cursor-not-allowed]="!!editingUser" [readonly]="!!editingUser" formControlName="username" placeholder="kperera" autocomplete="off" />@if (form.controls.username.touched && form.controls.username.invalid) { <p class="error">Use 3–20 letters, numbers, dots, dashes or underscores.</p> }</div>
@@ -31,14 +31,14 @@
         }
 
         @if (needsFence) {
-          <div class="field"><label for="new-fences">Fences</label><select id="new-fences" class="control h-24 py-2" multiple [disabled]="!form.controls.districtId.value || isLoadingFences" (change)="changeFences($any($event.target))">@if (isLoadingFences) { <option disabled>Loading fences…</option> } @for (fence of fences; track fence.id) { <option [value]="fence.id" [selected]="form.controls.fenceIds.value.includes(fence.id)">{{ fence.code }} · {{ fence.name }}</option> }</select><small class="text-[9px] text-[#819486]">Hold Ctrl or Command to select multiple fences.</small>@if (form.controls.fenceIds.touched && form.controls.fenceIds.invalid) { <p class="error">Select at least one fence.</p> }</div>
+          <div class="field"><label for="new-fences">Fences</label><select id="new-fences" class="control h-24 py-2" multiple [disabled]="!form.controls.districtId.value || isLoadingFences" (change)="changeFences($any($event.target))">@if (isLoadingFences) { <option disabled>Loading fences…</option> } @for (fence of fences; track fence.id) { <option [value]="fence.id" [selected]="form.controls.fenceIds.value.includes(fence.id)">{{ fence.code }} · {{ fence.name }}</option> }</select><small class="text-[13px] text-[#819486]">Hold Ctrl or Command to select multiple fences.</small>@if (form.controls.fenceIds.touched && form.controls.fenceIds.invalid) { <p class="error">Select at least one fence.</p> }</div>
         }
 
         @if (!editingUser) {
           <div class="field"><label for="new-password">Temporary Password</label><input id="new-password" class="control" type="password" formControlName="temporaryPassword" placeholder="Auto-generate if empty" autocomplete="new-password" />@if (form.controls.temporaryPassword.touched && form.controls.temporaryPassword.invalid) { <p class="error">Use at least 8 characters or leave empty to auto-generate.</p> }</div>
         }
         <fieldset class="m-0 grid gap-2 border-0 p-0"><legend class="field-label mb-2">Account Status</legend><div class="grid grid-cols-2 gap-3"><label class="flex h-10 cursor-pointer items-center gap-2 rounded-lg border px-3 text-xs" [class]="form.controls.status.value === 'ACTIVE' ? 'border-[#287943] bg-[#1d4d2b] text-[#7be59a]' : 'border-[#38513b] bg-[#203824]' "><input class="accent-[#43d36c]" type="radio" formControlName="status" value="ACTIVE" /> Active</label><label class="flex h-10 cursor-pointer items-center gap-2 rounded-lg border px-3 text-xs" [class]="form.controls.status.value === 'INACTIVE' ? 'border-[#287943] bg-[#1d4d2b] text-[#7be59a]' : 'border-[#38513b] bg-[#203824]' "><input class="accent-[#43d36c]" type="radio" formControlName="status" value="INACTIVE" /> Inactive</label></div></fieldset>
-        @if (apiError) { <p class="m-0 rounded-lg border border-[#a84736]/50 bg-[#592820]/50 px-3 py-2 text-[10px] text-[#ff9b90]" role="alert">{{ apiError }}</p> }
+        @if (apiError) { <p class="m-0 rounded-lg border border-[#a84736]/50 bg-[#592820]/50 px-3 py-2 text-[13px] text-[#ff9b90]" role="alert">{{ apiError }}</p> }
       </form>
     </div>
 
