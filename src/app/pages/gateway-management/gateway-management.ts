@@ -7,6 +7,7 @@ import { Check, ChevronDown, createIcons, MapPin, MoreHorizontal, Pencil, Plus, 
 import { Gateway, GatewayStatus } from '../../core/models/gateway.models';
 import { GatewayService } from '../../core/services/gateway.service';
 import { FenceService } from '../../core/services/fence.service';
+import { SystemIdentityService } from '../../core/services/system-identity.service';
 import { HeaderComponent } from '../../shared/components/header/header';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 
@@ -21,6 +22,7 @@ export class GatewayManagementPage implements OnInit, AfterViewChecked, OnDestro
   private readonly gatewayService = inject(GatewayService);
   private readonly fenceService = inject(FenceService);
   private readonly cdr = inject(ChangeDetectorRef);
+  public readonly identity = inject(SystemIdentityService);
 
   fences: string[] = [];
   gateways: Gateway[] = [];

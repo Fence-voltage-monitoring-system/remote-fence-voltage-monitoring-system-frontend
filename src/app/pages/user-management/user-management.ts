@@ -1,5 +1,6 @@
 import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { UserService } from '../../core/services/user.service';
+import { SystemIdentityService } from '../../core/services/system-identity.service';
 import { UserProfile } from './components/user-profile/user-profile';
 import { UserCreateDrawer } from './components/user-create-drawer/user-create-drawer';
 import { UserTable } from './components/user-table/user-table';
@@ -16,6 +17,7 @@ import { SystemUser, UserFilters } from './user-management.models';
 })
 export class UserManagement implements OnInit {
   private readonly userService = inject(UserService);
+  private readonly identity = inject(SystemIdentityService);
   private readonly cdr = inject(ChangeDetectorRef);
   users: SystemUser[] = [];
 
@@ -36,7 +38,7 @@ export class UserManagement implements OnInit {
   isEditDrawerOpen = false;
   editingUser: SystemUser | null = null;
   notice = '';
-  readonly pageSize = 20;
+  get pageSize(): number { return this.identity.pageSize(); }
   currentPage = 1;
 
   ngOnInit(): void {

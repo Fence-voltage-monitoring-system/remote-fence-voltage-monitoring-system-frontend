@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, HostListener, inject, OnDestroy, signal } from '@angular/core';
+import { AfterViewInit, Component, computed, HostListener, inject, OnDestroy, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { Bell, createIcons } from 'lucide';
@@ -7,11 +7,13 @@ import { UserMenuComponent } from '../user-menu/user-menu';
 import { NotificationService } from '../../../core/services/notification.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { NavigationService } from '../../../core/services/navigation.service';
+import { SystemIdentityService } from '../../../core/services/system-identity.service';
 
 @Component({ selector: 'app-header', standalone: true, imports: [RouterLink, UserMenuComponent], templateUrl: './header.html', styleUrl: './header.css' })
 export class HeaderComponent implements AfterViewInit, OnDestroy {
   private readonly authService = inject(AuthService);
   public readonly navService = inject(NavigationService);
+  public readonly identity = inject(SystemIdentityService);
   readonly currentTime = signal('');
   readonly currentDate = signal('');
   readonly pageName = signal('Live Dashboard');
@@ -21,10 +23,10 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   private readonly liveSub?: Subscription;
   private statsSubscription?: Subscription;
   readonly unread = signal(0);
-  private readonly timeFormatter = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Colombo', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-  private readonly dateFormatter = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Colombo', day: '2-digit', month: 'short', year: 'numeric' });
+  readonly timezoneBadge = computed(() => this.identity.timezone() === 'UTC' ? 'UTC' : 'UTC+5:30');
 
   constructor(private readonly router: Router, private readonly notifications: NotificationService) {
+    this.identity.load();
     this.updateClock();
     this.updatePageName(this.router.url);
     this.timer = setInterval(() => this.updateClock(), 1000);
@@ -59,7 +61,12 @@ export class HeaderComponent implements AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void { clearInterval(this.timer); this.routeSubscription.unsubscribe(); this.liveSub?.unsubscribe(); this.statsSubscription?.unsubscribe(); }
-  private updateClock(): void { const now = new Date(); this.currentTime.set(this.timeFormatter.format(now)); this.currentDate.set(this.dateFormatter.format(now)); }
+
+  private updateClock(): void {
+    const now = new Date();
+    this.currentTime.set(this.identity.formatTime(now, true));
+    this.currentDate.set(this.identity.formatDate(now));
+  }
   private updatePageName(url: string): void {
     const path = url.split('?')[0].split('#')[0];
     this.pageName.set(

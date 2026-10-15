@@ -50,3 +50,22 @@
 :host-context(html[data-theme='light']) .note, html[data-theme='light'] .note { background: #dcfce7 !important; border-color: #86efac !important; color: #15803d !important; }
 :host-context(html[data-theme='light']) .note small, html[data-theme='light'] .note small, :host-context(html[data-theme='light']) .note strong, html[data-theme='light'] .note strong { color: #15803d !important; }
 
+.stale-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+:host-context(html[data-theme='light']) .stale-badge, html[data-theme='light'] .stale-badge {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+  border-color: #fcd34d !important;
+}
+

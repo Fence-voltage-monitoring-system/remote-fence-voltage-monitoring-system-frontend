@@ -3,6 +3,7 @@ import { Subject, finalize, takeUntil } from 'rxjs';
 import { AlertCounts, DashboardAlert, VoltageReading } from '../../core/models/dashboard-api';
 import { DeviceMonitoringContext } from '../../core/models/device-monitoring';
 import { DashboardApiService } from '../../core/services/dashboard-api';
+import { SystemIdentityService } from '../../core/services/system-identity.service';
 import { HeaderComponent } from '../../shared/components/header/header';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 import { AlertSummaryComponent } from './components/alert-summary/alert-summary';
@@ -19,6 +20,7 @@ import { VoltageChartComponent } from './components/voltage-chart/voltage-chart'
 })
 export class Dashboard implements OnInit, OnDestroy {
   private readonly api = inject(DashboardApiService);
+  public readonly identity = inject(SystemIdentityService);
   private readonly destroyed$ = new Subject<void>();
   loading = true;
   analyticsLoading = false;
@@ -46,7 +48,7 @@ export class Dashboard implements OnInit, OnDestroy {
           { label: 'TOTAL DEVICES', value: String(summary?.totalDevices ?? 0), unit: 'units', icon: '◎', foot: 'Registered monitoring devices', tone: 'blue' },
           { label: 'ACTIVE DEVICES', value: String(summary?.activeDevices ?? 0), unit: `of ${summary?.totalDevices ?? 0}`, icon: '⚡', foot: 'Currently reporting', tone: 'active' },
           { label: 'CRITICAL ALERTS', value: String(summary?.criticalAlerts ?? 0), unit: (summary?.criticalAlerts ?? 0) === 0 ? '' : 'open', icon: 'Δ', foot: 'Requires attention', tone: 'red', badge: (summary?.criticalAlerts ?? 0) === 0 ? 'All clear' : undefined },
-          { label: 'LOW VOLTAGE', value: String(summary?.lowVoltageFences ?? 0), unit: 'fences', icon: '⊙', foot: 'Below 4.5 kV threshold', tone: 'warning' },
+          { label: 'LOW VOLTAGE', value: String(summary?.lowVoltageFences ?? 0), unit: 'fences', icon: '⊙', foot: `Below ${this.identity.warningKv()} ${this.identity.voltageUnit()} threshold`, tone: 'warning' },
         ];
         if (selectedDevice && selectedDevice.deviceId && selectedDevice.deviceId !== 'null') {
           this.loadDeviceAnalytics(selectedDevice.deviceId);

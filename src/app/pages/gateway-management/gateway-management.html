@@ -112,7 +112,14 @@
                   </div>
                 </td>
                 <td><span class="device-count"><b>{{gateway.devices}}</b> monitors</span></td>
-                <td><span class="last-seen">{{gateway.lastSeen}}</span></td>
+                <td>
+                  <span class="last-seen">
+                    {{gateway.lastSeen}}
+                    @if (identity.isDataStale(gateway.lastSeen) && gateway.lastSeen !== 'Not installed') {
+                      <span class="stale-badge" title="Communication exceeds stale threshold ({{identity.staleDataMinutes()}} min)">Stale</span>
+                    }
+                  </span>
+                </td>
                 <td><button type="button" class="toggle" [class.on]="gateway.enabled"
                     (click)="toggleEnabled(gateway, $event)"
                     [attr.aria-label]="gateway.enabled ? 'Disable gateway' : 'Enable gateway'"><i></i></button></td>
@@ -202,7 +209,7 @@
           <div class="metrics">
             <article><span>Signal</span><b>{{selected.signal}}%</b></article>
             <article><span>Power</span><b>{{selected.power}}%</b></article>
-            <article><span>Last communication</span><b>{{selected.lastSeen}}</b></article>
+            <article><span>Last communication</span><b>{{selected.lastSeen}}@if (identity.isDataStale(selected.lastSeen) && selected.lastSeen !== 'Not installed') { <span class="stale-badge" title="Communication exceeds stale threshold ({{identity.staleDataMinutes()}} min)">Stale</span>}</b></article>
             <article><span>State</span><b>{{selected.enabled ? 'Active' : 'Disabled'}}</b></article>
           </div>
         </section>

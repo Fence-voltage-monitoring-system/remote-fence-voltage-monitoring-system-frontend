@@ -1,10 +1,12 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { ManagementAccessService } from '../../../../core/services/management-access.service';
+import { SystemIdentityService } from '../../../../core/services/system-identity.service';
 import { FenceHealth, FenceRecord } from '../../fence-management.models';
 
 @Component({ selector: 'app-fence-table', standalone: true, templateUrl: './fence-table.html', styleUrls: ['./fence-table.css', './fence-table-compact.css'] })
 export class FenceTable {
   readonly access = inject(ManagementAccessService);
+  readonly identity = inject(SystemIdentityService);
   @Input() saving = false;
   @Input() fences: FenceRecord[] = [];
   @Output() fenceSelected = new EventEmitter<FenceRecord>();

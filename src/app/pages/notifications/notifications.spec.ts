@@ -55,14 +55,14 @@ describe('Notifications',()=>{
       .mockReturnValue(of({items:[],totalPages:0,totalItems:0}));
     const {page}=await setup({getNotifications,markRead:()=>of({...item,read:true})});
     page.filter='UNREAD';page.markRead(page.notifications[0]);
-    expect(getNotifications).toHaveBeenLastCalledWith({filter:'UNREAD',page:1,pageSize:20});
+    expect(getNotifications).toHaveBeenLastCalledWith({filter:'UNREAD',page:1,pageSize:page.pageSize});
     expect(page.visible).toEqual([]);
   });
   it('reloads live events instead of inserting duplicates into filtered results',async()=>{
     const live=new Subject<typeof item>();
     const {page,service}=await setup({connectLive:()=>live});
     page.filter='SYSTEM';live.next(item);live.next(item);
-    expect(service.getNotifications).toHaveBeenLastCalledWith({filter:'SYSTEM',page:1,pageSize:20});
+    expect(service.getNotifications).toHaveBeenLastCalledWith({filter:'SYSTEM',page:1,pageSize:page.pageSize});
     expect(page.notifications.length).toBe(1);
   });
   it('opens the related incident',async()=>{

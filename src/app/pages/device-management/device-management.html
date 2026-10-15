@@ -44,8 +44,14 @@
                   <td><div class="device-cell"><span class="device-icon"><i data-lucide="cpu"></i></span><div><strong>{{device.name}}</strong><small>{{device.id}} <i></i> {{device.serial}}</small><em>{{device.type}}</em></div></div></td>
                   <td>@if (device.section) {<strong class="fence-name">{{device.fence}}</strong><small class="section">{{device.section}}</small>} @else {<span class="assignment-pill">Unassigned</span><small class="section">Ready for installation</small>}</td>
                   <td><span class="status-pill" [class]="'status-pill ' + device.status"><i></i>{{device.status}}</span></td>
-                  <td><div class="telemetry"><span><i data-lucide="activity"></i><b>{{device.voltage === null ? '—' : device.voltage.toFixed(1) + ' kV'}}</b></span><span><i data-lucide="signal"></i>{{device.signal}}%</span><span><i data-lucide="battery-charging"></i>{{device.battery}}%</span></div></td>
-                  <td><span class="last-seen">{{device.lastSeen}}</span></td>
+                  <td>
+                    <span class="last-seen">
+                      {{device.lastSeen}}
+                      @if (identity.isDataStale(device.lastSeen) && device.lastSeen !== 'Not installed') {
+                        <span class="stale-badge" title="Data exceeds stale threshold ({{identity.staleDataMinutes()}} min)">Stale</span>
+                      }
+                    </span>
+                  </td>
                   <td><button type="button" class="toggle" [class.on]="device.enabled" (click)="toggleEnabled(device, $event)" [attr.aria-label]="device.enabled ? 'Disable device' : 'Enable device'"><i></i></button></td>
                   <td class="action-cell"><button class="more" type="button" (click)="toggleMenu(device, $event)"><i data-lucide="more-horizontal"></i></button>@if (menuDevice === device) {<div class="row-menu" (click)="$event.stopPropagation()">@if (device.section) {<button type="button" (click)="unassign(device)"><i data-lucide="radio"></i>Unassign device</button>} @else {<button type="button" (click)="openAssignment(device); menuDevice = undefined"><i data-lucide="radio"></i>Assign to section</button>}<button type="button" (click)="openEdit(device)"><i data-lucide="pencil"></i>Edit device</button><button class="danger" type="button" (click)="remove(device)"><i data-lucide="trash-2"></i>Remove</button></div>}</td>
                 </tr>
@@ -67,7 +73,7 @@
       <div class="details-body">
         <div class="detail-status"><span class="status-pill" [class]="'status-pill ' + selected.status"><i></i>{{selected.status}}</span><span [class.unassigned]="!selected.section">{{selected.section ? 'Assigned' : 'Unassigned'}}</span></div>
         <section><h3>Assignment</h3><dl><div><dt>Fence</dt><dd>{{selected.fence || 'Not assigned'}}</dd></div><div><dt>Section</dt><dd>{{selected.section || 'Not assigned'}}</dd></div><div><dt>Device type</dt><dd>{{selected.type}}</dd></div></dl></section>
-        <section><h3>Current telemetry</h3><div class="detail-metrics"><article><span>Voltage</span><b>{{selected.voltage === null ? '—' : selected.voltage.toFixed(1) + ' kV'}}</b></article><article><span>Battery</span><b>{{selected.battery}}%</b></article><article><span>Signal</span><b>{{selected.signal}}%</b></article><article><span>Last communication</span><b>{{selected.lastSeen}}</b></article></div></section>
+        <section><h3>Current telemetry</h3><div class="detail-metrics"><article><span>Voltage</span><b>{{selected.voltage === null ? '—' : selected.voltage.toFixed(1) + ' kV'}}</b></article><article><span>Battery</span><b>{{selected.battery}}%</b></article><article><span>Signal</span><b>{{selected.signal}}%</b></article><article><span>Last communication</span><b>{{selected.lastSeen}}@if (identity.isDataStale(selected.lastSeen) && selected.lastSeen !== 'Not installed') { <span class="stale-badge" title="Data exceeds stale threshold ({{identity.staleDataMinutes()}} min)">Stale</span>}</b></article></div></section>
       </div>
       <footer>@if (selected.section) {<button type="button" (click)="unassign(selected)">Unassign device</button>} @else {<button class="primary" type="button" (click)="openAssignment(selected)">Assign to section</button>}<button type="button" (click)="openEdit(selected)">Edit device</button></footer>
     </aside>

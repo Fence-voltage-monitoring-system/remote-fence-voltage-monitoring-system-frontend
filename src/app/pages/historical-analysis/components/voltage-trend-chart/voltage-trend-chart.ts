@@ -1,7 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
+import { SystemIdentityService } from '../../../../core/services/system-identity.service';
 
 @Component({selector:'app-voltage-trend-chart',standalone:true,templateUrl:'./voltage-trend-chart.html',styleUrl:'./voltage-trend-chart.css'})
 export class VoltageTrendChart {
+  readonly identity = inject(SystemIdentityService);
   @Input() subtitle = '24-hour voltage readings · All active sections';
   readonly points = [
     { x:55,y:92,time:'00:00',value:'5.1 kV' }, { x:245,y:50,time:'04:00',value:'6.3 kV' },

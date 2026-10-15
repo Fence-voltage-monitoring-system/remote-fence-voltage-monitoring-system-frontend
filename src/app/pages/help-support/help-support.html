@@ -91,12 +91,12 @@
                 <dd>Monday–Friday, 08:30–17:00</dd>
               </div>
               <div>
-                <dt>Emergency line</dt>
-                <dd>Available 24/7 for critical incidents</dd>
+                <dt>Support contact</dt>
+                <dd>{{ identity.supportPhone() }}</dd>
               </div>
             </dl>
 
-            <a href="mailto:support@dwc.gov.lk">Email support</a>
+            <a [href]="'mailto:' + identity.supportEmail()">Email support</a>
             <button type="button" (click)="copyEmail()">
               {{ copied ? '✓ Email copied' : 'Copy email address' }}
             </button>
@@ -107,8 +107,8 @@
               <h3>System information</h3>
               <span>ONLINE</span>
             </header>
-            <div><span>Application</span><b>Remote Fence Monitoring</b></div>
-            <div><span>Version</span><b>1.0.0</b></div>
+            <div><span>Application</span><b>{{ identity.systemName() }}</b></div>
+            <div><span>Organization</span><b>{{ identity.organizationName() }} ({{ identity.systemCode() }})</b></div>
             <div><span>Environment</span><b>Production</b></div>
             <div><span>Last updated</span><b>28 July 2026</b></div>
           </article>

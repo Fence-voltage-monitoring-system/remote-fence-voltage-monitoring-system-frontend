@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { SystemIdentityService } from './system-identity.service';
 
 export type ManagementRole = 'SUPER_ADMIN' | 'REGIONAL_ADMIN' | 'FIELD_ADMIN' | 'MAINTENANCE';
 
@@ -13,6 +14,8 @@ export interface ManagementScope {
 
 @Injectable({ providedIn: 'root' })
 export class ManagementAccessService {
+  private readonly identity = inject(SystemIdentityService);
+
   readonly scope = signal<ManagementScope>({
     role: 'MAINTENANCE',
     provinces: [],
@@ -32,20 +35,30 @@ export class ManagementAccessService {
     this.scope.set(scope);
   }
 
+  get isReadOnly(): boolean {
+    return this.identity.readOnlyMode();
+  }
+
   // System-wide visibility: All users can view status, maps, and monitoring dashboards
   get canViewAll(): boolean {
     return true;
   }
 
-  // General management check (Admins vs Maintenance)
+  // General management check (Admins vs Maintenance). Restricted in read-only mode for non-super-admins.
   get canManage(): boolean {
     const role = this.scope().role;
+    if (this.isReadOnly && role !== 'SUPER_ADMIN') {
+      return false;
+    }
     return role === 'SUPER_ADMIN' || role === 'REGIONAL_ADMIN' || role === 'FIELD_ADMIN';
   }
 
   // Access check for User Management page
   get canManageUsers(): boolean {
     const role = this.scope().role;
+    if (this.isReadOnly && role !== 'SUPER_ADMIN') {
+      return false;
+    }
     return role === 'SUPER_ADMIN' || role === 'REGIONAL_ADMIN' || role === 'FIELD_ADMIN';
   }
 

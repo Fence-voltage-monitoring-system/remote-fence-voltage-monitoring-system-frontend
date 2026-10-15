@@ -7,6 +7,7 @@ import { Device, DeviceStatus } from '../../core/models/device.models';
 import { DeviceService } from '../../core/services/device.service';
 import { FenceService } from '../../core/services/fence.service';
 import { SectionService } from '../../core/services/section.service';
+import { SystemIdentityService } from '../../core/services/system-identity.service';
 import { HeaderComponent } from '../../shared/components/header/header';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 
@@ -23,6 +24,7 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
   private readonly fenceService = inject(FenceService);
   private readonly sectionService = inject(SectionService);
   private readonly cdr = inject(ChangeDetectorRef);
+  public readonly identity = inject(SystemIdentityService);
 
   fences: string[] = [];
   sectionsByFence: Record<string, string[]> = {};

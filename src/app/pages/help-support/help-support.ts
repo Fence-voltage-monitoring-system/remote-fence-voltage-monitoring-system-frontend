@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { Faq } from '../../core/models/support.models';
 import { SupportService } from '../../core/services/support.service';
+import { SystemIdentityService } from '../../core/services/system-identity.service';
 import { HeaderComponent } from '../../shared/components/header/header';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 
@@ -15,6 +16,7 @@ import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 })
 export class HelpSupportPage implements OnInit {
   private readonly supportService = inject(SupportService);
+  public readonly identity = inject(SystemIdentityService);
 
   query = '';
   expandedQuestion = '';
@@ -59,7 +61,7 @@ export class HelpSupportPage implements OnInit {
   }
 
   async copyEmail(): Promise<void> {
-    await navigator.clipboard.writeText('support@dwc.gov.lk');
+    await navigator.clipboard.writeText(this.identity.supportEmail());
     this.copied = true;
     window.setTimeout(() => this.copied = false, 1800);
   }

@@ -71,5 +71,24 @@
 
 :host-context(html[data-theme='light']) .device-options small, html[data-theme='light'] .device-options small { background: #f1f5f9 !important; color: #475569 !important; border: 1px solid #cbd5e1 !important; }
 
+.stale-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+:host-context(html[data-theme='light']) .stale-badge, html[data-theme='light'] .stale-badge {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+  border-color: #fcd34d !important;
+}
+
 
 

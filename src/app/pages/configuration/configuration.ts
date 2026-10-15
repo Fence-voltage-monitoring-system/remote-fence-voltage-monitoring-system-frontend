@@ -3,6 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { finalize, Subscription } from 'rxjs';
 import { ConfigurationService, ConfigurationValue } from '../../core/services/configuration.service';
 import { MapSettingsService } from '../../core/services/map-settings.service';
+import { SystemIdentityService } from '../../core/services/system-identity.service';
 import { ConfigurationMenu } from './components/configuration-menu/configuration-menu';
 import { AlertRulesEditor } from './components/alert-rules-editor/alert-rules-editor';
 import { NotificationSettingsEditor } from './components/notification-settings-editor/notification-settings-editor';
@@ -44,14 +45,15 @@ export class Configuration implements OnInit, OnDestroy {
   retryLoad(){this.loadSection(this.active);}
 
   private readonly mapSettingsStore=inject(MapSettingsService);
+  private readonly systemIdentity=inject(SystemIdentityService);
   readonly voltageDefaults: VoltageThresholds = { healthyKv: 5, warningKv: 3, criticalKv: 1.5, lowBatteryPercent: 20 };
   readonly generalDefaults: GeneralConfiguration = {
-    systemName: 'Remote Voltage Monitoring System', organizationName: 'Department of Wildlife Conservation', systemCode: 'REFVMS',
-    supportEmail: 'support@dwc.gov.lk', supportPhone: '+94 11 288 8585', timezone: 'Asia/Colombo', dateFormat: 'YYYY-MM-DD',
+    systemName: 'Remote Elephant Fence Monitoring System', organizationName: 'NERDC', systemCode: 'EF-MON',
+    supportEmail: 'support@nerdc.lk', supportPhone: '+94112223344', timezone: 'Asia/Colombo', dateFormat: 'YYYY-MM-DD',
     timeFormat: '24_HOUR', language: 'en', voltageUnit: 'kV', distanceUnit: 'km', coordinateFormat: 'DECIMAL_DEGREES',
-    expectedReportingIntervalMinutes: 30, lateArrivalGraceMinutes: 2, offlineTimeoutMinutes: 10, staleDataMinutes: 2,
-    defaultHistoryPeriod: '24h', pageSize: 20, maintenanceMode: false, allowLoginDuringMaintenance: true,
-    readOnlyMode: false, maintenanceMessage: 'The monitoring system is temporarily unavailable for scheduled maintenance.'
+    expectedReportingIntervalMinutes: 15, lateArrivalGraceMinutes: 5, offlineTimeoutMinutes: 30, staleDataMinutes: 60,
+    defaultHistoryPeriod: '24h', pageSize: 10, maintenanceMode: false, allowLoginDuringMaintenance: true,
+    readOnlyMode: false, maintenanceMessage: 'System is undergoing scheduled maintenance.'
   };
   readonly alertDefaults: AlertRuleSettings = {
     lowVoltageEnabled: true, criticalVoltageEnabled: true, wireBreakEnabled: true,
@@ -257,7 +259,18 @@ export class Configuration implements OnInit, OnDestroy {
     const value=this.activeValue();
     this.isSaving=true;this.saveError='';
     this.saveRequest=this.service.saveSection(section,value,reason.trim()).pipe(finalize(()=>{this.isSaving=false;this.cdr.markForCheck();})).subscribe({
-      next:response=>{this.applyResponse(section,response.value);this.commitSection(section);this.updateMetadata(section,response.updatedAt,response.updatedBy);this.showSave=false;this.notice=`Configuration saved by ${response.updatedBy}.`;},
+      next:response=>{
+        this.applyResponse(section,response.value);
+        if (section === 'general') {
+          this.systemIdentity.apply(response.value as GeneralConfiguration);
+        } else if (section === 'voltage') {
+          this.systemIdentity.applyVoltage(response.value as VoltageThresholds);
+        }
+        this.commitSection(section);
+        this.updateMetadata(section,response.updatedAt,response.updatedBy);
+        this.showSave=false;
+        this.notice=`Configuration saved by ${response.updatedBy}.`;
+      },
       error:(error:HttpErrorResponse)=>{this.saveError=this.apiErrorMessage(error,'save');}
     });
   }
@@ -290,7 +303,10 @@ export class Configuration implements OnInit, OnDestroy {
   }
 
   private applyResponse(section: ConfigurationSection, value: ConfigurationValue): void {
-    if (section === 'general') this.generalValue = { ...this.generalDefaults, ...(value as GeneralConfiguration) };
+    if (section === 'general') {
+      this.generalValue = { ...this.generalDefaults, ...(value as GeneralConfiguration) };
+      this.systemIdentity.apply(this.generalValue);
+    }
     else if (section === 'alerts') this.alertValue = { ...this.alertDefaults, ...(value as AlertRuleSettings) };
     else if (section === 'notifications') this.notificationValue = { ...this.notificationDefaults, ...(value as NotificationSettings) };
     else if (section === 'retention') this.retentionValue = { ...this.retentionDefaults, ...(value as DataRetentionSettings) };

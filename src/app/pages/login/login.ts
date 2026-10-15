@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { AuthService } from '../../core/services/auth.service';
+import { SystemIdentityService } from '../../core/services/system-identity.service';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +18,11 @@ export class Login {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
+  public readonly identity = inject(SystemIdentityService);
+
+  constructor() {
+    this.identity.load();
+  }
 
   readonly loginForm = new FormGroup({
     email: new FormControl('', {
@@ -100,12 +106,20 @@ export class Login {
       return 'Unable to connect to the authentication service.';
     }
 
-    if (error.status === 401) {
+    if (error.status === 401 || error.status === 403) {
+      const backendMsg = error.error?.message;
+      if (backendMsg && typeof backendMsg === 'string' && backendMsg.trim()) {
+        return backendMsg;
+      }
       return 'The email address or password is incorrect.';
     }
 
     if (error.status === 429) {
       return 'Too many login attempts. Please try again later.';
+    }
+
+    if (error.error?.message && typeof error.error.message === 'string') {
+      return error.error.message;
     }
 
     return 'Login failed. Please try again.';

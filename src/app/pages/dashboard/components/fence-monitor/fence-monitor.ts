@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { DeviceMonitoringContext } from '../../../../core/models/device-monitoring';
 import { FenceService } from '../../../../core/services/fence.service';
 import { SectionService, SectionResponse } from '../../../../core/services/section.service';
+import { SystemIdentityService } from '../../../../core/services/system-identity.service';
 
 type FenceState = 'healthy' | 'warning' | 'critical' | 'offline';
 interface Fence { id: string; dbId?: number; name: string; province: string; district: string; zone: string; gateway: string; gatewaySerial?: string; gatewayLatitude?: number; gatewayLongitude?: number; gatewayStatus?: string; latitude: number; longitude: number; sectionCount: number; updateIntervalMinutes: number; }
@@ -21,6 +22,7 @@ interface Section {
 export class FenceMonitorComponent implements OnInit, OnDestroy {
   private readonly fenceService = inject(FenceService);
   private readonly sectionService = inject(SectionService);
+  public readonly identity = inject(SystemIdentityService);
 
   @ViewChild('scroller') scroller!: ElementRef<HTMLElement>;
   @ViewChild('cardsDeck') cardsDeck?: ElementRef<HTMLElement>;
@@ -97,7 +99,7 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
           latitude: r.gatewayLatitude || 6.8681,
           longitude: r.gatewayLongitude || 81.3342,
           sectionCount: r.sections || 0,
-          updateIntervalMinutes: 15,
+          updateIntervalMinutes: (r as any).updateIntervalMinutes || this.identity.expectedReportingIntervalMinutes(),
         }));
         if (this.fences.length > 0) {
           const target = (this.requestedFenceId && this.fences.find(f => f.id === this.requestedFenceId || String(f.dbId) === this.requestedFenceId))
@@ -169,12 +171,25 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
     }
   }
 
+  private calculateSectionState(rawStatus?: string | null, voltageKv?: number | null, battery?: number | null): FenceState {
+    const status = (rawStatus || '').toLowerCase();
+    if (status === 'offline') return 'offline';
+    if (voltageKv != null && !isNaN(voltageKv)) {
+      const vStatus = this.identity.getVoltageStatus(voltageKv);
+      const bStatus = this.identity.getBatteryStatus(battery);
+      if (vStatus === 'critical' || bStatus === 'critical') return 'critical';
+      if (vStatus === 'warning' || bStatus === 'warning') return 'warning';
+      return 'healthy';
+    }
+    return status === 'warning' ? 'warning' : status === 'critical' ? 'critical' : status === 'offline' ? 'offline' : 'healthy';
+  }
+
   private mapSectionResponseToSection(row: SectionResponse, fence: Fence): Section {
-    const rawStatus = (row.status || 'OFFLINE').toLowerCase();
-    const state: FenceState = rawStatus === 'healthy' ? 'healthy' : rawStatus === 'warning' ? 'warning' : rawStatus === 'critical' ? 'critical' : 'offline';
+    const voltage = row.voltageKv != null ? Number(row.voltageKv) : null;
+    const state = this.calculateSectionState(row.status, voltage, row.battery);
     return {
       id: row.code,
-      voltage: row.voltageKv != null ? Number(row.voltageKv).toFixed(1) : '—',
+      voltage: voltage != null ? voltage.toFixed(1) : '—',
       state,
       battery: row.battery != null ? row.battery : 0,
       voltageDrop: '0.0',
@@ -243,10 +258,14 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
       if (section.state === 'offline') return { ...section, updated: 'just now' };
       const adjustment = ((cycle + index) % 3 - 1) * 0.1;
       const currentVoltage = Number.parseFloat(section.voltage) || 0;
+      const newVoltage = Math.max(0, currentVoltage + adjustment);
+      const newBattery = Math.max(0, Math.min(100, section.battery - (index % 2)));
+      const newState = this.calculateSectionState(section.state, newVoltage, newBattery);
       return {
         ...section,
-        voltage: Math.max(0, currentVoltage + adjustment).toFixed(1),
-        battery: Math.max(0, Math.min(100, section.battery - (index % 2))),
+        voltage: newVoltage.toFixed(1),
+        battery: newBattery,
+        state: newState,
         updated: 'just now',
       };
     });
@@ -257,12 +276,21 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
 
   private updateSchedule(): void {
     if (!this.selectedFence || !this.selected) return;
-    const schedule = this.schedules.get(`${this.selectedFence.id}:${this.selected.id}`);
-    if (!schedule) return;
+    const key = `${this.selectedFence.id}:${this.selected.id}`;
+    const intervalMinutes = this.selectedFence.updateIntervalMinutes || this.identity.expectedReportingIntervalMinutes();
+    let schedule = this.schedules.get(key);
+    if (!schedule) {
+      schedule = {
+        lastUpdatedAt: Date.now(),
+        nextUpdateAt: Date.now() + intervalMinutes * 60_000,
+        cycle: 0
+      };
+      this.schedules.set(key, schedule);
+    }
     const now = Date.now();
     if (now >= schedule.nextUpdateAt) {
       schedule.lastUpdatedAt = now;
-      schedule.nextUpdateAt = now + 15 * 60_000;
+      schedule.nextUpdateAt = now + intervalMinutes * 60_000;
       schedule.cycle++;
       this.refreshTelemetry(schedule.cycle);
     }

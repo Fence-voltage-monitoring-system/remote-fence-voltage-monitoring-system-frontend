@@ -3,11 +3,12 @@ import { AnalysisFiltersComponent } from './components/analysis-filters/analysis
 import { AnalysisSummary } from './components/analysis-summary/analysis-summary';
 import { VoltageTrendChart } from './components/voltage-trend-chart/voltage-trend-chart';
 import { MiniAnalysisCharts } from './components/mini-analysis-charts/mini-analysis-charts';
-import { AnalysisFilters, AnalysisMetric } from './historical-analysis.models';
+import { AnalysisFilters, AnalysisMetric, AnalysisPeriod } from './historical-analysis.models';
 import { ReportsService } from '../../core/services/reports.service';
 import { FenceService } from '../../core/services/fence.service';
 import { DeviceService } from '../../core/services/device.service';
 import { SectionService, SectionResponse } from '../../core/services/section.service';
+import { SystemIdentityService } from '../../core/services/system-identity.service';
 import { FenceRecord } from '../fence-management/fence-management.models';
 
 @Component({
@@ -22,6 +23,7 @@ export class HistoricalAnalysis implements OnInit {
   private readonly fenceService = inject(FenceService);
   private readonly deviceService = inject(DeviceService);
   private readonly sectionService = inject(SectionService);
+  private readonly identity = inject(SystemIdentityService);
 
   filters: AnalysisFilters = { province: '', district: '', fence: '', section: '', device: '', period: '24h' };
   notice = '';
@@ -59,6 +61,10 @@ export class HistoricalAnalysis implements OnInit {
   ];
 
   ngOnInit(): void {
+    const configuredPeriod = this.identity.defaultHistoryPeriod() as AnalysisPeriod;
+    if (['1h', '24h', '7d', '30d'].includes(configuredPeriod)) {
+      this.filters.period = configuredPeriod;
+    }
     this.loadAnalysis();
     this.loadFencesAndDevices();
   }
