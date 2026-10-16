@@ -150,4 +150,33 @@ export interface MapSettings {
   showFenceCoverage: boolean;
   showAlertOverlay: boolean;
 }
+export interface RetentionStatusDTO {
+  databaseSizeFormatted: string;
+  databaseAllocatedFormatted: string;
+  databaseUsagePercentage: number;
+  archiveSizeFormatted: string;
+  archiveAllocatedFormatted: string;
+  archiveUsagePercentage: number;
+  lastCleanupFormatted: string;
+  lastCleanupSummary: string;
+  nextCleanupFormatted: string;
+  nextCleanupStatus: string;
+  automaticCleanupEnabled: boolean;
+}
+
+export interface RetentionCleanupResultDTO {
+  success: boolean;
+  manual: boolean;
+  totalRecordsDeleted: number;
+  deletedTelemetry: number;
+  deletedNotifications: number;
+  deletedReports: number;
+  deletedAlerts: number;
+  deletedAuditLogs: number;
+  reclaimedMb: number;
+  durationMs: number;
+  executedAt: string;
+  message: string;
+}
+
 export type ConfigurationSection='general'|'voltage'|'alerts'|'notifications'|'retention'|'security'|'sessions'|'map'|'health';

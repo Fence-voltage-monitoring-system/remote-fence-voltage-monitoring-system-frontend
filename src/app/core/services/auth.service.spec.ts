@@ -70,4 +70,14 @@ describe("Authentication merge regression", () => {
     expect(auth.isAuthenticated()).toBe(false);
     expect(localStorage.getItem("auth_user_session")).toBeNull();
   });
+  it("sends reauthentication request with password", () => {
+    auth.reauthenticate("superSecret").subscribe((res) => {
+      expect(res.authenticated).toBe(true);
+      expect(res.validityMinutes).toBe(5);
+    });
+    const req = http.expectOne("/api/auth/reauthenticate");
+    expect(req.request.method).toBe("POST");
+    expect(req.request.body).toEqual({ password: "superSecret" });
+    req.flush({ authenticated: true, validityMinutes: 5, expiresAt: "2026-10-16T16:00:00Z", message: "Re-authentication successful" });
+  });
 });

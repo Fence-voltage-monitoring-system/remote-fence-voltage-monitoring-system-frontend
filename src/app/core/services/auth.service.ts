@@ -187,6 +187,20 @@ export class AuthService {
     );
   }
 
+  reauthenticate(password: string): Observable<{
+    authenticated: boolean;
+    validityMinutes: number;
+    expiresAt: string;
+    message: string;
+  }> {
+    return this.http.post<{
+      authenticated: boolean;
+      validityMinutes: number;
+      expiresAt: string;
+      message: string;
+    }>("/api/auth/reauthenticate", { password }, { withCredentials: true });
+  }
+
   private loadStoredUser(): AuthUser | null {
     try {
       const stored =

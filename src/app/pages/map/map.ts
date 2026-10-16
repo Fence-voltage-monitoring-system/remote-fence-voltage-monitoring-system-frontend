@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnI
 import { Router } from '@angular/router';
 import * as L from 'leaflet';
 import { FenceService } from '../../core/services/fence.service';
+import { MapSettingsService, DEFAULT_MAP_SETTINGS } from '../../core/services/map-settings.service';
 
 type FenceStatus = 'healthy' | 'warning' | 'critical';
 
@@ -29,6 +30,7 @@ interface MapFence {
 export class FenceMapWorkspaceComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly fenceService = inject(FenceService);
+  private readonly mapSettingsService = inject(MapSettingsService, { optional: true });
   private readonly cdr = inject(ChangeDetectorRef);
   @ViewChild('mapCanvas') mapElement!: ElementRef<HTMLDivElement>;
 
@@ -67,6 +69,15 @@ export class FenceMapWorkspaceComponent implements OnInit, AfterViewInit, OnDest
   }
 
   ngOnInit(): void {
+    if (this.mapSettingsService) {
+      this.mapSettingsService.load().subscribe({
+        next: () => {
+          if (this.map) {
+            this.renderMarkers();
+          }
+        }
+      });
+    }
     this.loadLiveFences();
   }
 
@@ -139,8 +150,13 @@ export class FenceMapWorkspaceComponent implements OnInit, AfterViewInit, OnDest
   }
 
   ngAfterViewInit(): void {
+    const s = this.mapSettingsService?.getSettings() ?? DEFAULT_MAP_SETTINGS;
+    const centerLat = s.defaultLatitude ?? 7.8731;
+    const centerLng = s.defaultLongitude ?? 80.7718;
+    const zoom = s.defaultZoom ?? 7;
+
     this.map = L.map(this.mapElement.nativeElement, {
-      center: [7.75, 80.72], zoom: 7, minZoom: 6, maxZoom: 16,
+      center: [centerLat, centerLng], zoom, minZoom: 6, maxZoom: 16,
       maxBounds: this.sriLankaBounds.pad(0.35), maxBoundsViscosity: 0.9,
       zoomAnimation: true, fadeAnimation: true, wheelPxPerZoomLevel: 100,
     });
@@ -224,13 +240,22 @@ export class FenceMapWorkspaceComponent implements OnInit, AfterViewInit, OnDest
     if (!this.map) return;
     this.map.invalidateSize({ pan: false });
     const coordinates = this.visibleFences.map((fence) => fence.coordinates);
-    if (!coordinates.length) this.map.fitBounds(this.sriLankaBounds, { padding: [35, 35], animate });
-    else if (coordinates.length === 1) this.map.setView(coordinates[0], 10, { animate });
-    else this.map.fitBounds(L.latLngBounds(coordinates), { padding: [70, 70], maxZoom: 10, animate });
+    if (!coordinates.length) {
+      const s = this.mapSettingsService?.getSettings() ?? DEFAULT_MAP_SETTINGS;
+      this.map.setView([s.defaultLatitude ?? 7.8731, s.defaultLongitude ?? 80.7718], s.defaultZoom ?? 7, { animate });
+    } else if (coordinates.length === 1) {
+      this.map.setView(coordinates[0], 10, { animate });
+    } else {
+      this.map.fitBounds(L.latLngBounds(coordinates), { padding: [70, 70], maxZoom: 10, animate });
+    }
   }
 
   private statusColor(status: FenceStatus): string {
-    return { healthy: '#48e174', warning: '#ffc01c', critical: '#ff4941' }[status];
+    const s = this.mapSettingsService?.getSettings() ?? DEFAULT_MAP_SETTINGS;
+    if (status === 'healthy') return s.healthyColor || '#4ADE80';
+    if (status === 'warning') return s.warningColor || '#FBBF24';
+    if (status === 'critical') return s.criticalColor || '#F87171';
+    return s.unassignedColor || '#4B5563';
   }
 
   private popup(fence: MapFence): string {

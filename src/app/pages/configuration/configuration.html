@@ -12,7 +12,7 @@
     } @else if(active === 'notifications') {
       <app-notification-settings-editor [value]="notificationValue" (valueChange)="notificationValue=$event" />
     } @else if(active === 'retention') {
-      <app-data-retention-editor [value]="retentionValue" (valueChange)="retentionValue=$event" (cleanupRequested)="requestManualCleanup()" />
+      <app-data-retention-editor [value]="retentionValue" [status]="retentionStatus" [isCleaningUp]="isCleaningUpRetention" (valueChange)="retentionValue=$event" (cleanupRequested)="requestManualCleanup()" />
     } @else if(active === 'security') {
       <app-security-policy-editor [value]="securityValue" (valueChange)="securityValue=$event" />
     } @else if(active === 'sessions') {

@@ -15,7 +15,7 @@ import { SystemHealth } from './components/system-health/system-health';
 import { GeneralConfigurationEditor } from './components/general-configuration-editor/general-configuration-editor';
 import { SaveConfigurationModal } from './components/save-configuration-modal/save-configuration-modal';
 import { VoltageThresholdEditor } from './components/voltage-threshold-editor/voltage-threshold-editor';
-import { AlertRuleSettings, ConfigurationSection, DataRetentionSettings, GeneralConfiguration, MapSettings, NotificationSettings, SecurityPolicySettings, SessionManagementSettings, VoltageThresholds } from './configuration.models';
+import { AlertRuleSettings, ConfigurationSection, DataRetentionSettings, GeneralConfiguration, MapSettings, NotificationSettings, RetentionCleanupResultDTO, RetentionStatusDTO, SecurityPolicySettings, SessionManagementSettings, VoltageThresholds } from './configuration.models';
 
 @Component({
   selector: 'app-configuration',
@@ -29,6 +29,9 @@ export class Configuration implements OnInit, OnDestroy {
   private readonly cdr=inject(ChangeDetectorRef);
   private loadRequest?:Subscription;
   private saveRequest?:Subscription;
+  private retentionStatusSub?:Subscription;
+  retentionStatus?:RetentionStatusDTO;
+  isCleaningUpRetention=false;
   loadError='';
   saveError='';
   private readonly metadata=new Map<ConfigurationSection,{updatedAt:string;updatedBy:string}>();
@@ -41,7 +44,7 @@ export class Configuration implements OnInit, OnDestroy {
     if(!this.dirty)return 'Change a setting to enable Save Configuration.';
     return '';
   }
-  ngOnDestroy(){this.loadRequest?.unsubscribe();this.saveRequest?.unsubscribe();}
+  ngOnDestroy(){this.loadRequest?.unsubscribe();this.saveRequest?.unsubscribe();this.retentionStatusSub?.unsubscribe();}
   retryLoad(){this.loadSection(this.active);}
 
   private readonly mapSettingsStore=inject(MapSettingsService);
@@ -79,7 +82,7 @@ export class Configuration implements OnInit, OnDestroy {
   };
   readonly securityDefaults:SecurityPolicySettings={minimumPasswordLength:12,passwordHistoryCount:5,temporaryPasswordExpiryHours:24,forceChangeAfterReset:true,failedLoginAttempts:5,failedAttemptWindowMinutes:15,accountLockMinutes:30,requireMfaForSuperAdmins:true,requireMfaForOtherAdmins:false,inactiveAccountDays:180,notifyOnAccountLockout:true,notifyOnPasswordChange:true,notifyOnNewDeviceLogin:true,notifyOnScopeChange:true};
   readonly sessionDefaults:SessionManagementSettings={maximumSessionHours:12,idleTimeoutMinutes:30,rememberMeDays:7,logoutWarningMinutes:5,maximumConcurrentSessions:2,newLoginBehaviour:'REVOKE_OLDEST',requireReauthentication:true,reauthenticationValidityMinutes:5,revokeOnPasswordChange:true,revokeOnPasswordReset:true,revokeOnRoleOrScopeChange:true,revokeOnAccountDeactivation:true,revokeOnSuspiciousLogin:true};
-  readonly mapDefaults:MapSettings={defaultLatitude:7.8731,defaultLongitude:80.7718,defaultZoom:7,healthyColor:'#43d36c',warningColor:'#ffb800',criticalColor:'#ff4136',offlineColor:'#7f8b80',unassignedColor:'#a0aaa0',showGateways:true,showMonitoringDevices:true,showActiveAlerts:true,showMaintenanceWork:true,liveUpdatesEnabled:true,highlightRecentChanges:true,focusCriticalAlerts:true,showStaleDataWarning:true,showOfflineIndicators:true,showProvinceBoundaries:false,showDistrictBoundaries:true,showFenceCoverage:true,showAlertOverlay:true};
+  readonly mapDefaults:MapSettings={defaultLatitude:7.8731,defaultLongitude:80.7718,defaultZoom:7,healthyColor:'#4ADE80',warningColor:'#FBBF24',criticalColor:'#F87171',offlineColor:'#9CA3AF',unassignedColor:'#4B5563',showGateways:true,showMonitoringDevices:true,showActiveAlerts:true,showMaintenanceWork:true,liveUpdatesEnabled:true,highlightRecentChanges:true,focusCriticalAlerts:true,showStaleDataWarning:true,showOfflineIndicators:true,showProvinceBoundaries:false,showDistrictBoundaries:true,showFenceCoverage:true,showAlertOverlay:true};
 
   savedVoltage = { ...this.voltageDefaults };
   voltageValue = { ...this.savedVoltage };
@@ -137,6 +140,7 @@ export class Configuration implements OnInit, OnDestroy {
       const hasDeliveryChannel = value.inAppEnabled || value.websocketEnabled || value.smsEnabled;
       const hasRecipient = value.notifySuperAdmins || value.notifyRegionalAdmins || value.notifyFieldAdmins || value.notifyMaintenance;
       return value.criticalBatteryPercent >= 0 && value.criticalBatteryPercent <= 100
+        && (!value.criticalBatteryEnabled || value.criticalBatteryPercent < this.voltageValue.lowBatteryPercent)
         && value.fluctuationCount >= 2 && value.fluctuationWindowMinutes >= 1
         && value.abnormalReadingsRequired >= 1 && value.abnormalReadingsRequired <= 3
         && value.healthyReadingsRequired >= 1 && value.healthyReadingsRequired <= 3
@@ -161,7 +165,14 @@ export class Configuration implements OnInit, OnDestroy {
         && value.dailySummaryDays >= value.hourlySummaryDays
         && (!value.automaticCleanupEnabled || !!value.cleanupTime);
     }
-    if(this.active==='security'){const value=this.securityValue;return value.minimumPasswordLength>=10&&value.minimumPasswordLength<=64&&value.passwordHistoryCount>=0&&value.passwordHistoryCount<=24&&value.temporaryPasswordExpiryHours>=1&&value.temporaryPasswordExpiryHours<=168&&value.failedLoginAttempts>=3&&value.failedLoginAttempts<=10&&value.failedAttemptWindowMinutes>=5&&value.failedAttemptWindowMinutes<=60&&value.accountLockMinutes>=5&&value.accountLockMinutes<=1440&&value.inactiveAccountDays>=30&&value.inactiveAccountDays<=730&&value.requireMfaForSuperAdmins;}
+    if(this.active==='security'){
+      const value=this.securityValue;
+      return Number.isInteger(value.minimumPasswordLength) && value.minimumPasswordLength>=8 && value.minimumPasswordLength<=64
+        && Number.isInteger(value.temporaryPasswordExpiryHours) && value.temporaryPasswordExpiryHours>=1 && value.temporaryPasswordExpiryHours<=168
+        && Number.isInteger(value.failedLoginAttempts) && value.failedLoginAttempts>=3 && value.failedLoginAttempts<=10
+        && Number.isInteger(value.failedAttemptWindowMinutes) && value.failedAttemptWindowMinutes>=5 && value.failedAttemptWindowMinutes<=60
+        && Number.isInteger(value.accountLockMinutes) && value.accountLockMinutes>=5 && value.accountLockMinutes<=1440;
+    }
     if(this.active==='sessions'){const value=this.sessionValue;return Number.isInteger(value.maximumSessionHours)&&value.maximumSessionHours>=1&&value.maximumSessionHours<=168&&Number.isInteger(value.idleTimeoutMinutes)&&value.idleTimeoutMinutes>=5&&value.idleTimeoutMinutes<value.maximumSessionHours*60&&Number.isInteger(value.rememberMeDays)&&value.rememberMeDays>=1&&value.rememberMeDays<=30&&Number.isInteger(value.logoutWarningMinutes)&&value.logoutWarningMinutes>=1&&value.logoutWarningMinutes<value.idleTimeoutMinutes&&Number.isInteger(value.maximumConcurrentSessions)&&value.maximumConcurrentSessions>=1&&value.maximumConcurrentSessions<=10&&(!value.requireReauthentication||(value.reauthenticationValidityMinutes>=1&&value.reauthenticationValidityMinutes<=30))&&value.revokeOnPasswordReset&&value.revokeOnAccountDeactivation;}
     if(this.active==='map'){const value=this.mapValue;const colors=[value.healthyColor,value.warningColor,value.criticalColor,value.offlineColor,value.unassignedColor];return value.defaultLatitude>=5.8&&value.defaultLatitude<=10&&value.defaultLongitude>=79.5&&value.defaultLongitude<=82.2&&Number.isInteger(value.defaultZoom)&&value.defaultZoom>=5&&value.defaultZoom<=18&&colors.every(color=>/^#[0-9a-f]{6}$/i.test(color))&&new Set(colors.map(color=>color.toLowerCase())).size===colors.length;}
     return this.voltageValue.healthyKv > this.voltageValue.warningKv
@@ -201,17 +212,45 @@ export class Configuration implements OnInit, OnDestroy {
       if (new Set(colors.map(color => color.toLowerCase())).size !== colors.length) messages.push('Each operational status must use a different colour.');
       return messages;
     }
+    if (this.active === 'alerts') {
+      const v = this.alertValue;
+      const messages: string[] = [];
+      if (!v.inAppEnabled && !v.websocketEnabled && !v.smsEnabled) {
+        messages.push('Select at least one delivery channel (In-app, WebSocket, or SMS).');
+      }
+      if (!v.notifySuperAdmins && !v.notifyRegionalAdmins && !v.notifyFieldAdmins && !v.notifyMaintenance) {
+        messages.push('Select at least one recipient role within operational scope.');
+      }
+      if (v.voltageFluctuationEnabled && (!(v.fluctuationCount >= 2) || !(v.fluctuationWindowMinutes >= 1))) {
+        messages.push('Voltage fluctuation requires at least 2 changes within 1 minute or more.');
+      }
+      if (v.criticalBatteryEnabled && (v.criticalBatteryPercent < 0 || v.criticalBatteryPercent > 100)) {
+        messages.push('Critical battery level must be between 0 and 100 percent.');
+      } else if (v.criticalBatteryEnabled && v.criticalBatteryPercent >= this.voltageValue.lowBatteryPercent) {
+        messages.push(`Critical battery level (${v.criticalBatteryPercent}%) must be lower than the low battery warning threshold (${this.voltageValue.lowBatteryPercent}%).`);
+      }
+      if (v.abnormalReadingsRequired < 1 || v.abnormalReadingsRequired > 3) {
+        messages.push('Abnormal readings required must be between 1 and 3.');
+      }
+      if (v.healthyReadingsRequired < 1 || v.healthyReadingsRequired > 3) {
+        messages.push('Healthy readings required must be between 1 and 3.');
+      }
+      if (v.cooldownMinutes < 1) {
+        messages.push('Cooldown must be at least 1 minute.');
+      }
+      if (v.escalationEnabled && (v.acknowledgementTimeoutMinutes < 1 || v.maintenanceAcceptanceTimeoutMinutes < 1)) {
+        messages.push('Escalation timeouts must be at least 1 minute.');
+      }
+      return messages;
+    }
     if (this.active !== 'security') return this.valid ? [] : ['Please correct the highlighted configuration values before saving.'];
     const value = this.securityValue;
     const messages: string[] = [];
-    if (!Number.isInteger(value.minimumPasswordLength) || value.minimumPasswordLength < 10 || value.minimumPasswordLength > 64) messages.push('Minimum password length must be between 10 and 64 characters.');
-    if (!Number.isInteger(value.passwordHistoryCount) || value.passwordHistoryCount < 0 || value.passwordHistoryCount > 24) messages.push('Password history must be between 0 and 24 passwords.');
+    if (!Number.isInteger(value.minimumPasswordLength) || value.minimumPasswordLength < 8 || value.minimumPasswordLength > 64) messages.push('Minimum password length must be between 8 and 64 characters.');
     if (!Number.isInteger(value.temporaryPasswordExpiryHours) || value.temporaryPasswordExpiryHours < 1 || value.temporaryPasswordExpiryHours > 168) messages.push('Temporary password expiry must be between 1 hour and 7 days.');
-    if (!Number.isInteger(value.inactiveAccountDays) || value.inactiveAccountDays < 30 || value.inactiveAccountDays > 730) messages.push('Inactive-account period must be between 30 and 730 days.');
     if (!Number.isInteger(value.failedLoginAttempts) || value.failedLoginAttempts < 3 || value.failedLoginAttempts > 10) messages.push('Maximum failed attempts must be between 3 and 10.');
     if (!Number.isInteger(value.failedAttemptWindowMinutes) || value.failedAttemptWindowMinutes < 5 || value.failedAttemptWindowMinutes > 60) messages.push('Attempt window must be between 5 and 60 minutes.');
     if (!Number.isInteger(value.accountLockMinutes) || value.accountLockMinutes < 5 || value.accountLockMinutes > 1440) messages.push('Account lock duration must be between 5 minutes and 24 hours.');
-    if (!value.requireMfaForSuperAdmins) messages.push('MFA must remain enabled for super administrators.');
     return messages;
   }
 
@@ -227,6 +266,9 @@ export class Configuration implements OnInit, OnDestroy {
     this.lastModifiedBy=metadata?.updatedBy??'—';
     this.notice = '';
     this.loadSection(section);
+    if (section === 'retention' && this.loadedSections.has('retention')) {
+      this.loadRetentionStatus();
+    }
   }
 
   reset(): void {
@@ -265,6 +307,8 @@ export class Configuration implements OnInit, OnDestroy {
           this.systemIdentity.apply(response.value as GeneralConfiguration);
         } else if (section === 'voltage') {
           this.systemIdentity.applyVoltage(response.value as VoltageThresholds);
+        } else if (section === 'alerts') {
+          this.systemIdentity.applyAlerts(response.value as AlertRuleSettings);
         }
         this.commitSection(section);
         this.updateMetadata(section,response.updatedAt,response.updatedBy);
@@ -285,6 +329,9 @@ export class Configuration implements OnInit, OnDestroy {
         this.commitSection(section);
         this.updateMetadata(section,response.updatedAt,response.updatedBy);
         this.loadedSections.add(section);
+        if (section === 'retention') {
+          this.loadRetentionStatus();
+        }
       },
       error: (error: HttpErrorResponse) => {
         this.loadError = this.apiErrorMessage(error, 'load');
@@ -308,7 +355,10 @@ export class Configuration implements OnInit, OnDestroy {
       this.systemIdentity.apply(this.generalValue);
     }
     else if (section === 'alerts') this.alertValue = { ...this.alertDefaults, ...(value as AlertRuleSettings) };
-    else if (section === 'notifications') this.notificationValue = { ...this.notificationDefaults, ...(value as NotificationSettings) };
+    else if (section === 'notifications') {
+      this.notificationValue = { ...this.notificationDefaults, ...(value as NotificationSettings) };
+      this.systemIdentity.applyNotifications(this.notificationValue);
+    }
     else if (section === 'retention') this.retentionValue = { ...this.retentionDefaults, ...(value as DataRetentionSettings) };
     else if (section === 'security') this.securityValue = { ...this.securityDefaults, ...(value as SecurityPolicySettings) };
     else if (section === 'sessions') this.sessionValue = { ...this.sessionDefaults, ...(value as SessionManagementSettings) };
@@ -343,7 +393,10 @@ export class Configuration implements OnInit, OnDestroy {
   private commitSection(section:ConfigurationSection): void {
     if (section === 'general') this.savedGeneral = { ...this.generalValue };
     else if (section === 'alerts') this.savedAlerts = { ...this.alertValue };
-    else if (section === 'notifications') this.savedNotifications = { ...this.notificationValue };
+    else if (section === 'notifications') {
+      this.savedNotifications = { ...this.notificationValue };
+      this.systemIdentity.applyNotifications(this.notificationValue);
+    }
     else if (section === 'retention') this.savedRetention = { ...this.retentionValue };
     else if (section === 'security') this.savedSecurity = { ...this.securityValue };
     else if (section === 'sessions') this.savedSessions = { ...this.sessionValue };
@@ -351,11 +404,49 @@ export class Configuration implements OnInit, OnDestroy {
     else this.savedVoltage = { ...this.voltageValue };
   }
 
+  loadRetentionStatus(): void {
+    this.retentionStatusSub?.unsubscribe();
+    this.retentionStatusSub = this.service.getRetentionStatus().subscribe({
+      next: status => {
+        this.retentionStatus = status;
+        this.cdr.markForCheck();
+      },
+      error: () => {
+        // Retain fallback data so the overview cards remain populated
+      }
+    });
+  }
+
   requestManualCleanup(): void {
     if (this.dirty) {
       this.notice = 'Save or cancel retention-policy changes before starting a cleanup job.';
       return;
     }
-    this.notice = 'Manual cleanup is not available yet. Retention settings can be saved, but no cleanup job has been started.';
+    if (this.isCleaningUpRetention) {
+      return;
+    }
+    if (typeof window !== 'undefined' && window.confirm) {
+      const confirmed = window.confirm(
+        'Are you sure you want to execute immediate data retention cleanup? Records exceeding retention thresholds will be permanently pruned.'
+      );
+      if (!confirmed) return;
+    }
+
+    this.isCleaningUpRetention = true;
+    this.notice = 'Retention cleanup in progress…';
+    this.service.triggerRetentionCleanup('Manual retention cleanup requested via administrative console')
+      .pipe(finalize(() => {
+        this.isCleaningUpRetention = false;
+        this.cdr.markForCheck();
+      }))
+      .subscribe({
+        next: result => {
+          this.notice = `Retention cleanup completed. Purged ${result.totalRecordsDeleted} records in ${result.durationMs}ms (${result.reclaimedMb.toFixed(1)} MB reclaimed).`;
+          this.loadRetentionStatus();
+        },
+        error: (error: HttpErrorResponse) => {
+          this.notice = error.error?.message || 'Failed to execute retention cleanup. Please check backend logs.';
+        }
+      });
   }
 }

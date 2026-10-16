@@ -4,10 +4,28 @@
   <div class="warning"><span>⚠</span><p><strong>Retention changes affect permanent records.</strong> Cleanup and deletion are performed by audited backend jobs. Confirm organizational requirements before reducing any period.</p></div>
 
   <div class="summary">
-    <article><span>Database storage</span><strong>68.4 GB</strong><i><b style="width:68%"></b></i><small>68% of 100 GB allocated</small></article>
-    <article><span>Archive storage</span><strong>124.8 GB</strong><i><b style="width:42%"></b></i><small>42% of 300 GB allocated</small></article>
-    <article><span>Last cleanup</span><strong class="small-value">27 Jul 2026 · 02:00</strong><small>Completed · 2.3 GB removed</small></article>
-    <article><span>Next scheduled cleanup</span><strong class="small-value">29 Jul 2026 · {{value.cleanupTime}}</strong><small>{{value.automaticCleanupEnabled ? 'Scheduled' : 'Automatic cleanup disabled'}}</small></article>
+    <article>
+      <span>Database storage</span>
+      <strong>{{ status?.databaseSizeFormatted || '68.4 GB' }}</strong>
+      <i><b [style.width.%]="status?.databaseUsagePercentage ?? 68"></b></i>
+      <small>{{ (status?.databaseUsagePercentage ?? 68) }}% of {{ status?.databaseAllocatedFormatted || '100 GB' }} allocated</small>
+    </article>
+    <article>
+      <span>Archive storage</span>
+      <strong>{{ status?.archiveSizeFormatted || '124.8 GB' }}</strong>
+      <i><b [style.width.%]="status?.archiveUsagePercentage ?? 42"></b></i>
+      <small>{{ (status?.archiveUsagePercentage ?? 42) }}% of {{ status?.archiveAllocatedFormatted || '300 GB' }} allocated</small>
+    </article>
+    <article>
+      <span>Last cleanup</span>
+      <strong class="small-value">{{ status?.lastCleanupFormatted || '27 Jul 2026 · 02:00' }}</strong>
+      <small>{{ status?.lastCleanupSummary || 'Completed · 2.3 GB removed' }}</small>
+    </article>
+    <article>
+      <span>Next scheduled cleanup</span>
+      <strong class="small-value">{{ status?.nextCleanupFormatted || ('Tomorrow · ' + value.cleanupTime) }}</strong>
+      <small>{{ status?.nextCleanupStatus || (value.automaticCleanupEnabled ? 'Scheduled' : 'Automatic cleanup disabled') }}</small>
+    </article>
   </div>
 
   <fieldset>
@@ -31,6 +49,6 @@
       <label class="switch"><span><strong>Automatic cleanup</strong><small>Run the backend retention job on the configured schedule.</small></span><input type="checkbox" [ngModel]="value.automaticCleanupEnabled" (ngModelChange)="update('automaticCleanupEnabled',$event)" /></label>
     </div>
     @if(value.automaticCleanupEnabled){<div class="schedule"><label>Cleanup frequency<select [ngModel]="value.cleanupSchedule" (ngModelChange)="update('cleanupSchedule',$event)"><option value="DAILY">Daily</option><option value="WEEKLY">Weekly</option><option value="MONTHLY">Monthly</option></select></label><label>Execution time<input type="time" [ngModel]="value.cleanupTime" (ngModelChange)="update('cleanupTime',$event)" /></label></div>}
-    <div class="manual"><div><strong>Manual retention cleanup</strong><p>Queue a backend job using the currently saved policy. A final confirmation and reason will be required by the API.</p></div><button type="button" (click)="cleanupRequested.emit()">Run Cleanup</button></div>
+    <div class="manual"><div><strong>Manual retention cleanup</strong><p>Queue a backend job using the currently saved policy. A final confirmation and reason will be required by the API.</p></div><button type="button" [disabled]="isCleaningUp" (click)="cleanupRequested.emit()">{{ isCleaningUp ? 'Running…' : 'Run Cleanup' }}</button></div>
   </fieldset>
 </section>

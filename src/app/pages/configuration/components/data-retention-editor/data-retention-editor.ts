@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { DataRetentionSettings } from '../../configuration.models';
+import { DataRetentionSettings, RetentionStatusDTO } from '../../configuration.models';
 
 @Component({
   selector: 'app-data-retention-editor',
@@ -11,6 +11,8 @@ import { DataRetentionSettings } from '../../configuration.models';
 })
 export class DataRetentionEditor {
   @Input({ required: true }) value!: DataRetentionSettings;
+  @Input() status?: RetentionStatusDTO;
+  @Input() isCleaningUp: boolean = false;
   @Output() valueChange = new EventEmitter<DataRetentionSettings>();
   @Output() cleanupRequested = new EventEmitter<void>();
 

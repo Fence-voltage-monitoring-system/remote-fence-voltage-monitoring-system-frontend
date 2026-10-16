@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import * as L from 'leaflet';
+import { MapSettingsService, DEFAULT_MAP_SETTINGS } from '../../../../core/services/map-settings.service';
 
 type LocationStatus = 'healthy' | 'warning' | 'critical';
 
@@ -13,8 +14,10 @@ interface FenceLocation {
 }
 
 @Component({ selector: 'app-fence-map', standalone: true, templateUrl: './fence-map.html', styleUrl: './fence-map.css' })
-export class FenceMapComponent implements AfterViewInit, OnDestroy {
+export class FenceMapComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('map') mapElement!: ElementRef<HTMLDivElement>;
+
+  private readonly mapSettingsService = inject(MapSettingsService, { optional: true });
 
   selected?: FenceLocation;
   private map?: L.Map;
@@ -33,10 +36,25 @@ export class FenceMapComponent implements AfterViewInit, OnDestroy {
     { name: 'Lunugamvehera', district: 'Hambantota', status: 'warning', voltage: '4.6 kV', fences: 3, coordinates: [6.341, 81.151] },
   ];
 
+  ngOnInit(): void {
+    if (this.mapSettingsService) {
+      this.mapSettingsService.load().subscribe({
+        next: () => {
+          this.updateMarkerColors();
+        }
+      });
+    }
+  }
+
   ngAfterViewInit(): void {
+    const s = this.mapSettingsService?.getSettings() ?? DEFAULT_MAP_SETTINGS;
+    const centerLat = s.defaultLatitude ?? 7.8731;
+    const centerLng = s.defaultLongitude ?? 80.7718;
+    const zoom = s.defaultZoom ?? 7;
+
     this.map = L.map(this.mapElement.nativeElement, {
-      center: [7.75, 80.72],
-      zoom: 7,
+      center: [centerLat, centerLng],
+      zoom,
       minZoom: 6,
       maxZoom: 16,
       zoomSnap: 0.25,
@@ -114,8 +132,22 @@ export class FenceMapComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  private updateMarkerColors(): void {
+    if (!this.map) return;
+    this.locations.forEach((location) => {
+      const marker = this.markers.get(location.name);
+      if (marker) {
+        marker.setStyle({ fillColor: this.statusColor(location.status) });
+      }
+    });
+  }
+
   private statusColor(status: LocationStatus): string {
-    return { healthy: '#48e174', warning: '#ffc01c', critical: '#ff4941' }[status];
+    const s = this.mapSettingsService?.getSettings() ?? DEFAULT_MAP_SETTINGS;
+    if (status === 'healthy') return s.healthyColor || '#4ADE80';
+    if (status === 'warning') return s.warningColor || '#FBBF24';
+    if (status === 'critical') return s.criticalColor || '#F87171';
+    return s.unassignedColor || '#4B5563';
   }
 
   private popupContent(location: FenceLocation): string {

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AlertRuleSettings, ConfigurationSection, DataRetentionSettings, GeneralConfiguration, MapSettings, NotificationSettings, SecurityPolicySettings, SessionManagementSettings, SessionOverview, VoltageThresholds } from '../../pages/configuration/configuration.models';
+import { AlertRuleSettings, ConfigurationSection, DataRetentionSettings, GeneralConfiguration, MapSettings, NotificationSettings, RetentionCleanupResultDTO, RetentionStatusDTO, SecurityPolicySettings, SessionManagementSettings, SessionOverview, VoltageThresholds } from '../../pages/configuration/configuration.models';
 
 export type ConfigurationValue=GeneralConfiguration|VoltageThresholds|AlertRuleSettings|NotificationSettings|DataRetentionSettings|SecurityPolicySettings|SessionManagementSettings|MapSettings;
 export interface ConfigurationSaveRequest<T extends ConfigurationValue>{value:T;reason:string;}
@@ -15,4 +15,6 @@ export class ConfigurationService {
   getSessionOverview():Observable<SessionOverview>{return this.http.get<SessionOverview>(`${this.endpoint}/sessions/active`,{withCredentials:true});}
   revokeSession(sessionId:string,reason:string):Observable<{message:string}>{return this.http.post<{message:string}>(`${this.endpoint}/sessions/active/${sessionId}/revoke`,{reason},{withCredentials:true});}
   revokeUserSessions(userId:string,reason:string):Observable<{message:string;revokedSessions:number}>{return this.http.post<{message:string;revokedSessions:number}>(`${this.endpoint}/sessions/users/${userId}/revoke`,{reason},{withCredentials:true});}
+  getRetentionStatus():Observable<RetentionStatusDTO>{return this.http.get<RetentionStatusDTO>(`${this.endpoint}/retention/status`,{withCredentials:true});}
+  triggerRetentionCleanup(reason?:string):Observable<RetentionCleanupResultDTO>{return this.http.post<RetentionCleanupResultDTO>(`${this.endpoint}/retention/cleanup`,{reason:reason||'Manual retention cleanup requested via administrative console'},{withCredentials:true});}
 }

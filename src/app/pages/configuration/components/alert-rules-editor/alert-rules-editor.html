@@ -23,8 +23,8 @@
     <fieldset>
       <legend>Connectivity and Power Rules</legend>
       <div class="rule-grid">
-        <label class="rule critical"><span><strong>Gateway offline</strong><small>Uses the timeout configured in General settings</small></span><input type="checkbox" [ngModel]="value.gatewayOfflineEnabled" (ngModelChange)="update('gatewayOfflineEnabled',$event)" /></label>
-        <label class="rule"><span><strong>Low battery</strong><small>Uses the warning value from Voltage Thresholds</small></span><input type="checkbox" [ngModel]="value.lowBatteryEnabled" (ngModelChange)="update('lowBatteryEnabled',$event)" /></label>
+        <label class="rule critical"><span><strong>Gateway offline</strong><small>Uses the timeout configured in General settings ({{identity.offlineTimeoutMinutes()}} min)</small></span><input type="checkbox" [ngModel]="value.gatewayOfflineEnabled" (ngModelChange)="update('gatewayOfflineEnabled',$event)" /></label>
+        <label class="rule"><span><strong>Low battery</strong><small>Uses the warning value from Voltage Thresholds ({{identity.lowBatteryPercent()}}%)</small></span><input type="checkbox" [ngModel]="value.lowBatteryEnabled" (ngModelChange)="update('lowBatteryEnabled',$event)" /></label>
         <label class="rule critical"><span><strong>Critical battery</strong><small>Create a critical alert below a separate emergency value</small></span><input type="checkbox" [ngModel]="value.criticalBatteryEnabled" (ngModelChange)="update('criticalBatteryEnabled',$event)" /></label>
         <label class="rule"><span><strong>Solar charging failure</strong><small>Alert when charging input remains unavailable</small></span><input type="checkbox" [ngModel]="value.solarFailureEnabled" (ngModelChange)="update('solarFailureEnabled',$event)" /></label>
       </div>
