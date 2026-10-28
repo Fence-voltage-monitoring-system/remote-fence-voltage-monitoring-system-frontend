@@ -213,7 +213,7 @@ html[data-theme='light'] app-user-profile .badge-tag-muted {
 
 :host-context(html[data-theme='light']) .cover-gradient,
 html[data-theme='light'] app-user-profile .cover-gradient {
-  background: linear-gradient(135deg, #e2e8f0, #cbd5e1) !important;
+  background: linear-gradient(135deg, #065f46 0%, #059669 100%) !important;
 }
 
 :host-context(html[data-theme='light']) .avatar-circle,

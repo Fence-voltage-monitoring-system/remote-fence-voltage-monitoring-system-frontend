@@ -185,10 +185,10 @@
   flex-wrap: nowrap !important;
   align-items: flex-start !important;
   height: 380px !important;
-  width: max-content !important;
-  min-width: max-content !important;
+  width: 100% !important;
+  min-width: 100% !important;
   padding-top: 12px;
-  padding-right: 40px;
+  padding-right: 0px;
   position: relative;
   z-index: 3;
   background: linear-gradient(rgba(8, 18, 11, 0.25), rgba(8, 18, 11, 0.25)), url('/assets/images/digital_twin_mesh_bg.jpg?v=2') center bottom / auto 380px repeat-x !important;
@@ -197,18 +197,18 @@
 .fence-leading-space,
 .fence-trailing-space {
   align-self: stretch;
-  flex: 0 0 28px;
+  flex: 0 0 16px;
   background: transparent;
 }
 
-/* Wide Electric Fence Section Unit */
+/* Auto-stretching Electric Fence Section Unit across available container width */
 .fence-section-clean {
   position: relative;
   height: 360px;
-  width: 280px;
-  flex: 0 0 280px !important;
-  min-width: 280px !important;
-  max-width: 280px !important;
+  flex: 1 1 200px !important;
+  min-width: 200px !important;
+  width: auto !important;
+  max-width: none !important;
   cursor: pointer;
   border: none;
   background: transparent;
@@ -286,7 +286,8 @@
   position: absolute;
   top: 125px;
   left: 0;
-  width: 280px;
+  right: 0;
+  width: 100% !important;
   height: 180px;
   z-index: 4;
 }
@@ -294,7 +295,8 @@
 .wire-row {
   position: absolute;
   left: 0;
-  width: 280px;
+  right: 0;
+  width: 100% !important;
   height: 16px;
   display: flex;
   align-items: center;
@@ -363,16 +365,17 @@
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   align-items: center !important;
-  width: max-content !important;
-  min-width: max-content !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  gap: 8px;
   padding-bottom: 4px;
 }
 
 .reading-card-outside {
-  flex: 0 0 280px !important;
-  width: 280px !important;
-  min-width: 280px !important;
-  max-width: 280px !important;
+  flex: 1 1 200px !important;
+  width: auto !important;
+  min-width: 200px !important;
+  max-width: none !important;
   padding: 10px 14px;
   border-radius: 10px;
   background: rgba(14, 28, 17, 0.95);

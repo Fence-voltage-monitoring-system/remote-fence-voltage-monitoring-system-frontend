@@ -279,6 +279,21 @@ html {
   --type-button: calc(9px * var(--ui-text-scale));
   --type-dialog-title: calc(18px * var(--ui-text-scale));
 }
+.app-shell {
+  zoom: 0.9;
+}
+
+/* Login Page: Unified cinematic dark theme across all theme settings with 100% full-screen coverage */
+app-login,
+app-login main,
+html:has(app-login),
+html:has(app-login) body {
+  background-color: #071b0d !important;
+  background: #071b0d !important;
+  color: #f4f8f4 !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+}
 body { min-height: 100%; margin: 0; min-width: 320px; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #071b0d; }
 button, input { font: inherit; }
 button { color: inherit; }
@@ -379,54 +394,54 @@ html[data-theme='light'] :is(.page, .page-shell, .page-content) {
 
 /* 2. Top Header Component */
 html[data-theme='light'] :is(app-header, app-header header) {
-  background-color: #f0fdf4 !important;
-  background-image: none !important;
-  border-bottom: 1px solid #d1fae5 !important;
-  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04) !important;
-  color: #0f172a !important;
+  background: linear-gradient(135deg, #065f46 0%, #047857 100%) !important;
+  background-image: linear-gradient(135deg, #065f46 0%, #047857 100%) !important;
+  border-bottom: 1px solid #059669 !important;
+  box-shadow: 0 4px 14px rgba(6, 95, 70, 0.2) !important;
+  color: #ffffff !important;
 }
 
 html[data-theme='light'] app-header .brand-text {
-  filter: brightness(0.15) !important;
+  filter: brightness(0) invert(1) !important;
 }
 
 html[data-theme='light'] app-header .application-name {
-  border-color: #d1fae5 !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
 }
 
 html[data-theme='light'] app-header .application-name strong {
-  color: #0f172a !important;
+  color: #ffffff !important;
 }
 
 html[data-theme='light'] app-header .application-name span,
 html[data-theme='light'] app-header .crumb,
 html[data-theme='light'] app-header .clock span {
-  color: #475569 !important;
+  color: #a7f3d0 !important;
 }
 
 html[data-theme='light'] app-header .crumb {
-  border-color: #d1fae5 !important;
-  background: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  background: rgba(255, 255, 255, 0.15) !important;
 }
 
 html[data-theme='light'] app-header .clock strong {
-  color: #0f172a !important;
+  color: #ffffff !important;
 }
 
 html[data-theme='light'] app-header :is(.view-action, .bell) {
-  color: #475569 !important;
+  color: #e2e8f0 !important;
 }
 
 html[data-theme='light'] app-header :is(.view-action, .bell):hover {
-  background-color: #dcfce7 !important;
-  border-color: #16a34a !important;
-  color: #16a34a !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
 }
 
 html[data-theme='light'] app-header .status {
-  background-color: #dcfce7 !important;
-  border-color: #86efac !important;
-  color: #15803d !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
 }
 
 /* ==========================================================================
@@ -1154,11 +1169,16 @@ html[data-theme='light'] :is(
 }
 
 /* -------------------------------------------------------------
-   PAGE 1: DASHBOARD SUMMARY CARDS (app-voltage-card)
+   PAGE 1: DASHBOARD SUMMARY CARDS (app-voltage-card) - VIBRANT BENTO
    ------------------------------------------------------------- */
-/* Card 1: TOTAL FENCES (Green Top Accent) */
+/* Card 1: TOTAL FENCES (Sky Blue Pastel Bento) */
+html[data-theme='light'] app-voltage-card article.card-green {
+  background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%) !important;
+  border: 1px solid #7dd3fc !important;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.12) !important;
+}
 html[data-theme='light'] app-voltage-card article.card-green::before {
-  background-color: #10b981 !important;
+  background-color: #0284c7 !important;
 }
 html[data-theme='light'] app-voltage-card article.card-green .top b {
   display: inline-flex !important;
@@ -1167,16 +1187,29 @@ html[data-theme='light'] app-voltage-card article.card-green .top b {
   width: 28px !important;
   height: 28px !important;
   border-radius: 8px !important;
-  background-color: #e6f4ea !important;
-  border: 1px solid #bbf7d0 !important;
-  color: #10b981 !important;
+  background-color: #0284c7 !important;
+  border: 1px solid #0284c7 !important;
+  color: #ffffff !important;
   font-size: 14px !important;
   line-height: 1 !important;
 }
+html[data-theme='light'] app-voltage-card article.card-green .top span,
+html[data-theme='light'] app-voltage-card article.card-green .metric strong {
+  color: #0369a1 !important;
+}
+html[data-theme='light'] app-voltage-card article.card-green p {
+  color: #0284c7 !important;
+  font-weight: 700 !important;
+}
 
-/* Card 2: TOTAL DEVICES (Indigo / Blue Top Accent) */
+/* Card 2: TOTAL DEVICES (Lavender / Violet Pastel Bento) */
+html[data-theme='light'] app-voltage-card article.card-blue {
+  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%) !important;
+  border: 1px solid #c4b5fd !important;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.12) !important;
+}
 html[data-theme='light'] app-voltage-card article.card-blue::before {
-  background-color: #4f46e5 !important;
+  background-color: #7c3aed !important;
 }
 html[data-theme='light'] app-voltage-card article.card-blue .top b {
   display: inline-flex !important;
@@ -1185,14 +1218,27 @@ html[data-theme='light'] app-voltage-card article.card-blue .top b {
   width: 28px !important;
   height: 28px !important;
   border-radius: 8px !important;
-  background-color: #eef2ff !important;
-  border: 1px solid #c7d2fe !important;
-  color: #4f46e5 !important;
+  background-color: #7c3aed !important;
+  border: 1px solid #7c3aed !important;
+  color: #ffffff !important;
   font-size: 14px !important;
   line-height: 1 !important;
 }
+html[data-theme='light'] app-voltage-card article.card-blue .top span,
+html[data-theme='light'] app-voltage-card article.card-blue .metric strong {
+  color: #5b21b6 !important;
+}
+html[data-theme='light'] app-voltage-card article.card-blue p {
+  color: #6d28d9 !important;
+  font-weight: 700 !important;
+}
 
-/* Card 3: ACTIVE DEVICES (Green Accent + Green Number & Footer) */
+/* Card 3: ACTIVE DEVICES (Mint / Emerald Pastel Bento) */
+html[data-theme='light'] app-voltage-card article.card-active {
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%) !important;
+  border: 1px solid #86efac !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.12) !important;
+}
 html[data-theme='light'] app-voltage-card article.card-active::before {
   background-color: #10b981 !important;
 }
@@ -1203,19 +1249,25 @@ html[data-theme='light'] app-voltage-card article.card-active .top b {
   width: 28px !important;
   height: 28px !important;
   border-radius: 8px !important;
-  background-color: #e6f4ea !important;
-  border: 1px solid #bbf7d0 !important;
-  color: #10b981 !important;
+  background-color: #059669 !important;
+  border: 1px solid #059669 !important;
+  color: #ffffff !important;
   font-size: 14px !important;
   line-height: 1 !important;
 }
+html[data-theme='light'] app-voltage-card article.card-active .top span,
 html[data-theme='light'] app-voltage-card article.card-active .metric strong,
 html[data-theme='light'] app-voltage-card article.card-active p {
-  color: #059669 !important;
+  color: #166534 !important;
   font-weight: 800 !important;
 }
 
-/* Card 4: CRITICAL ALERTS (Red Accent) */
+/* Card 4: CRITICAL ALERTS (Rose / Crimson Pastel Bento) */
+html[data-theme='light'] app-voltage-card :is(article.card-red, article.danger) {
+  background: linear-gradient(135deg, #ffe4e6 0%, #fecdd3 100%) !important;
+  border: 1px solid #fda4af !important;
+  box-shadow: 0 4px 14px rgba(225, 29, 72, 0.12) !important;
+}
 html[data-theme='light'] app-voltage-card article.card-red::before,
 html[data-theme='light'] app-voltage-card article.danger::before {
   background-color: #ef4444 !important;
@@ -1228,14 +1280,27 @@ html[data-theme='light'] app-voltage-card article.danger .top b {
   width: 28px !important;
   height: 28px !important;
   border-radius: 8px !important;
-  background-color: #fef2f2 !important;
-  border: 1px solid #fecaca !important;
-  color: #ef4444 !important;
+  background-color: #e11d48 !important;
+  border: 1px solid #e11d48 !important;
+  color: #ffffff !important;
   font-size: 14px !important;
   line-height: 1 !important;
 }
+html[data-theme='light'] app-voltage-card :is(article.card-red, article.danger) .top span,
+html[data-theme='light'] app-voltage-card :is(article.card-red, article.danger) .metric strong {
+  color: #9f1239 !important;
+}
+html[data-theme='light'] app-voltage-card :is(article.card-red, article.danger) p {
+  color: #be123c !important;
+  font-weight: 700 !important;
+}
 
-/* Card 5: LOW VOLTAGE (Amber Accent) */
+/* Card 5: LOW VOLTAGE (Amber / Gold Pastel Bento) */
+html[data-theme='light'] app-voltage-card :is(article.card-warning, article.warning) {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%) !important;
+  border: 1px solid #fcd34d !important;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.12) !important;
+}
 html[data-theme='light'] app-voltage-card article.card-warning::before,
 html[data-theme='light'] app-voltage-card article.warning::before {
   background-color: #f59e0b !important;
@@ -1248,11 +1313,19 @@ html[data-theme='light'] app-voltage-card article.warning .top b {
   width: 28px !important;
   height: 28px !important;
   border-radius: 8px !important;
-  background-color: #fffbeb !important;
-  border: 1px solid #fde68a !important;
-  color: #d97706 !important;
+  background-color: #d97706 !important;
+  border: 1px solid #d97706 !important;
+  color: #ffffff !important;
   font-size: 14px !important;
   line-height: 1 !important;
+}
+html[data-theme='light'] app-voltage-card :is(article.card-warning, article.warning) .top span,
+html[data-theme='light'] app-voltage-card :is(article.card-warning, article.warning) .metric strong {
+  color: #92400e !important;
+}
+html[data-theme='light'] app-voltage-card :is(article.card-warning, article.warning) p {
+  color: #b45309 !important;
+  font-weight: 700 !important;
 }
 
 /* -------------------------------------------------------------
@@ -2035,13 +2108,13 @@ html[data-theme='light'] :is(
    ========================================================================== */
 html[data-theme='light'] app-fence-monitor .panel {
   background: #ffffff !important;
-  border: 1px solid #cbd5e1 !important;
-  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06) !important;
+  border: 1px solid #bbf7d0 !important;
+  box-shadow: 0 4px 20px rgba(5, 150, 105, 0.08) !important;
 }
 
 html[data-theme='light'] app-fence-monitor .panel > header {
-  background: #f8fafc !important;
-  border-bottom: 1px solid #cbd5e1 !important;
+  background: linear-gradient(to right, #ecfdf5, #f0fdf4) !important;
+  border-bottom: 1px solid #bbf7d0 !important;
 }
 
 html[data-theme='light'] app-fence-monitor .panel h2 {
@@ -2177,21 +2250,27 @@ html[data-theme='light'] app-fence-monitor .readings-deck {
 }
 
 html[data-theme='light'] app-fence-monitor .reading-card-outside {
-  background: #ffffff !important;
-  border: 1px solid #cbd5e1 !important;
-  border-top: 3px solid #16a34a !important;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05) !important;
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%) !important;
+  border: 1px solid #a7f3d0 !important;
+  border-top: 3px solid #10b981 !important;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.08) !important;
 }
 
 html[data-theme='light'] app-fence-monitor .reading-card-outside.warning {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%) !important;
+  border-color: #fde68a !important;
   border-top-color: #d97706 !important;
 }
 
 html[data-theme='light'] app-fence-monitor .reading-card-outside.critical {
+  background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%) !important;
+  border-color: #fecdd3 !important;
   border-top-color: #dc2626 !important;
 }
 
 html[data-theme='light'] app-fence-monitor .reading-card-outside.offline {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
+  border-color: #cbd5e1 !important;
   border-top-color: #64748b !important;
 }
 
@@ -3855,7 +3934,7 @@ html[data-theme='light'] :is(
   app-security-settings,
   app-activity-list
 ) .cover-gradient {
-  background: linear-gradient(135deg, #e2e8f0, #cbd5e1) !important;
+  background: linear-gradient(135deg, #065f46 0%, #059669 100%) !important;
 }
 
 html[data-theme='light'] :is(
@@ -3974,6 +4053,61 @@ html[data-theme='light'] :is(app-user-profile, app-current-user-profile) button.
   border-color: #fca5a5 !important;
   color: #dc2626 !important;
   font-weight: 700 !important;
+}
+
+/* Security & Sessions "Sign Out Others" Button */
+html[data-theme='light'] app-security-settings button {
+  background-color: #fef2f2 !important;
+  border-color: #fca5a5 !important;
+  color: #dc2626 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme='light'] app-security-settings button:hover {
+  background-color: #fee2e2 !important;
+  border-color: #ef4444 !important;
+  color: #b91c1c !important;
+}
+
+/* User Profile Cancel & Secondary Action Buttons */
+html[data-theme='light'] :is(
+  app-user-profile,
+  app-current-user-profile,
+  app-notification-preferences,
+  app-change-password-drawer,
+  app-profile-edit-drawer
+) button:is([class*="hover:bg-[#1f3827]"], [class*="border-[#405943]"]:not(.primary):not([class*="bg-[#45d869]"]):not([class*="bg-[#16a34a]"])) {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+
+html[data-theme='light'] :is(
+  app-user-profile,
+  app-current-user-profile,
+  app-notification-preferences,
+  app-change-password-drawer,
+  app-profile-edit-drawer
+) button:is([class*="hover:bg-[#1f3827]"], [class*="border-[#405943]"]:not(.primary):not([class*="bg-[#45d869]"]):not([class*="bg-[#16a34a]"])):hover:not(:disabled) {
+  background-color: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+  color: #0f172a !important;
+}
+
+html[data-theme='light'] :is(
+  app-user-profile,
+  app-current-user-profile,
+  app-notification-preferences,
+  app-change-password-drawer,
+  app-profile-edit-drawer
+) button:disabled:not([class*="bg-[#45d869]"]) {
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  color: #94a3b8 !important;
+  opacity: 0.7 !important;
+  cursor: not-allowed !important;
 }
 
 /* User Create / Edit Drawer */
@@ -4825,7 +4959,7 @@ html[data-theme='light'] select:not(.no-custom-select) option {
  */
 
 /* General Banner Base in Light Theme */
-html[data-theme='light'] :is(.page-heading, .heading, main > .page > header, app-fence-monitor > section.panel > header) {
+html[data-theme='light'] :is(.page-heading, .heading, main > .page > header) {
   background: linear-gradient(135deg, var(--banner-bg-start, #f0fdf4) 0%, #ffffff 100%) !important;
   border: 1px solid #cbd5e1 !important;
   border-left: 5px solid var(--banner-accent, #10b981) !important;
@@ -4835,7 +4969,7 @@ html[data-theme='light'] :is(.page-heading, .heading, main > .page > header, app
   margin-bottom: 20px !important;
 }
 
-html[data-theme='light'] :is(.page-heading, .heading, main > .page > header, app-fence-monitor > section.panel > header) :is(span, p:first-child):not(.legend *):not(.timing *) {
+html[data-theme='light'] :is(.page-heading, .heading, main > .page > header) :is(span, p:first-child):not(.legend *):not(.timing *) {
   color: var(--banner-accent, #10b981) !important;
   font-size: 12px !important;
   font-weight: 800 !important;
@@ -4843,23 +4977,17 @@ html[data-theme='light'] :is(.page-heading, .heading, main > .page > header, app
   text-transform: uppercase !important;
 }
 
-html[data-theme='light'] :is(.page-heading, .heading, main > .page > header, app-fence-monitor > section.panel > header) :is(h1, h2) {
+html[data-theme='light'] :is(.page-heading, .heading, main > .page > header) :is(h1, h2) {
   color: #0f172a !important;
   font-weight: 800 !important;
   margin-top: 2px !important;
   margin-bottom: 4px !important;
 }
 
-html[data-theme='light'] :is(.page-heading, .heading, main > .page > header, app-fence-monitor > section.panel > header) p {
+html[data-theme='light'] :is(.page-heading, .heading, main > .page > header) p {
   color: #475569 !important;
   font-size: 13px !important;
   margin: 0 !important;
-}
-
-/* 1. Dashboard & Fence Monitor Banner (Emerald Green) */
-html[data-theme='light'] app-fence-monitor > section.panel > header {
-  --banner-accent: #10b981;
-  --banner-bg-start: #f0fdf4;
 }
 
 /* 2. Alerts Page Banner (Coral Red) */
