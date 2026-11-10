@@ -168,6 +168,7 @@
   background: #0f2014 !important;
   scroll-behavior: smooth;
   border: 1px solid #234228;
+  container-type: inline-size;
 }
 
 .scroller::-webkit-scrollbar {
@@ -185,7 +186,7 @@
   flex-wrap: nowrap !important;
   align-items: flex-start !important;
   height: 380px !important;
-  width: 100% !important;
+  width: max-content !important;
   min-width: 100% !important;
   padding-top: 12px;
   padding-right: 0px;
@@ -201,13 +202,13 @@
   background: transparent;
 }
 
-/* Auto-stretching Electric Fence Section Unit across available container width */
+/* Auto-stretching Electric Fence Section Unit across available container width (locked to exactly 5 sections per visible view) */
 .fence-section-clean {
   position: relative;
   height: 360px;
-  flex: 1 1 200px !important;
-  min-width: 200px !important;
-  width: auto !important;
+  flex: 0 0 calc((100cqw - 16px) / 5) !important;
+  width: calc((100cqw - 16px) / 5) !important;
+  min-width: 180px !important;
   max-width: none !important;
   cursor: pointer;
   border: none;
@@ -349,6 +350,7 @@
   white-space: nowrap;
   margin-top: 12px;
   scroll-behavior: smooth;
+  container-type: inline-size;
 }
 
 .cards-deck-wrap::-webkit-scrollbar {
@@ -365,16 +367,16 @@
   flex-direction: row !important;
   flex-wrap: nowrap !important;
   align-items: center !important;
-  width: 100% !important;
+  width: max-content !important;
   min-width: 100% !important;
   gap: 8px;
   padding-bottom: 4px;
 }
 
 .reading-card-outside {
-  flex: 1 1 200px !important;
-  width: auto !important;
-  min-width: 200px !important;
+  flex: 0 0 calc((100cqw - 48px) / 5) !important;
+  width: calc((100cqw - 48px) / 5) !important;
+  min-width: 160px !important;
   max-width: none !important;
   padding: 10px 14px;
   border-radius: 10px;
