@@ -16,6 +16,7 @@ interface Section {
   id: string; voltage: string; state: FenceState; battery: number; voltageDrop: string;
   solarCharging: number; signalStrength: number; gateway: string;
   latitude: string; longitude: string; updated: string;
+  deviceId?: number; deviceSerial?: string;
 }
 
 @Component({ selector: 'app-fence-monitor', standalone: true, imports: [FormsModule], templateUrl: './fence-monitor.html', styleUrl: './fence-monitor.css' })
@@ -199,6 +200,8 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
       latitude: row.startGps ? row.startGps.split(',')[0]?.trim() || '' : '',
       longitude: row.startGps ? row.startGps.split(',')[1]?.trim() || '' : '',
       updated: row.updatedAt ? new Date(row.updatedAt).toLocaleTimeString() : 'Unavailable',
+      deviceId: row.deviceId != null ? row.deviceId : undefined,
+      deviceSerial: row.deviceSerial || undefined,
     };
   }
 
@@ -333,7 +336,7 @@ export class FenceMonitorComponent implements OnInit, OnDestroy {
       fenceId: this.selectedFence.id,
       fenceName: this.selectedFence.name,
       sectionId: this.selected.id,
-      deviceId: `${this.selected.gateway}-${this.selected.id.slice(-3)}`,
+      deviceId: this.selected.deviceId ? String(this.selected.deviceId) : (this.selected.deviceSerial || `${this.selected.gateway}-${this.selected.id.slice(-3)}`),
       voltage: Number.parseFloat(this.selected.voltage) || 0,
       battery: this.selected.battery,
       status: this.selected.state,

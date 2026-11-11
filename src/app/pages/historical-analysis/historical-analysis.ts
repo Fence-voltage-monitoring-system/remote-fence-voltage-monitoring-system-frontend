@@ -4,7 +4,7 @@ import { AnalysisSummary } from './components/analysis-summary/analysis-summary'
 import { VoltageTrendChart } from './components/voltage-trend-chart/voltage-trend-chart';
 import { MiniAnalysisCharts } from './components/mini-analysis-charts/mini-analysis-charts';
 import { AnalysisFilters, AnalysisMetric, AnalysisPeriod } from './historical-analysis.models';
-import { ReportsService } from '../../core/services/reports.service';
+import { ReportsService, HistoricalAnalysisData } from '../../core/services/reports.service';
 import { FenceService } from '../../core/services/fence.service';
 import { DeviceService } from '../../core/services/device.service';
 import { SectionService, SectionResponse } from '../../core/services/section.service';
@@ -50,6 +50,7 @@ export class HistoricalAnalysis implements OnInit {
   private rawFences: FenceRecord[] = [];
   private rawSections: SectionResponse[] = [];
   private rawDevices: any[] = [];
+  analysisData: HistoricalAnalysisData | null = null;
 
   metrics: AnalysisMetric[] = [
     { label: 'Avg Voltage', value: '—', unit: 'kV', tone: 'amber' },
@@ -183,11 +184,21 @@ export class HistoricalAnalysis implements OnInit {
   }
 
   loadAnalysis(): void {
-    this.reportsService.getHistoricalAnalysis(this.filters.period, this.filters.device).subscribe({
+    let targetDevice = this.filters.device;
+    if (!targetDevice && this.filters.section) {
+      const dev = this.rawDevices.find((d) => d.section === this.filters.section || d.sectionCode === this.filters.section);
+      if (dev) {
+        targetDevice = dev.serial || String(dev.id);
+      }
+    }
+
+    this.reportsService.getHistoricalAnalysis(this.filters.period, targetDevice).subscribe({
       next: (data) => {
+        this.analysisData = data;
         if (data.summaryMetrics && data.summaryMetrics.length > 0) {
           this.metrics = data.summaryMetrics;
         }
+        this.cdr.detectChanges();
       },
       error: (err) => console.warn('Could not load historical analysis metrics from backend:', err)
     });
@@ -201,7 +212,12 @@ export class HistoricalAnalysis implements OnInit {
     } else if (newFilters.fence !== this.filters.fence) {
       newFilters = { ...newFilters, section: '', device: '' };
     } else if (newFilters.section !== this.filters.section) {
-      newFilters = { ...newFilters, device: '' };
+      if (newFilters.section) {
+        const dev = this.rawDevices.find((d) => d.section === newFilters.section || d.sectionCode === newFilters.section);
+        newFilters = { ...newFilters, device: dev ? (dev.serial || String(dev.id)) : '' };
+      } else {
+        newFilters = { ...newFilters, device: '' };
+      }
     }
 
     this.filters = newFilters;
