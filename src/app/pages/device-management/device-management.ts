@@ -8,6 +8,7 @@ import { DeviceService } from '../../core/services/device.service';
 import { FenceService } from '../../core/services/fence.service';
 import { SectionService } from '../../core/services/section.service';
 import { SystemIdentityService } from '../../core/services/system-identity.service';
+import { ManagementAccessService } from '../../core/services/management-access.service';
 import { HeaderComponent } from '../../shared/components/header/header';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar';
 
@@ -25,6 +26,7 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
   private readonly sectionService = inject(SectionService);
   private readonly cdr = inject(ChangeDetectorRef);
   public readonly identity = inject(SystemIdentityService);
+  public readonly access = inject(ManagementAccessService);
 
   fences: string[] = [];
   sectionsByFence: Record<string, string[]> = {};
@@ -62,7 +64,10 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
   private loadFences(): void {
     this.fenceService.getFences().subscribe({
       next: (fences) => {
-        this.fences = (fences || []).map((f) => f.name);
+        const scopedFences = (fences || []).filter((f) =>
+          this.access.canManageScope(f.province, f.district, f.name)
+        );
+        this.fences = scopedFences.map((f) => f.name);
         if (this.fences.length > 0) {
           this.assignmentFence = this.fences[0];
           this.registrationFence = this.fences[0];
@@ -81,6 +86,14 @@ export class DeviceManagementPage implements OnInit, AfterViewChecked {
       },
       error: () => { this.fences = []; }
     });
+  }
+
+  canEditDevice(device?: Device): boolean {
+    if (!device) return false;
+    if (!this.access.canManage) return false;
+    if (this.access.scope().role === 'SUPER_ADMIN') return true;
+    if (!device.fence) return true;
+    return this.fences.includes(device.fence);
   }
 
   private refreshIcons(): void {

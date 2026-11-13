@@ -33,6 +33,12 @@ export class MiniAnalysisCharts {
     return d;
   }
 
+  get batteryDotY(): number {
+    const curve = this.data?.powerHealth?.batteryCurve;
+    const lastVal = (curve && curve.length > 0) ? curve[curve.length - 1] : this.batteryPercent;
+    return Math.round(100 - (lastVal / 100) * 80);
+  }
+
   get totalVoltageDrops(): number {
     return this.data?.voltageEvents?.totalVoltageDrops ?? 0;
   }

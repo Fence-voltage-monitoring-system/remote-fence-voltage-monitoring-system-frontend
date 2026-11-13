@@ -5,7 +5,9 @@
     <main>
       <section class="page-heading">
         <div><span>Asset Administration</span><h1>Device Management</h1><p>Register field hardware, monitor connectivity, and manage assignments across the fence network.</p></div>
-        <div class="heading-actions"><button class="export" type="button" (click)="openAssignment()"><i data-lucide="radio"></i> Assign device</button><button class="add" type="button" (click)="openAdd()"><i data-lucide="plus"></i> Register device</button></div>
+        @if (access.canManage) {
+          <div class="heading-actions"><button class="export" type="button" (click)="openAssignment()"><i data-lucide="radio"></i> Assign device</button><button class="add" type="button" (click)="openAdd()"><i data-lucide="plus"></i> Register device</button></div>
+        }
       </section>
 
       @if (isLoading) {
@@ -52,8 +54,25 @@
                       }
                     </span>
                   </td>
-                  <td><button type="button" class="toggle" [class.on]="device.enabled" (click)="toggleEnabled(device, $event)" [attr.aria-label]="device.enabled ? 'Disable device' : 'Enable device'"><i></i></button></td>
-                  <td class="action-cell"><button class="more" type="button" (click)="toggleMenu(device, $event)"><i data-lucide="more-horizontal"></i></button>@if (menuDevice === device) {<div class="row-menu" (click)="$event.stopPropagation()">@if (device.section) {<button type="button" (click)="unassign(device)"><i data-lucide="radio"></i>Unassign device</button>} @else {<button type="button" (click)="openAssignment(device); menuDevice = undefined"><i data-lucide="radio"></i>Assign to section</button>}<button type="button" (click)="openEdit(device)"><i data-lucide="pencil"></i>Edit device</button><button class="danger" type="button" (click)="remove(device)"><i data-lucide="trash-2"></i>Remove</button></div>}</td>
+                  <td><button type="button" class="toggle" [class.on]="device.enabled" [disabled]="!canEditDevice(device)" (click)="canEditDevice(device) && toggleEnabled(device, $event)" [attr.aria-label]="device.enabled ? 'Disable device' : 'Enable device'"><i></i></button></td>
+                  <td class="action-cell">
+                    @if (canEditDevice(device)) {
+                      <button class="more" type="button" (click)="toggleMenu(device, $event)"><i data-lucide="more-horizontal"></i></button>
+                      @if (menuDevice === device) {
+                        <div class="row-menu" (click)="$event.stopPropagation()">
+                          @if (device.section) {
+                            <button type="button" (click)="unassign(device)"><i data-lucide="radio"></i>Unassign device</button>
+                          } @else {
+                            <button type="button" (click)="openAssignment(device); menuDevice = undefined"><i data-lucide="radio"></i>Assign to section</button>
+                          }
+                          <button type="button" (click)="openEdit(device)"><i data-lucide="pencil"></i>Edit device</button>
+                          @if (access.scope().role === 'SUPER_ADMIN') {
+                            <button class="danger" type="button" (click)="remove(device)"><i data-lucide="trash-2"></i>Remove</button>
+                          }
+                        </div>
+                      }
+                    }
+                  </td>
                 </tr>
               } @empty {<tr><td colspan="7"><div class="empty"><i data-lucide="sliders-horizontal"></i><b>No matching devices</b><span>Try changing or clearing the filters.</span><button type="button" (click)="clearFilters()">Clear filters</button></div></td></tr>}
             </tbody>
@@ -75,7 +94,18 @@
         <section><h3>Assignment</h3><dl><div><dt>Fence</dt><dd>{{selected.fence || 'Not assigned'}}</dd></div><div><dt>Section</dt><dd>{{selected.section || 'Not assigned'}}</dd></div><div><dt>Device type</dt><dd>{{selected.type}}</dd></div></dl></section>
         <section><h3>Current telemetry</h3><div class="detail-metrics"><article><span>Voltage</span><b>{{selected.voltage === null ? '—' : selected.voltage.toFixed(1) + ' kV'}}</b></article><article><span>Battery</span><b>{{selected.battery}}%</b></article><article><span>Signal</span><b>{{selected.signal}}%</b></article><article><span>Last communication</span><b>{{selected.lastSeen}}@if (identity.isDataStale(selected.lastSeen) && selected.lastSeen !== 'Not installed') { <span class="stale-badge" title="Data exceeds stale threshold ({{identity.staleDataMinutes()}} min)">Stale</span>}</b></article></div></section>
       </div>
-      <footer>@if (selected.section) {<button type="button" (click)="unassign(selected)">Unassign device</button>} @else {<button class="primary" type="button" (click)="openAssignment(selected)">Assign to section</button>}<button type="button" (click)="openEdit(selected)">Edit device</button></footer>
+      <footer>
+        @if (canEditDevice(selected)) {
+          @if (selected.section) {
+            <button type="button" (click)="unassign(selected)">Unassign device</button>
+          } @else {
+            <button class="primary" type="button" (click)="openAssignment(selected)">Assign to section</button>
+          }
+          <button type="button" (click)="openEdit(selected)">Edit device</button>
+        } @else {
+          <span class="text-xs text-[#8aa691] italic px-2">Read-only device</span>
+        }
+      </footer>
     </aside>
   </div>
 }

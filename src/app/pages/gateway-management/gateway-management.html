@@ -8,8 +8,8 @@
           <h1>Gateway Management</h1>
           <p>Register gateways, monitor connectivity, and manage fence network assignments.</p>
         </div>
-        <div class="heading-actions"><button class="primary" type="button" (click)="openAdd()"><i
-              data-lucide="plus"></i>Register gateway</button></div>
+        <div class="heading-actions">@if (canManageGateways()) {<button class="primary" type="button" (click)="openAdd()"><i
+              data-lucide="plus"></i>Register gateway</button>}</div>
       </section>
 
       @if (isLoading) {
@@ -121,10 +121,11 @@
                   </span>
                 </td>
                 <td><button type="button" class="toggle" [class.on]="gateway.enabled"
-                    (click)="toggleEnabled(gateway, $event)"
+                    (click)="canManageGateways() && toggleEnabled(gateway, $event)"
+                    [disabled]="!canManageGateways()"
                     [attr.aria-label]="gateway.enabled ? 'Disable gateway' : 'Enable gateway'"><i></i></button></td>
                 <td class="action-cell"><button class="more" type="button" (click)="toggleMenu(gateway, $event)"><i
-                      data-lucide="more-horizontal"></i></button>@if (menuGateway === gateway) {<div class="row-menu"
+                      data-lucide="more-horizontal"></i></button>@if (menuGateway === gateway && canManageGateways()) {<div class="row-menu"
                     (click)="$event.stopPropagation()"><button type="button" (click)="openEdit(gateway)"><i
                         data-lucide="pencil"></i>Edit gateway</button><button class="danger" type="button"
                       (click)="remove(gateway)"><i data-lucide="trash-2"></i>Remove</button></div>}</td>
@@ -214,7 +215,7 @@
           </div>
         </section>
       </div>
-      <footer><button class="primary" type="button" (click)="openEdit(selected)">Edit gateway</button></footer>
+      <footer>@if (canManageGateways()) {<button class="primary" type="button" (click)="openEdit(selected)">Edit gateway</button>} @else {<span style="font-size:13px;color:#8fa890;padding:4px 0;">Read-only view</span>}</footer>
     </aside>
   </div>
 }
